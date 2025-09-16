@@ -114,9 +114,9 @@ if (usuario.isEmpty() || password.isEmpty()){
 }else{
     if(usuario.equals("admin") && password.equals("1234")){
         JOptionPane.showMessageDialog(null, "Bienvenido");
-        panel_control pc = new panel_control ();
+        /**vista_admin pc = new vista_admin();
         pc.setVisible(true);
-        this.dispose();
+        this.dispose();**/
          
     }else{
         JOptionPane.showMessageDialog(null, "Su usuario o contraseña incorrecta");
