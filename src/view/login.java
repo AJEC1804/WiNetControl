@@ -4,6 +4,7 @@
  */
 package view;
 
+import java.sql.*;
 import javax.swing.*;
 
 /**
@@ -36,8 +37,9 @@ public class login extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -71,16 +73,24 @@ public class login extends javax.swing.JFrame {
         jPasswordField1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel2.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 190, 30));
 
-        jButton1.setText("Login");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 320, 90, 30));
-
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/seguridad (1).png"))); // NOI18N
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, 130, 130));
+
+        jButton2.setText("Login");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 310, 90, 30));
+
+        jButton3.setText("Registrer");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 310, 90, 30));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 0, 300, 410));
 
@@ -105,24 +115,42 @@ public class login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-String usuario = jTextField1.getText();
-String password = jPasswordField1.getText();
-
-if (usuario.isEmpty() || password.isEmpty()){
-    JOptionPane.showMessageDialog(null, "Algun campo esta vacio");
-}else{
-    if(usuario.equals("admin") && password.equals("1234")){
-        JOptionPane.showMessageDialog(null, "Bienvenido");
-        /**vista_admin pc = new vista_admin();
-        pc.setVisible(true);
-        this.dispose();**/
-         
-    }else{
-        JOptionPane.showMessageDialog(null, "Su usuario o contraseña incorrecta");
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    String identificacion = jTextField1.getText().trim();
+    String contrasena = new String (jPasswordField1.getPassword());
+    
+    if (identificacion.isEmpty() || contrasena.isEmpty()){
+    JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña");
+   
     }
- }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    try (Connection conn = ConexionDB.getConnection()){
+        String sql = "SELECT contrasena FROM usuarios WHERE identificacion = ? AND contrasena = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)){
+            pst.setString(1, identificacion);
+            pst.setString(2, contrasena);
+            
+            try (ResultSet rs = pst.executeQuery()){
+            if(rs.next()){
+            JOptionPane.showMessageDialog(this, "Bienvenido, acceso concedido");
+             vista_admin va = new vista_admin();
+             va.setVisible(true);
+            this.dispose();  
+            } else{
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
+            }
+            }
+        }
+    }catch (SQLException e){
+    JOptionPane.showMessageDialog(this, "Error al iniciar sesion" + e.getMessage());
+    }
+    
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        registro rg = new registro();
+        rg.setVisible(true);
+        this.dispose(); 
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,7 +189,8 @@ if (usuario.isEmpty() || password.isEmpty()){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
