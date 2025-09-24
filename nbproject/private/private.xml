@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Jarvi/OneDrive/Documentos/NetBeansProjects/WiNet%20Control/src/winet/control/WiNetControl.java</file>
             <file>file:/C:/Users/Jarvi/OneDrive/Documentos/NetBeansProjects/WiNet%20Control/src/view/login.java</file>
+            <file>file:/C:/Users/Jarvi/OneDrive/Documentos/NetBeansProjects/WiNet%20Control/src/view/registro.java</file>
+            <file>file:/C:/Users/Jarvi/OneDrive/Documentos/NetBeansProjects/WiNet%20Control/src/view/TestConexion.java</file>
+            <file>file:/C:/Users/Jarvi/OneDrive/Documentos/NetBeansProjects/WiNet%20Control/src/view/ConexionDB.java</file>
         </group>
     </open-files>
 </project-private>
