@@ -4,74 +4,129 @@
  */
 package controlador;
 
-import model.cliente;
 
-
+import javax.swing.*;
+import model.Cliente;
 
 /**
  *
  * @author Gyanela Meza
  */
 public class crud_clientes {
-    
-
-    static final int ELEMENTOS = 10;
-    public static cliente.Cliente[] clientes = new cliente.Cliente[ELEMENTOS]; 
+    static final int ELEMENTOS = 2;
+    public static Cliente[] clientes = new Cliente[ELEMENTOS];
     public static int contadorClientes = 0;
     
-    public static void prueba(){
-    /*String nombre = tx_nombre.getText();
-        String apellido = tx_apellido.getText();
-        String telefono = tx_telefono.getText();
-        String documento = tx_documento.getText();
-        String email = tx_email.getText();
+    
+  public static void agregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo, JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
+    JPasswordField tx_contrasena, JPasswordField tx_confContrasena) {
+
+        String nombre = tx_nombres.getText().trim();
+        String apellido = tx_apellidos.getText().trim();
+        String tipo = cb_tipo.getSelectedItem().toString().trim();
+        String identificacion = tx_identificacion.getText().trim();
+        String telefono = tx_telefono.getText().trim();
+        String correo = tx_correo.getText().trim();
+        String direccion = tx_direccion.getText().trim();
+        String contrasena = new String(tx_contrasena.getPassword());
+        String confContrasena = new String(tx_confContrasena.getPassword());
+
         
-        Cliente nuevo = new Cliente(nombre, apellido, telefono, documento, email);
-        boolean guardado = crud_clientes.agregarCliente(nuevo);
-        if (guardado) {
-        JOptionPane.showMessageDialog(null, "Cliente agregado correctamente");
-        tx_nombre.setText("");
-        tx_apellido.setText("");
-        tx_telefono.setText("");
-        tx_documento.setText("");
-        tx_email.setText("");
-    } else {
-        JOptionPane.showMessageDialog(null, "Error: límite de clientes alcanzado");
-    }
-    }  */
-    
-    
-    /*public static boolean agregarCliente(cliente.Cliente newCliente) {
+        if (nombre.isEmpty() || apellido.isEmpty() || identificacion.isEmpty() || telefono.isEmpty() || correo.isEmpty() || direccion.isEmpty() || contrasena.isEmpty() || confContrasena.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor complete los campos obligatorios.");
+            return;
+        }
+        if (!validarIdentificacion(identificacion)) {
+            JOptionPane.showMessageDialog(null, "La identificación debe tener entre 8 y 10 dígitos numéricos.");
+            return;
+        }
+
+        if (!validarCorreo(correo)) {
+            JOptionPane.showMessageDialog(null, "El correo tiene un formato inválido.");
+            return;
+        }
+
+        if (!validarTelefono(telefono)) {
+            JOptionPane.showMessageDialog(null, "El teléfono debe ser numérico y tener 10 dígitos.");
+            return;
+        }
+        if (!validarPassword(contrasena)) {
+            JOptionPane.showMessageDialog(null, "Las contraseña debe tener al menos 6 caracteres.");
+            return;
+        }
+
+        if (!contrasena.equals(confContrasena)) {
+            JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
+            return;
+        }
+
+        if (usuarioExiste(correo, identificacion)) {
+            JOptionPane.showMessageDialog(null, "Ya existe un cliente con este correo o identificación.");
+            return;
+        } 
+
+        
+        Cliente nuevo = new Cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena);
+
         if (contadorClientes < ELEMENTOS) {
-            clientes[contadorClientes] = newCliente;
-              contadorClientes++;
-            return true;
+            clientes[contadorClientes] = nuevo;
+            contadorClientes++;
+            JOptionPane.showMessageDialog(null, "Cliente agregado correctamente.");
+
+            tx_nombres.setText("");
+            tx_apellidos.setText("");
+            cb_tipo.setSelectedIndex(0);
+            tx_identificacion.setText("");
+            tx_telefono.setText("");
+            tx_correo.setText("");
+            tx_direccion.setText("");
+            tx_contrasena.setText("");
+            tx_confContrasena.setText("");
+
         } else {
-            return false; 
+            JOptionPane.showMessageDialog(null, "Error: límite de clientes alcanzado.");
         }
     }
 
-    public static boolean eliminarCliente(String documento) {
-    for (int i = 0; i < contadorClientes; i++) {
-        if (clientes[i] != null && clientes[i].getDocumento().equals(documento)) {
-            for (int j = i; j < contadorClientes - 1; j++) {
-                clientes[j] = clientes[j + 1];
-            }
-            clientes[contadorClientes - 1] = null;
-            contadorClientes--;
-            return true;
-        }
-    }
-    return false;
-}
     
-    public static cliente.Cliente buscarCliente(String documento) {
-    for (int i = 0; i < contadorClientes; i++) {
-        if (clientes[i] != null && clientes[i].getDocumento().equals(documento)) {
-            return clientes[i];
-        }
+    public static boolean validarIdentificacion(String identificacion) {
+        return identificacion.length() >= 8 && identificacion.length() <= 10 && identificacion.matches("\\d+");
     }
-    return null;*/  
+
+    public static boolean validarCorreo(String correo) {
+        return correo.contains("@") && correo.contains(".");
+    }
+
+    public static boolean validarTelefono(String telefono) {
+        return telefono.length() == 10 && telefono.matches("\\d+");
+    }
+    public static boolean validarPassword(String contrasena) {
+        return contrasena.length() >= 6;
+    }
+
+    public static boolean usuarioExiste(String correo, String identificacion) {
+        for (int i = 0; i < contadorClientes; i++) {
+            Cliente c = clientes[i];
+            if (c != null && (c.getCorreo().equals(correo) || c.getIdentificacion().equals(identificacion))) {
+                return true;
+            }
+        }
+        return false;
+        
+    
+    }
+    
+    
+    
+    
+   
+    
+    ///////////////////////////
 }
 
-}
+
+
+
+        
+    
+   
