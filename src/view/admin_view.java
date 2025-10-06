@@ -4,8 +4,10 @@
  */
 package view;
 
-import controlador.crud_clientes;
+import controlador.crud_usuarios;
 import java.awt.Color;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 /**
  *
@@ -146,11 +148,11 @@ public class admin_view extends javax.swing.JFrame {
         jPanel27 = new javax.swing.JPanel();
         jPanel43 = new javax.swing.JPanel();
         jLabel63 = new javax.swing.JLabel();
-        tx_docu_buscar5 = new javax.swing.JTextField();
+        tx_docu_buscar = new javax.swing.JTextField();
         bt_buscar_Cliente5 = new javax.swing.JButton();
         jLabel64 = new javax.swing.JLabel();
-        tx_nombre_buscar5 = new javax.swing.JTextField();
-        tx_apellido_buscar5 = new javax.swing.JTextField();
+        tx_nombre_buscar = new javax.swing.JTextField();
+        tx_apellido_buscar = new javax.swing.JTextField();
         jLabel65 = new javax.swing.JLabel();
         jLabel66 = new javax.swing.JLabel();
         tx_documento_buscar = new javax.swing.JTextField();
@@ -1156,9 +1158,9 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel64.setText("Nombres");
 
-        tx_nombre_buscar5.setEditable(false);
+        tx_nombre_buscar.setEditable(false);
 
-        tx_apellido_buscar5.setEditable(false);
+        tx_apellido_buscar.setEditable(false);
 
         jLabel65.setText("Apellidos");
 
@@ -1193,7 +1195,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(127, 127, 127)
                 .addComponent(jLabel63)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tx_docu_buscar5, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tx_docu_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bt_buscar_Cliente5)
                 .addGap(137, 137, 137))
@@ -1205,7 +1207,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(jLabel64)
                     .addGroup(jPanel43Layout.createSequentialGroup()
                         .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tx_nombre_buscar5, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tx_nombre_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel69)
                             .addComponent(tx_tipo_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel68)
@@ -1215,7 +1217,7 @@ public class admin_view extends javax.swing.JFrame {
                             .addComponent(tx_email_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tx_documento_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel66)
-                            .addComponent(tx_apellido_buscar5, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tx_apellido_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel65)
                             .addComponent(jLabel67))))
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -1230,9 +1232,9 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel63)
-                    .addComponent(tx_docu_buscar5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_docu_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bt_buscar_Cliente5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(jLabel59)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1240,8 +1242,8 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(jLabel64))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tx_apellido_buscar5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tx_nombre_buscar5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_apellido_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_nombre_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel66)
@@ -1262,10 +1264,10 @@ public class admin_view extends javax.swing.JFrame {
                 .addComponent(jLabel70)
                 .addGap(12, 12, 12)
                 .addComponent(tx_direccion_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
-        jPanel27.add(jPanel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 620, 330));
+        jPanel27.add(jPanel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 620, 350));
 
         jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel24.setText("Buscar Clientes");
@@ -1493,7 +1495,7 @@ public class admin_view extends javax.swing.JFrame {
         ));
         jScrollPane7.setViewportView(jTable2);
 
-        jPanel29.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, -1, 340));
+        jPanel29.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 340));
 
         bt_Listar_clientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         bt_Listar_clientes.setForeground(new java.awt.Color(255, 204, 102));
@@ -1503,7 +1505,7 @@ public class admin_view extends javax.swing.JFrame {
                 bt_Listar_clientesbt_AgregarclienteActionPerformed(evt);
             }
         });
-        jPanel29.add(bt_Listar_clientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 430, -1, -1));
+        jPanel29.add(bt_Listar_clientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 420, -1, -1));
 
         javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
         jPanel18.setLayout(jPanel18Layout);
@@ -1583,7 +1585,7 @@ public class admin_view extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(tx_precio_plan, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel40Layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
+                        .addGap(129, 129, 129)
                         .addComponent(bt_guardar_plan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
@@ -1602,7 +1604,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel40)
                     .addComponent(tx_velocidad_plan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tx_precio_plan, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel42, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -1610,12 +1612,12 @@ public class admin_view extends javax.swing.JFrame {
                 .addComponent(jLabel41)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bt_guardar_plan)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
-        jPanel30.add(jPanel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 90, 370, 310));
+        jPanel30.add(jPanel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 90, 370, 320));
 
         javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
         jPanel19.setLayout(jPanel19Layout);
@@ -1625,7 +1627,7 @@ public class admin_view extends javax.swing.JFrame {
         );
         jPanel19Layout.setVerticalGroup(
             jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel30, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+            .addComponent(jPanel30, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("tab9", jPanel19);
@@ -1721,11 +1723,11 @@ public class admin_view extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel46)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65))
         );
 
-        jPanel20.add(jPanel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, 350, 270));
+        jPanel20.add(jPanel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, 350, 270));
 
         jPanel50.setBackground(new java.awt.Color(255, 204, 102));
 
@@ -1810,11 +1812,11 @@ public class admin_view extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel51)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63))
         );
 
-        jPanel20.add(jPanel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 350, 270));
+        jPanel20.add(jPanel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 350, 270));
 
         jPanel51.setBackground(new java.awt.Color(255, 204, 102));
 
@@ -1852,11 +1854,11 @@ public class admin_view extends javax.swing.JFrame {
                 .addContainerGap(11, Short.MAX_VALUE))
         );
 
-        jPanel20.add(jPanel51, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 710, -1));
+        jPanel20.add(jPanel51, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 710, -1));
 
         jButton2.setForeground(new java.awt.Color(255, 204, 102));
         jButton2.setText("Actualizar plan");
-        jPanel20.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 410, 160, -1));
+        jPanel20.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 400, 160, -1));
 
         jTabbedPane1.addTab("tab10", jPanel20);
 
@@ -1965,7 +1967,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(bt_buscar_plan))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel61)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addGroup(jPanel53Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel82)
                     .addComponent(tx_codigo_buscado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1984,11 +1986,11 @@ public class admin_view extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel86)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9))
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
         );
 
-        jPanel21.add(jPanel53, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, -1, 350));
+        jPanel21.add(jPanel53, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 360));
 
         jTabbedPane1.addTab("tab11", jPanel21);
 
@@ -2109,8 +2111,8 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel56)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
         );
 
         jPanel35.add(jPanel52, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 350, 350));
@@ -2260,7 +2262,9 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void bt_buscar_Cliente5bt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Cliente5bt_buscar_ClienteActionPerformed
-        // TODO add your handling code here:
+       crud_usuarios.buscarCliente(tx_docu_buscar, tx_nombre_buscar, tx_apellido_buscar, tx_tipo_buscar, tx_documento_buscar, tx_telefono_buc, tx_correo, tx_direccion_buscar);
+
+
     }//GEN-LAST:event_bt_buscar_Cliente5bt_buscar_ClienteActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -2308,7 +2312,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_buscar_plan1bt_buscar_ClienteActionPerformed
 
     private void bt_AgregarclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_AgregarclienteActionPerformed
-        crud_clientes.agregarCliente(tx_nombres, tx_apellidos, jComboBox5, tx_identificacion, tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
+        crud_usuarios.agregarCliente(tx_nombres, tx_apellidos, jComboBox5, tx_identificacion, tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
     }//GEN-LAST:event_bt_AgregarclienteActionPerformed
 
     private void bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed
@@ -2550,7 +2554,7 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JLabel lb_tipo1;
     private javax.swing.JLabel lb_tipo2;
     private javax.swing.JLabel lb_tipo4;
-    private javax.swing.JTextField tx_apellido_buscar5;
+    public static javax.swing.JTextField tx_apellido_buscar;
     private javax.swing.JTextField tx_apellido_eliminar;
     private javax.swing.JTextField tx_apellidos;
     public static javax.swing.JTextField tx_apellidosCambiar;
@@ -2573,16 +2577,16 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextField tx_direccion;
     public static javax.swing.JTextField tx_direccionCambiar;
     private javax.swing.JTextField tx_direccionCambiar1;
-    private javax.swing.JTextField tx_direccion_buscar;
+    public static javax.swing.JTextField tx_direccion_buscar;
     private javax.swing.JTextField tx_direccion_eliminar;
-    private javax.swing.JTextField tx_docu_buscar5;
+    private javax.swing.JTextField tx_docu_buscar;
     private javax.swing.JTextField tx_docu_buscar6;
     private javax.swing.JTextField tx_docu_buscar_actualizar;
     private javax.swing.JTextField tx_docu_buscar_actualizar_plan;
-    private javax.swing.JTextField tx_documento_buscar;
+    public static javax.swing.JTextField tx_documento_buscar;
     private javax.swing.JTextField tx_documento_buscar1;
     private javax.swing.JTextField tx_documento_eliminar;
-    private javax.swing.JTextField tx_email_buscar;
+    public static javax.swing.JTextField tx_email_buscar;
     private javax.swing.JTextField tx_email_eliminar;
     private javax.swing.JTextField tx_idPlan_buscar;
     private javax.swing.JTextField tx_idPlan_buscar1;
@@ -2592,7 +2596,7 @@ public class admin_view extends javax.swing.JFrame {
     public static javax.swing.JTextField tx_nombreCambiar;
     private javax.swing.JTextField tx_nombreCambiar1;
     private javax.swing.JTextField tx_nombrePlan_buscado;
-    private javax.swing.JTextField tx_nombre_buscar5;
+    public static javax.swing.JTextField tx_nombre_buscar;
     private javax.swing.JTextField tx_nombre_eliminar;
     private javax.swing.JTextField tx_nombre_plan;
     private javax.swing.JTextField tx_nombre_plan_atc;
@@ -2607,10 +2611,10 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextField tx_telefono;
     public static javax.swing.JTextField tx_telefonoCambiar;
     private javax.swing.JTextField tx_telefonoCambiar1;
-    private javax.swing.JTextField tx_telefono_buc;
+    public static javax.swing.JTextField tx_telefono_buc;
     private javax.swing.JTextField tx_telefono_eliminar;
     public static javax.swing.JTextField tx_tipoDocuCambiar;
-    private javax.swing.JTextField tx_tipo_buscar;
+    public static javax.swing.JTextField tx_tipo_buscar;
     private javax.swing.JTextField tx_tipo_buscar1;
     private javax.swing.JTextField tx_tipo_eliminar;
     private javax.swing.JTextField tx_velocidad_plan;

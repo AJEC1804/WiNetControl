@@ -1761,7 +1761,7 @@
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                          <AbsoluteConstraints x="60" y="80" width="620" height="330"/>
+                          <AbsoluteConstraints x="60" y="80" width="620" height="350"/>
                         </Constraint>
                       </Constraints>
 
@@ -1772,7 +1772,7 @@
                                   <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
                                   <Component id="jLabel63" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="tx_docu_buscar5" min="-2" pref="230" max="-2" attributes="0"/>
+                                  <Component id="tx_docu_buscar" min="-2" pref="230" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Component id="bt_buscar_Cliente5" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="137" max="-2" attributes="0"/>
@@ -1785,7 +1785,7 @@
                                       <Component id="jLabel64" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="tx_nombre_buscar5" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
+                                              <Component id="tx_nombre_buscar" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
                                               <Component id="jLabel69" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="tx_tipo_buscar" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
                                               <Component id="jLabel68" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -1796,7 +1796,7 @@
                                               <Component id="tx_email_buscar" min="-2" pref="220" max="-2" attributes="0"/>
                                               <Component id="tx_documento_buscar" min="-2" pref="220" max="-2" attributes="0"/>
                                               <Component id="jLabel66" min="-2" max="-2" attributes="0"/>
-                                              <Component id="tx_apellido_buscar5" min="-2" pref="220" max="-2" attributes="0"/>
+                                              <Component id="tx_apellido_buscar" min="-2" pref="220" max="-2" attributes="0"/>
                                               <Component id="jLabel65" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel67" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
@@ -1817,10 +1817,10 @@
                                   <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabel63" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="tx_docu_buscar5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="tx_docu_buscar" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="bt_buscar_Cliente5" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="14" max="32767" attributes="0"/>
+                                  <EmptySpace pref="24" max="32767" attributes="0"/>
                                   <Component id="jLabel59" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
@@ -1829,8 +1829,8 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="tx_apellido_buscar5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="tx_nombre_buscar5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="tx_apellido_buscar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="tx_nombre_buscar" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
@@ -1856,7 +1856,7 @@
                                   <Component id="jLabel70" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                   <Component id="tx_direccion_buscar" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                                  <EmptySpace pref="25" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1867,7 +1867,7 @@
                             <Property name="text" type="java.lang.String" value="Documento "/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JTextField" name="tx_docu_buscar5">
+                        <Component class="javax.swing.JTextField" name="tx_docu_buscar">
                         </Component>
                         <Component class="javax.swing.JButton" name="bt_buscar_Cliente5">
                           <Properties>
@@ -1885,15 +1885,21 @@
                             <Property name="text" type="java.lang.String" value="Nombres"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JTextField" name="tx_nombre_buscar5">
+                        <Component class="javax.swing.JTextField" name="tx_nombre_buscar">
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JTextField" name="tx_apellido_buscar5">
+                        <Component class="javax.swing.JTextField" name="tx_apellido_buscar">
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel65">
                           <Properties>
@@ -1909,6 +1915,9 @@
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel67">
                           <Properties>
@@ -1919,6 +1928,9 @@
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel68">
                           <Properties>
@@ -1929,6 +1941,9 @@
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel69">
                           <Properties>
@@ -1939,11 +1954,17 @@
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JTextField" name="tx_direccion_buscar">
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel59">
                           <Properties>
@@ -2354,7 +2375,7 @@
                       </AuxValues>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                          <AbsoluteConstraints x="150" y="80" width="-1" height="340"/>
+                          <AbsoluteConstraints x="150" y="70" width="-1" height="340"/>
                         </Constraint>
                       </Constraints>
 
@@ -2389,7 +2410,7 @@
                       </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                          <AbsoluteConstraints x="320" y="430" width="-1" height="-1"/>
+                          <AbsoluteConstraints x="320" y="420" width="-1" height="-1"/>
                         </Constraint>
                       </Constraints>
                     </Component>
@@ -2414,7 +2435,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jPanel30" alignment="0" pref="455" max="32767" attributes="0"/>
+                      <Component id="jPanel30" alignment="1" pref="455" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -2451,7 +2472,7 @@
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                          <AbsoluteConstraints x="190" y="90" width="370" height="310"/>
+                          <AbsoluteConstraints x="190" y="90" width="370" height="320"/>
                         </Constraint>
                       </Constraints>
 
@@ -2490,7 +2511,7 @@
                                           </Group>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="127" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="129" max="-2" attributes="0"/>
                                           <Component id="bt_guardar_plan" min="-2" pref="113" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -2516,7 +2537,7 @@
                                       <Component id="jLabel40" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="tx_velocidad_plan" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="14" max="32767" attributes="0"/>
+                                  <EmptySpace pref="24" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="tx_precio_plan" alignment="1" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel42" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -2525,9 +2546,9 @@
                                   <Component id="jLabel41" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jScrollPane6" min="-2" pref="85" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="bt_guardar_plan" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="bt_guardar_plan" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -2668,7 +2689,7 @@
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="380" y="130" width="350" height="270"/>
+                      <AbsoluteConstraints x="380" y="120" width="350" height="270"/>
                     </Constraint>
                   </Constraints>
 
@@ -2733,8 +2754,8 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel46" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jScrollPane8" min="-2" pref="85" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                              <Component id="jScrollPane8" min="-2" pref="61" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -2800,7 +2821,7 @@
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="20" y="130" width="350" height="270"/>
+                      <AbsoluteConstraints x="20" y="120" width="350" height="270"/>
                     </Constraint>
                   </Constraints>
 
@@ -2865,8 +2886,8 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel51" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jScrollPane9" min="-2" pref="85" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                              <Component id="jScrollPane9" min="-2" pref="63" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -2947,7 +2968,7 @@
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="20" y="80" width="710" height="-1"/>
+                      <AbsoluteConstraints x="20" y="70" width="710" height="-1"/>
                     </Constraint>
                   </Constraints>
 
@@ -3009,7 +3030,7 @@
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="290" y="410" width="160" height="-1"/>
+                      <AbsoluteConstraints x="290" y="400" width="160" height="-1"/>
                     </Constraint>
                   </Constraints>
                 </Component>
@@ -3082,7 +3103,7 @@
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="150" y="90" width="-1" height="350"/>
+                      <AbsoluteConstraints x="150" y="70" width="-1" height="360"/>
                     </Constraint>
                   </Constraints>
 
@@ -3146,7 +3167,7 @@
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel61" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="9" max="32767" attributes="0"/>
+                              <EmptySpace pref="19" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel82" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="tx_codigo_buscado" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -3169,8 +3190,8 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel86" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane12" min="-2" pref="85" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                              <Component id="jScrollPane12" min="-2" pref="72" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -3405,8 +3426,8 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="jLabel56" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane11" min="-2" pref="85" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jScrollPane11" min="-2" pref="68" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>

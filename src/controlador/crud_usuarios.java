@@ -6,16 +6,20 @@ package controlador;
 
 
 import javax.swing.*;
-import model.Cliente;
+import model.*;
+
 
 /**
  *
  * @author Gyanela Meza
  */
-public class crud_clientes {
-    static final int ELEMENTOS = 2;
+public class crud_usuarios {
+    static final int ELEMENTOS = 3;
     public static Cliente[] clientes = new Cliente[ELEMENTOS];
     public static int contadorClientes = 0;
+    public static Administrador[] administrador = new Administrador[ELEMENTOS];
+    public static int contadorAdministrador = 0;
+   
     
     
   public static void agregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo, JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
@@ -115,6 +119,60 @@ public class crud_clientes {
         
     
     }
+    
+    public static void listarCliente() {
+        
+    }
+    
+    
+    public static void actualizarCliente() {
+        
+    }
+    
+    public static void buscarCliente(JTextField tx_docu_buscar, JTextField tx_nombre_buscar, JTextField tx_apellido_buscar, JTextField tx_tipo_buscar, JTextField tx_documento_buscar,JTextField tx_telefono_buscar,JTextField tx_correo_buscar, JTextField tx_direccion_buscar) {
+
+    String identificacion = tx_docu_buscar.getText().trim();
+
+    if (identificacion.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Por favor ingrese la identificación del cliente a buscar.");
+        return;
+    }
+
+    boolean encontrado = false;
+
+    
+    for (int i = 0; i < contadorClientes; i++) {
+        Cliente c = clientes[i];
+        if (c != null && c.getIdentificacion().equalsIgnoreCase(identificacion)) {
+
+            tx_nombre_buscar.setText(c.getNombre());
+            tx_apellido_buscar.setText(c.getApellido());
+            tx_tipo_buscar.setText(c.getTipo());
+            tx_documento_buscar.setText(c.getIdentificacion());
+            tx_telefono_buscar.setText(c.getTelefono());
+            tx_correo_buscar.setText(c.getCorreo());
+            tx_direccion_buscar.setText(c.getDireccion());
+
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        JOptionPane.showMessageDialog(null, "No se encontró ningún cliente con esa identificación.");
+
+    
+        tx_nombre_buscar.setText("");
+        tx_apellido_buscar.setText("");
+        tx_tipo_buscar.setText("");
+        tx_documento_buscar.setText("");
+        tx_telefono_buscar.setText("");
+        tx_correo_buscar.setText("");
+        tx_direccion_buscar.setText("");
+    }
+
+    tx_docu_buscar.setText("");
+}
     
     
     
