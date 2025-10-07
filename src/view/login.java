@@ -132,7 +132,7 @@ public class login extends javax.swing.JFrame {
             try (ResultSet rs = pst.executeQuery()){
             if(rs.next()){
             JOptionPane.showMessageDialog(this, "Bienvenido, acceso concedido");
-             vista_admin va = new vista_admin();
+             admin_view va = new admin_view();
              va.setVisible(true);
             this.dispose();  
             } else{
