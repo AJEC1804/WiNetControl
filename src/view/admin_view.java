@@ -4,10 +4,11 @@
  */
 package view;
 
+import controlador.Crud_Planes;
 import controlador.crud_usuarios;
 import java.awt.Color;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
+import javax.swing.*;
+
 
 /**
  *
@@ -21,7 +22,26 @@ public class admin_view extends javax.swing.JFrame {
     public admin_view() {
         initComponents();
         this.setLocationRelativeTo(null);
-    }
+        jTabbedPane1.addChangeListener(e -> {
+        int index = jTabbedPane1.getSelectedIndex();
+
+        switch (index) {
+            case 0 -> getRootPane().setDefaultButton(bt_Agregarcliente1);          
+            case 1 -> getRootPane().setDefaultButton(bt_buscar_ClienteActualizar); 
+            case 2 -> getRootPane().setDefaultButton(bt_actualizarCliente);        
+            case 3 -> getRootPane().setDefaultButton(bt_buscar_Cliente5);          
+            case 4 -> getRootPane().setDefaultButton(bt_buscar_Cliente_eliminar);  
+            case 5 -> getRootPane().setDefaultButton(bt_Listar_clientes);          
+            case 6 -> getRootPane().setDefaultButton(bt_guardar_plan);             
+            case 7 -> getRootPane().setDefaultButton(bt_buscar_Planes_Actualizar); 
+            case 8 -> getRootPane().setDefaultButton(bt_buscar_plan);              
+            case 9 -> getRootPane().setDefaultButton(bt_buscar_plan_eliminar);     
+            case 10 -> getRootPane().setDefaultButton(bt_listar_plan);           
+            default -> getRootPane().setDefaultButton(null);                       
+        }
+    });
+}
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -101,6 +121,7 @@ public class admin_view extends javax.swing.JFrame {
         tx_contrasena = new javax.swing.JPasswordField();
         tx_confContrasena = new javax.swing.JPasswordField();
         jLabel22 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel15 = new javax.swing.JPanel();
         jPanel26 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -136,7 +157,7 @@ public class admin_view extends javax.swing.JFrame {
         lb_contraseña4 = new javax.swing.JLabel();
         tx_telefonoCambiar1 = new javax.swing.JTextField();
         tx_correoCambiar1 = new javax.swing.JTextField();
-        tx_direccionCambiar1 = new javax.swing.JTextField();
+        txdireccionCambiar = new javax.swing.JTextField();
         tx_passwordCambiar1 = new javax.swing.JPasswordField();
         jtipo_cambiar = new javax.swing.JComboBox<>();
         jPanel48 = new javax.swing.JPanel();
@@ -144,6 +165,7 @@ public class admin_view extends javax.swing.JFrame {
         jLabel79 = new javax.swing.JLabel();
         tx_docu_buscar_actualizar = new javax.swing.JTextField();
         bt_buscar_ClienteActualizar = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel16 = new javax.swing.JPanel();
         jPanel27 = new javax.swing.JPanel();
         jPanel43 = new javax.swing.JPanel();
@@ -157,7 +179,6 @@ public class admin_view extends javax.swing.JFrame {
         jLabel66 = new javax.swing.JLabel();
         tx_documento_buscar = new javax.swing.JTextField();
         jLabel67 = new javax.swing.JLabel();
-        tx_email_buscar = new javax.swing.JTextField();
         jLabel68 = new javax.swing.JLabel();
         tx_telefono_buc = new javax.swing.JTextField();
         jLabel69 = new javax.swing.JLabel();
@@ -165,14 +186,16 @@ public class admin_view extends javax.swing.JFrame {
         tx_direccion_buscar = new javax.swing.JTextField();
         jLabel59 = new javax.swing.JLabel();
         jLabel70 = new javax.swing.JLabel();
+        tx_correo_buscar = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
+        jButton14 = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jPanel28 = new javax.swing.JPanel();
         jPanel44 = new javax.swing.JPanel();
         jLabel25 = new javax.swing.JLabel();
         jPanel45 = new javax.swing.JPanel();
         jLabel71 = new javax.swing.JLabel();
-        tx_docu_buscar6 = new javax.swing.JTextField();
+        tx_docu_buscar_elim = new javax.swing.JTextField();
         jLabel72 = new javax.swing.JLabel();
         tx_nombre_eliminar = new javax.swing.JTextField();
         tx_apellido_eliminar = new javax.swing.JTextField();
@@ -188,15 +211,17 @@ public class admin_view extends javax.swing.JFrame {
         tx_direccion_eliminar = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
         bt_eliminarCliente = new javax.swing.JButton();
-        tx_email_eliminar = new javax.swing.JTextField();
+        tx_correo_eliminar = new javax.swing.JTextField();
         bt_buscar_Cliente_eliminar = new javax.swing.JButton();
         jLabel60 = new javax.swing.JLabel();
+        jButton15 = new javax.swing.JButton();
         jPanel18 = new javax.swing.JPanel();
         jPanel29 = new javax.swing.JPanel();
         jLabel27 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        Tab_Client = new javax.swing.JTable();
         bt_Listar_clientes = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
         jPanel19 = new javax.swing.JPanel();
         jPanel30 = new javax.swing.JPanel();
         jLabel29 = new javax.swing.JLabel();
@@ -213,6 +238,7 @@ public class admin_view extends javax.swing.JFrame {
         tx_descripcion_plan = new javax.swing.JTextPane();
         jLabel42 = new javax.swing.JLabel();
         tx_precio_plan = new javax.swing.JTextField();
+        jButton17 = new javax.swing.JButton();
         jPanel20 = new javax.swing.JPanel();
         jPanel31 = new javax.swing.JPanel();
         jPanel33 = new javax.swing.JPanel();
@@ -221,14 +247,14 @@ public class admin_view extends javax.swing.JFrame {
         jLabel43 = new javax.swing.JLabel();
         tx_cod_plan_act = new javax.swing.JTextField();
         jLabel44 = new javax.swing.JLabel();
-        tx_nombre_plan_atc = new javax.swing.JTextField();
+        tx_nombre_plan_act = new javax.swing.JTextField();
         jLabel45 = new javax.swing.JLabel();
         tx_velocidad_plan_act = new javax.swing.JTextField();
         jLabel46 = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
         tx_descripcion_plan_act = new javax.swing.JTextPane();
         jLabel47 = new javax.swing.JLabel();
-        tx_precio_planact = new javax.swing.JTextField();
+        tx_precio_plan_act = new javax.swing.JTextField();
         jPanel50 = new javax.swing.JPanel();
         jLabel48 = new javax.swing.JLabel();
         tx_cod_plan_mostrar = new javax.swing.JTextField();
@@ -243,9 +269,10 @@ public class admin_view extends javax.swing.JFrame {
         tx_precio_plan_mostrar = new javax.swing.JTextField();
         jPanel51 = new javax.swing.JPanel();
         jLabel80 = new javax.swing.JLabel();
-        tx_docu_buscar_actualizar_plan = new javax.swing.JTextField();
-        bt_buscar_ClienteActualizar1 = new javax.swing.JButton();
+        tx_cod_buscar_actualizar_plan = new javax.swing.JTextField();
+        bt_buscar_Planes_Actualizar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton21 = new javax.swing.JButton();
         jPanel21 = new javax.swing.JPanel();
         jPanel32 = new javax.swing.JPanel();
         jPanel34 = new javax.swing.JPanel();
@@ -259,13 +286,14 @@ public class admin_view extends javax.swing.JFrame {
         tx_nombrePlan_buscado = new javax.swing.JTextField();
         jLabel83 = new javax.swing.JLabel();
         jLabel84 = new javax.swing.JLabel();
-        tx_documento_buscar1 = new javax.swing.JTextField();
+        tx_precio_buscar = new javax.swing.JTextField();
         jLabel86 = new javax.swing.JLabel();
         jLabel87 = new javax.swing.JLabel();
-        tx_tipo_buscar1 = new javax.swing.JTextField();
+        tx_vel_buscar = new javax.swing.JTextField();
         jLabel61 = new javax.swing.JLabel();
         jScrollPane12 = new javax.swing.JScrollPane();
         tx_descripcion_plan1 = new javax.swing.JTextPane();
+        jButton20 = new javax.swing.JButton();
         jPanel22 = new javax.swing.JPanel();
         jPanel35 = new javax.swing.JPanel();
         jLabel32 = new javax.swing.JLabel();
@@ -283,13 +311,17 @@ public class admin_view extends javax.swing.JFrame {
         tx_precio_plan_mostrar1 = new javax.swing.JTextField();
         jLabel90 = new javax.swing.JLabel();
         tx_idPlan_buscar1 = new javax.swing.JTextField();
-        bt_buscar_plan1 = new javax.swing.JButton();
+        bt_buscar_plan_eliminar = new javax.swing.JButton();
+        jLabel34 = new javax.swing.JLabel();
+        bt_eliminarPlan = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
         jPanel23 = new javax.swing.JPanel();
         jPanel36 = new javax.swing.JPanel();
         jLabel33 = new javax.swing.JLabel();
         jScrollPane10 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
+        Tab_Plan = new javax.swing.JTable();
+        bt_listar_plan = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -783,24 +815,36 @@ public class admin_view extends javax.swing.JFrame {
         jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel22.setText("Agregar Clientes ");
 
+        jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel39Layout = new javax.swing.GroupLayout(jPanel39);
         jPanel39.setLayout(jPanel39Layout);
         jPanel39Layout.setHorizontalGroup(
             jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel39Layout.createSequentialGroup()
-                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel39Layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addComponent(jPanel54, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel39Layout.createSequentialGroup()
-                        .addGap(243, 243, 243)
-                        .addComponent(jLabel22)))
+                .addGap(85, 85, 85)
+                .addComponent(jPanel54, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(112, Short.MAX_VALUE))
+            .addGroup(jPanel39Layout.createSequentialGroup()
+                .addGap(243, 243, 243)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
         );
         jPanel39Layout.setVerticalGroup(
             jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel39Layout.createSequentialGroup()
-                .addComponent(jLabel22)
+                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel22)
+                    .addGroup(jPanel39Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1)))
                 .addGap(12, 12, 12)
                 .addComponent(jPanel54, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 68, Short.MAX_VALUE))
@@ -933,6 +977,11 @@ public class admin_view extends javax.swing.JFrame {
         bt_actualizarCliente.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         bt_actualizarCliente.setForeground(new java.awt.Color(255, 204, 102));
         bt_actualizarCliente.setText("Actualizar Cliente");
+        bt_actualizarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_actualizarClienteActionPerformed(evt);
+            }
+        });
 
         jPanel46.setBackground(new java.awt.Color(255, 204, 102));
 
@@ -991,7 +1040,7 @@ public class admin_view extends javax.swing.JFrame {
                             .addGroup(jPanel46Layout.createSequentialGroup()
                                 .addComponent(lb_direccion4, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tx_direccionCambiar1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txdireccionCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel46Layout.createSequentialGroup()
                         .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1008,7 +1057,7 @@ public class admin_view extends javax.swing.JFrame {
                                 .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(tx_apellidosCambiar1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tx_nombreCambiar1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(21, Short.MAX_VALUE))))
+                        .addContainerGap(12, Short.MAX_VALUE))))
         );
         jPanel46Layout.setVerticalGroup(
             jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1039,7 +1088,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(tx_correoCambiar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tx_direccionCambiar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txdireccionCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lb_direccion4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1057,6 +1106,11 @@ public class admin_view extends javax.swing.JFrame {
 
         bt_buscar_ClienteActualizar.setForeground(new java.awt.Color(255, 204, 102));
         bt_buscar_ClienteActualizar.setText("Buscar");
+        bt_buscar_ClienteActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_buscar_ClienteActualizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel48Layout = new javax.swing.GroupLayout(jPanel48);
         jPanel48.setLayout(jPanel48Layout);
@@ -1087,41 +1141,56 @@ public class admin_view extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jButton3.setText("Back");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel37Layout = new javax.swing.GroupLayout(jPanel37);
         jPanel37.setLayout(jPanel37Layout);
         jPanel37Layout.setHorizontalGroup(
             jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel37Layout.createSequentialGroup()
-                .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel37Layout.createSequentialGroup()
-                        .addGap(250, 250, 250)
-                        .addComponent(jLabel23))
-                    .addGroup(jPanel37Layout.createSequentialGroup()
-                        .addGap(276, 276, 276)
-                        .addComponent(bt_actualizarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel37Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addContainerGap()
                         .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel48, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel37Layout.createSequentialGroup()
-                                .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                            .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel37Layout.createSequentialGroup()
+                                .addComponent(bt_actualizarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(62, 62, 62)))
+                        .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel37Layout.createSequentialGroup()
+                            .addGap(250, 250, 250)
+                            .addComponent(jLabel23)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel37Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jPanel48, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         jPanel37Layout.setVerticalGroup(
             jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel37Layout.createSequentialGroup()
-                .addComponent(jLabel23)
+                .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel23)
+                    .addGroup(jPanel37Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel48, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel37Layout.createSequentialGroup()
+                        .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bt_actualizarCliente))
                     .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(bt_actualizarCliente)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel37);
@@ -1170,8 +1239,6 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel67.setText("Correo");
 
-        tx_email_buscar.setEditable(false);
-
         jLabel68.setText("Telefono");
 
         tx_telefono_buc.setEditable(false);
@@ -1186,6 +1253,8 @@ public class admin_view extends javax.swing.JFrame {
         jLabel59.setText("Cliente ");
 
         jLabel70.setText("Dirección");
+
+        tx_correo_buscar.setEditable(false);
 
         javax.swing.GroupLayout jPanel43Layout = new javax.swing.GroupLayout(jPanel43);
         jPanel43.setLayout(jPanel43Layout);
@@ -1214,12 +1283,12 @@ public class admin_view extends javax.swing.JFrame {
                             .addComponent(tx_telefono_buc, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(95, 95, 95)
                         .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tx_email_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tx_documento_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel66)
                             .addComponent(tx_apellido_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel65)
-                            .addComponent(jLabel67))))
+                            .addComponent(jLabel67)
+                            .addComponent(tx_correo_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel43Layout.createSequentialGroup()
                 .addGap(251, 251, 251)
@@ -1258,8 +1327,8 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(jLabel68))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tx_email_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tx_telefono_buc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_telefono_buc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_correo_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel70)
                 .addGap(12, 12, 12)
@@ -1272,6 +1341,14 @@ public class admin_view extends javax.swing.JFrame {
         jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel24.setText("Buscar Clientes");
         jPanel27.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, -1, -1));
+
+        jButton14.setText("Back");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
+        jPanel27.add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
@@ -1330,8 +1407,13 @@ public class admin_view extends javax.swing.JFrame {
 
         bt_eliminarCliente.setForeground(new java.awt.Color(255, 204, 102));
         bt_eliminarCliente.setText("Eliminar Cliente ");
+        bt_eliminarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_eliminarClienteActionPerformed(evt);
+            }
+        });
 
-        tx_email_eliminar.setEditable(false);
+        tx_correo_eliminar.setEditable(false);
 
         bt_buscar_Cliente_eliminar.setForeground(new java.awt.Color(255, 204, 102));
         bt_buscar_Cliente_eliminar.setText("Buscar");
@@ -1370,7 +1452,7 @@ public class admin_view extends javax.swing.JFrame {
                                     .addComponent(jLabel74)
                                     .addComponent(tx_documento_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel75)
-                                    .addComponent(tx_email_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(tx_correo_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel45Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel60))
@@ -1387,7 +1469,7 @@ public class admin_view extends javax.swing.JFrame {
                         .addGap(104, 104, 104)
                         .addComponent(jLabel71)
                         .addGap(18, 18, 18)
-                        .addComponent(tx_docu_buscar6, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tx_docu_buscar_elim, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_buscar_Cliente_eliminar)))
                 .addContainerGap(36, Short.MAX_VALUE))
@@ -1398,7 +1480,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel71)
-                    .addComponent(tx_docu_buscar6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_docu_buscar_elim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bt_buscar_Cliente_eliminar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel60)
@@ -1425,7 +1507,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tx_telefono_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tx_email_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_correo_eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel78)
@@ -1437,6 +1519,13 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(54, 54, 54))
         );
 
+        jButton15.setText("Back");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel44Layout = new javax.swing.GroupLayout(jPanel44);
         jPanel44.setLayout(jPanel44Layout);
         jPanel44Layout.setHorizontalGroup(
@@ -1446,7 +1535,8 @@ public class admin_view extends javax.swing.JFrame {
                 .addGroup(jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel44Layout.createSequentialGroup()
                         .addComponent(jLabel25)
-                        .addGap(182, 182, 182))
+                        .addGap(92, 92, 92)
+                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel44Layout.createSequentialGroup()
                         .addComponent(jPanel45, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(74, 74, 74))))
@@ -1454,7 +1544,11 @@ public class admin_view extends javax.swing.JFrame {
         jPanel44Layout.setVerticalGroup(
             jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel44Layout.createSequentialGroup()
-                .addComponent(jLabel25)
+                .addGroup(jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel25)
+                    .addGroup(jPanel44Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton15)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel45, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(86, Short.MAX_VALUE))
@@ -1482,7 +1576,7 @@ public class admin_view extends javax.swing.JFrame {
         jLabel27.setText("Listar Clientes");
         jPanel29.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        Tab_Client.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -1490,10 +1584,10 @@ public class admin_view extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Tipo", "Documento", "Nombre", "Apellido"
             }
         ));
-        jScrollPane7.setViewportView(jTable2);
+        jScrollPane7.setViewportView(Tab_Client);
 
         jPanel29.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 340));
 
@@ -1506,6 +1600,14 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
         jPanel29.add(bt_Listar_clientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 420, -1, -1));
+
+        jButton16.setText("Back");
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+        jPanel29.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
 
         javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
         jPanel18.setLayout(jPanel18Layout);
@@ -1545,6 +1647,11 @@ public class admin_view extends javax.swing.JFrame {
 
         bt_guardar_plan.setForeground(new java.awt.Color(255, 204, 102));
         bt_guardar_plan.setText("Guardar Plan");
+        bt_guardar_plan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_guardar_planActionPerformed(evt);
+            }
+        });
 
         jScrollPane6.setViewportView(tx_descripcion_plan);
 
@@ -1619,6 +1726,14 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel30.add(jPanel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 90, 370, 320));
 
+        jButton17.setText("Back");
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+        jPanel30.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
+
         javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
         jPanel19.setLayout(jPanel19Layout);
         jPanel19Layout.setHorizontalGroup(
@@ -1667,9 +1782,9 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel47.setText("Precio");
 
-        tx_precio_planact.addActionListener(new java.awt.event.ActionListener() {
+        tx_precio_plan_act.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tx_precio_planactjTextField3ActionPerformed(evt);
+                tx_precio_plan_actjTextField3ActionPerformed(evt);
             }
         });
 
@@ -1683,7 +1798,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addGroup(jPanel49Layout.createSequentialGroup()
                         .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(tx_nombre_plan_atc, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(tx_nombre_plan_act, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel49Layout.createSequentialGroup()
                             .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1698,7 +1813,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addGroup(jPanel49Layout.createSequentialGroup()
                         .addComponent(jLabel47, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(tx_precio_planact, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(tx_precio_plan_act, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel49Layout.setVerticalGroup(
@@ -1710,7 +1825,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(tx_cod_plan_act, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tx_nombre_plan_atc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_nombre_plan_act, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel44))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1718,7 +1833,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(tx_velocidad_plan_act, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tx_precio_planact, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_precio_plan_act, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel47, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel46)
@@ -1822,11 +1937,11 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel80.setText("Código");
 
-        bt_buscar_ClienteActualizar1.setForeground(new java.awt.Color(255, 204, 102));
-        bt_buscar_ClienteActualizar1.setText("Buscar");
-        bt_buscar_ClienteActualizar1.addActionListener(new java.awt.event.ActionListener() {
+        bt_buscar_Planes_Actualizar.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_Planes_Actualizar.setText("Buscar");
+        bt_buscar_Planes_Actualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_buscar_ClienteActualizar1bt_buscar_ClienteActionPerformed(evt);
+                bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed(evt);
             }
         });
 
@@ -1838,9 +1953,9 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(153, 153, 153)
                 .addComponent(jLabel80)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tx_docu_buscar_actualizar_plan, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tx_cod_buscar_actualizar_plan, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(bt_buscar_ClienteActualizar1)
+                .addComponent(bt_buscar_Planes_Actualizar)
                 .addContainerGap(192, Short.MAX_VALUE))
         );
         jPanel51Layout.setVerticalGroup(
@@ -1848,9 +1963,9 @@ public class admin_view extends javax.swing.JFrame {
             .addGroup(jPanel51Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel51Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tx_docu_buscar_actualizar_plan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_cod_buscar_actualizar_plan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel80)
-                    .addComponent(bt_buscar_ClienteActualizar1))
+                    .addComponent(bt_buscar_Planes_Actualizar))
                 .addContainerGap(11, Short.MAX_VALUE))
         );
 
@@ -1858,7 +1973,20 @@ public class admin_view extends javax.swing.JFrame {
 
         jButton2.setForeground(new java.awt.Color(255, 204, 102));
         jButton2.setText("Actualizar plan");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel20.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 400, 160, -1));
+
+        jButton21.setText("Back");
+        jButton21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton21ActionPerformed(evt);
+            }
+        });
+        jPanel20.add(jButton21, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
 
         jTabbedPane1.addTab("tab10", jPanel20);
 
@@ -1906,13 +2034,13 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel84.setText("Precio");
 
-        tx_documento_buscar1.setEditable(false);
+        tx_precio_buscar.setEditable(false);
 
         jLabel86.setText("Descripción");
 
         jLabel87.setText("Velocidad");
 
-        tx_tipo_buscar1.setEditable(false);
+        tx_vel_buscar.setEditable(false);
 
         jLabel61.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel61.setText("Plan");
@@ -1942,8 +2070,8 @@ public class admin_view extends javax.swing.JFrame {
                             .addGroup(jPanel53Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addGroup(jPanel53Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(tx_documento_buscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tx_tipo_buscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tx_precio_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tx_vel_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tx_nombrePlan_buscado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tx_codigo_buscado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel53Layout.createSequentialGroup()
@@ -1978,11 +2106,11 @@ public class admin_view extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel53Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel87)
-                    .addComponent(tx_tipo_buscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_vel_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel53Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel84)
-                    .addComponent(tx_documento_buscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tx_precio_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel86)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1991,6 +2119,14 @@ public class admin_view extends javax.swing.JFrame {
         );
 
         jPanel21.add(jPanel53, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 360));
+
+        jButton20.setText("Back");
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
+        jPanel21.add(jButton20, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
 
         jTabbedPane1.addTab("tab11", jPanel21);
 
@@ -2036,11 +2172,21 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel90.setText("Código");
 
-        bt_buscar_plan1.setForeground(new java.awt.Color(255, 204, 102));
-        bt_buscar_plan1.setText("Buscar");
-        bt_buscar_plan1.addActionListener(new java.awt.event.ActionListener() {
+        bt_buscar_plan_eliminar.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_plan_eliminar.setText("Buscar");
+        bt_buscar_plan_eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_buscar_plan1bt_buscar_ClienteActionPerformed(evt);
+                bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed(evt);
+            }
+        });
+
+        jLabel34.setText("Seguro desea eliminar este Plan?");
+
+        bt_eliminarPlan.setForeground(new java.awt.Color(255, 204, 102));
+        bt_eliminarPlan.setText("Eliminar Plan ");
+        bt_eliminarPlan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_eliminarPlanActionPerformed(evt);
             }
         });
 
@@ -2049,73 +2195,94 @@ public class admin_view extends javax.swing.JFrame {
         jPanel52Layout.setHorizontalGroup(
             jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel52Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
                 .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel52Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(jPanel52Layout.createSequentialGroup()
-                                    .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(tx_precio_plan_mostrar1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
-                                .addGroup(jPanel52Layout.createSequentialGroup()
-                                    .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(tx_velocidad_plan_mostrar1))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel52Layout.createSequentialGroup()
-                                    .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel52Layout.createSequentialGroup()
-                                            .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(18, 18, 18))
-                                        .addGroup(jPanel52Layout.createSequentialGroup()
-                                            .addComponent(jLabel53, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(28, 28, 28)))
-                                    .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(tx_cod_plan_mostrar1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                                        .addComponent(tx_nombre_plan_mostrar1))))
-                            .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel52Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
                         .addComponent(jLabel90)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(tx_idPlan_buscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bt_buscar_plan1)))
+                        .addComponent(bt_buscar_plan_eliminar))
+                    .addGroup(jPanel52Layout.createSequentialGroup()
+                        .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel52Layout.createSequentialGroup()
+                                .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tx_velocidad_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel52Layout.createSequentialGroup()
+                                .addComponent(jLabel57, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tx_precio_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel52Layout.createSequentialGroup()
+                                    .addComponent(jLabel53, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tx_cod_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel52Layout.createSequentialGroup()
+                                    .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(tx_nombre_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel52Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
+            .addGroup(jPanel52Layout.createSequentialGroup()
+                .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel52Layout.createSequentialGroup()
+                        .addGap(117, 117, 117)
+                        .addComponent(bt_eliminarPlan))
+                    .addGroup(jPanel52Layout.createSequentialGroup()
+                        .addGap(79, 79, 79)
+                        .addComponent(jLabel34)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel52Layout.setVerticalGroup(
             jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel52Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel90)
                     .addComponent(tx_idPlan_buscar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bt_buscar_plan1))
+                    .addComponent(bt_buscar_plan_eliminar))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel53)
                     .addComponent(tx_cod_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel54)
                     .addComponent(tx_nombre_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel55)
                     .addComponent(tx_velocidad_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tx_precio_plan_mostrar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel57, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel57)
+                    .addComponent(tx_precio_plan_mostrar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel56)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bt_eliminarPlan)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel35.add(jPanel52, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 350, 350));
+        jPanel35.add(jPanel52, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 70, 350, 380));
+
+        jButton19.setText("Back");
+        jButton19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton19ActionPerformed(evt);
+            }
+        });
+        jPanel35.add(jButton19, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
 
         javax.swing.GroupLayout jPanel22Layout = new javax.swing.GroupLayout(jPanel22);
         jPanel22.setLayout(jPanel22Layout);
@@ -2137,7 +2304,7 @@ public class admin_view extends javax.swing.JFrame {
         jLabel33.setText("Listar Planes");
         jPanel36.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tab_Plan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -2145,16 +2312,29 @@ public class admin_view extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Codigo", "Nombre", "Velocidad", "Precio"
             }
         ));
-        jScrollPane10.setViewportView(jTable1);
+        jScrollPane10.setViewportView(Tab_Plan);
 
         jPanel36.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, -1, 350));
 
-        jButton3.setForeground(new java.awt.Color(255, 204, 102));
-        jButton3.setText("Listar planes");
-        jPanel36.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 420, 160, -1));
+        bt_listar_plan.setForeground(new java.awt.Color(255, 204, 102));
+        bt_listar_plan.setText("Listar planes");
+        bt_listar_plan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_listar_planActionPerformed(evt);
+            }
+        });
+        jPanel36.add(bt_listar_plan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 420, 160, -1));
+
+        jButton18.setText("Back");
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
+        jPanel36.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 10, 90, -1));
 
         javax.swing.GroupLayout jPanel23Layout = new javax.swing.GroupLayout(jPanel23);
         jPanel23.setLayout(jPanel23Layout);
@@ -2262,7 +2442,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void bt_buscar_Cliente5bt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Cliente5bt_buscar_ClienteActionPerformed
-       crud_usuarios.buscarCliente(tx_docu_buscar, tx_nombre_buscar, tx_apellido_buscar, tx_tipo_buscar, tx_documento_buscar, tx_telefono_buc, tx_correo, tx_direccion_buscar);
+       crud_usuarios.buscarCliente(tx_docu_buscar, tx_nombre_buscar, tx_apellido_buscar, tx_tipo_buscar, tx_documento_buscar, tx_telefono_buc, tx_correo_buscar, tx_direccion_buscar);
 
 
     }//GEN-LAST:event_bt_buscar_Cliente5bt_buscar_ClienteActionPerformed
@@ -2279,9 +2459,9 @@ public class admin_view extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tx_velocidad_plan_actjTextField3ActionPerformed
 
-    private void tx_precio_planactjTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_precio_planactjTextField3ActionPerformed
+    private void tx_precio_plan_actjTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_precio_plan_actjTextField3ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tx_precio_planactjTextField3ActionPerformed
+    }//GEN-LAST:event_tx_precio_plan_actjTextField3ActionPerformed
 
     private void tx_velocidad_plan_mostrarjTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_velocidad_plan_mostrarjTextField3ActionPerformed
         // TODO add your handling code here:
@@ -2291,9 +2471,10 @@ public class admin_view extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tx_precio_plan_mostrarjTextField3ActionPerformed
 
-    private void bt_buscar_ClienteActualizar1bt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_ClienteActualizar1bt_buscar_ClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bt_buscar_ClienteActualizar1bt_buscar_ClienteActionPerformed
+    private void bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed
+    Crud_Planes.buscarPlanActualizar(tx_cod_buscar_actualizar_plan,tx_cod_plan_mostrar,tx_nombre_plan_mostrar,tx_velocidad_plan_mostrar,
+    tx_precio_plan_mostrar,tx_descripcion_plan2);
+    }//GEN-LAST:event_bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed
 
     private void tx_velocidad_plan_mostrar1jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_velocidad_plan_mostrar1jTextField3ActionPerformed
         // TODO add your handling code here:
@@ -2304,28 +2485,109 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_tx_precio_plan_mostrar1jTextField3ActionPerformed
 
     private void bt_buscar_planbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_planbt_buscar_ClienteActionPerformed
-        // TODO add your handling code here:
+    Crud_Planes.buscarPlan(tx_idPlan_buscar,tx_codigo_buscado,tx_nombrePlan_buscado, tx_vel_buscar,tx_precio_buscar,tx_descripcion_plan1);
     }//GEN-LAST:event_bt_buscar_planbt_buscar_ClienteActionPerformed
 
-    private void bt_buscar_plan1bt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_plan1bt_buscar_ClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bt_buscar_plan1bt_buscar_ClienteActionPerformed
+    private void bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed
+    Crud_Planes.buscarPlanEliminar(tx_idPlan_buscar1, tx_cod_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3);
+    }//GEN-LAST:event_bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed
 
     private void bt_AgregarclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_AgregarclienteActionPerformed
         crud_usuarios.agregarCliente(tx_nombres, tx_apellidos, jComboBox5, tx_identificacion, tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
     }//GEN-LAST:event_bt_AgregarclienteActionPerformed
 
     private void bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed
-        // TODO add your handling code here:
+    crud_usuarios.buscarClienteEliminar(tx_docu_buscar_elim,tx_nombre_eliminar,tx_apellido_eliminar,tx_tipo_eliminar,tx_documento_eliminar,
+    tx_telefono_eliminar,tx_correo_eliminar,tx_direccion_eliminar);
     }//GEN-LAST:event_bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed
 
     private void bt_Listar_clientesbt_AgregarclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_Listar_clientesbt_AgregarclienteActionPerformed
-        // TODO add your handling code here:
+    crud_usuarios.listarCliente(Tab_Client);
     }//GEN-LAST:event_bt_Listar_clientesbt_AgregarclienteActionPerformed
 
     private void tx_nombresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_nombresActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tx_nombresActionPerformed
+
+    private void bt_buscar_ClienteActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_ClienteActualizarActionPerformed
+    crud_usuarios.buscarClienteActualizar(
+    tx_docu_buscar_actualizar,
+    tx_nombreCambiar,
+    tx_apellidosCambiar,
+    tx_tipoDocuCambiar,
+    tx_identificacionCambiar,
+    tx_telefonoCambiar,
+    tx_correoCambiar,
+    tx_direccionCambiar
+);
+    }//GEN-LAST:event_bt_buscar_ClienteActualizarActionPerformed
+
+    private void bt_eliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_eliminarClienteActionPerformed
+    crud_usuarios.eliminarCliente( tx_documento_eliminar,tx_nombre_eliminar,tx_apellido_eliminar,tx_tipo_eliminar,tx_telefono_eliminar,
+    tx_correo_eliminar,tx_direccion_eliminar,tx_docu_buscar_elim);
+    }//GEN-LAST:event_bt_eliminarClienteActionPerformed
+
+    private void bt_actualizarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualizarClienteActionPerformed
+    crud_usuarios.actualizarCliente(tx_docu_buscar_actualizar,tx_nombreCambiar1,tx_apellidosCambiar1,jtipo_cambiar,
+    tx_identificacionCambiar1,tx_telefonoCambiar1,tx_correoCambiar1,tx_direccionCambiar,tx_passwordCambiar1);
+    }//GEN-LAST:event_bt_actualizarClienteActionPerformed
+
+    private void bt_guardar_planActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_guardar_planActionPerformed
+    Crud_Planes.agregarPlan(tx_cod_plan,tx_nombre_plan,tx_velocidad_plan,tx_precio_plan,tx_descripcion_plan);
+    }//GEN-LAST:event_bt_guardar_planActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+    jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+    jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+    jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+    jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_jButton17ActionPerformed
+
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+    jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_jButton18ActionPerformed
+
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+    jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_jButton19ActionPerformed
+
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+    jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_jButton20ActionPerformed
+
+    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+     jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_jButton21ActionPerformed
+
+    private void bt_listar_planActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_listar_planActionPerformed
+    Crud_Planes.listarPlanes(Tab_Plan);
+    }//GEN-LAST:event_bt_listar_planActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    Crud_Planes.actualizarPlan(tx_cod_plan_mostrar, tx_nombre_plan_mostrar, tx_velocidad_plan_mostrar,tx_precio_plan_mostrar, tx_descripcion_plan2, tx_cod_plan_act, 
+    tx_nombre_plan_act,tx_velocidad_plan_act, tx_precio_plan_act, tx_descripcion_plan_act);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void bt_eliminarPlanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_eliminarPlanActionPerformed
+    Crud_Planes.eliminarPlan(tx_cod_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
+    }//GEN-LAST:event_bt_eliminarPlanActionPerformed
 
     /** 
      * @param args the command line arguments
@@ -2363,22 +2625,35 @@ public class admin_view extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Tab_Client;
+    private javax.swing.JTable Tab_Plan;
     private javax.swing.JButton bt_Agregarcliente1;
     private javax.swing.JButton bt_Listar_clientes;
     private javax.swing.JButton bt_actualizarCliente;
     private javax.swing.JButton bt_buscar_Cliente5;
     private javax.swing.JButton bt_buscar_ClienteActualizar;
-    private javax.swing.JButton bt_buscar_ClienteActualizar1;
     private javax.swing.JButton bt_buscar_Cliente_eliminar;
+    private javax.swing.JButton bt_buscar_Planes_Actualizar;
     private javax.swing.JButton bt_buscar_plan;
-    private javax.swing.JButton bt_buscar_plan1;
+    private javax.swing.JButton bt_buscar_plan_eliminar;
     private javax.swing.JButton bt_eliminarCliente;
+    private javax.swing.JButton bt_eliminarPlan;
     private javax.swing.JButton bt_guardar_plan;
+    private javax.swing.JButton bt_listar_plan;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton20;
+    private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -2414,6 +2689,7 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
@@ -2527,8 +2803,6 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JComboBox<String> jtipo_cambiar;
     private javax.swing.JLabel lb_apellidos1;
     private javax.swing.JLabel lb_apellidos2;
@@ -2559,6 +2833,7 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextField tx_apellidos;
     public static javax.swing.JTextField tx_apellidosCambiar;
     private javax.swing.JTextField tx_apellidosCambiar1;
+    private javax.swing.JTextField tx_cod_buscar_actualizar_plan;
     private javax.swing.JTextField tx_cod_plan;
     private javax.swing.JTextField tx_cod_plan_act;
     private javax.swing.JTextField tx_cod_plan_mostrar;
@@ -2569,6 +2844,8 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextField tx_correo;
     public static javax.swing.JTextField tx_correoCambiar;
     private javax.swing.JTextField tx_correoCambiar1;
+    public static javax.swing.JTextField tx_correo_buscar;
+    private javax.swing.JTextField tx_correo_eliminar;
     private javax.swing.JTextPane tx_descripcion_plan;
     private javax.swing.JTextPane tx_descripcion_plan1;
     private javax.swing.JTextPane tx_descripcion_plan2;
@@ -2576,18 +2853,13 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextPane tx_descripcion_plan_act;
     private javax.swing.JTextField tx_direccion;
     public static javax.swing.JTextField tx_direccionCambiar;
-    private javax.swing.JTextField tx_direccionCambiar1;
     public static javax.swing.JTextField tx_direccion_buscar;
     private javax.swing.JTextField tx_direccion_eliminar;
     private javax.swing.JTextField tx_docu_buscar;
-    private javax.swing.JTextField tx_docu_buscar6;
     private javax.swing.JTextField tx_docu_buscar_actualizar;
-    private javax.swing.JTextField tx_docu_buscar_actualizar_plan;
+    private javax.swing.JTextField tx_docu_buscar_elim;
     public static javax.swing.JTextField tx_documento_buscar;
-    private javax.swing.JTextField tx_documento_buscar1;
     private javax.swing.JTextField tx_documento_eliminar;
-    public static javax.swing.JTextField tx_email_buscar;
-    private javax.swing.JTextField tx_email_eliminar;
     private javax.swing.JTextField tx_idPlan_buscar;
     private javax.swing.JTextField tx_idPlan_buscar1;
     private javax.swing.JTextField tx_identificacion;
@@ -2599,15 +2871,16 @@ public class admin_view extends javax.swing.JFrame {
     public static javax.swing.JTextField tx_nombre_buscar;
     private javax.swing.JTextField tx_nombre_eliminar;
     private javax.swing.JTextField tx_nombre_plan;
-    private javax.swing.JTextField tx_nombre_plan_atc;
+    private javax.swing.JTextField tx_nombre_plan_act;
     private javax.swing.JTextField tx_nombre_plan_mostrar;
     private javax.swing.JTextField tx_nombre_plan_mostrar1;
     public static javax.swing.JTextField tx_nombres;
     private javax.swing.JPasswordField tx_passwordCambiar1;
+    private javax.swing.JTextField tx_precio_buscar;
     private javax.swing.JTextField tx_precio_plan;
+    private javax.swing.JTextField tx_precio_plan_act;
     private javax.swing.JTextField tx_precio_plan_mostrar;
     private javax.swing.JTextField tx_precio_plan_mostrar1;
-    private javax.swing.JTextField tx_precio_planact;
     private javax.swing.JTextField tx_telefono;
     public static javax.swing.JTextField tx_telefonoCambiar;
     private javax.swing.JTextField tx_telefonoCambiar1;
@@ -2615,11 +2888,12 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextField tx_telefono_eliminar;
     public static javax.swing.JTextField tx_tipoDocuCambiar;
     public static javax.swing.JTextField tx_tipo_buscar;
-    private javax.swing.JTextField tx_tipo_buscar1;
     private javax.swing.JTextField tx_tipo_eliminar;
+    private javax.swing.JTextField tx_vel_buscar;
     private javax.swing.JTextField tx_velocidad_plan;
     private javax.swing.JTextField tx_velocidad_plan_act;
     private javax.swing.JTextField tx_velocidad_plan_mostrar;
     private javax.swing.JTextField tx_velocidad_plan_mostrar1;
+    private javax.swing.JTextField txdireccionCambiar;
     // End of variables declaration//GEN-END:variables
 }

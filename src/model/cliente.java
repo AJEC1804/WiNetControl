@@ -41,11 +41,22 @@ public class Cliente {
     public String getContrasena() { return contrasena; }
     public String getConfContrasena() { return confContrasena; }
     
-   
+
    
 
     
     public String toString() {
         return nombre + " " + apellido + " - " + tipo + "." + identificacion;
     }
+
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setIdentificacion(String identificacion) { this.identificacion = identificacion; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+    
 }
+
