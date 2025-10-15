@@ -15,6 +15,7 @@ public class contratar extends javax.swing.JFrame {
      */
     public contratar() {
         initComponents();
+        this.setLocationRelativeTo(this);
     }
 
     /**
@@ -169,6 +170,11 @@ public class contratar extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("¡Comprar aquí!");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel8.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jPanel9.setBackground(new java.awt.Color(0, 0, 0));
@@ -292,6 +298,11 @@ public class contratar extends javax.swing.JFrame {
         jButton9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton9.setForeground(new java.awt.Color(255, 255, 255));
         jButton9.setText("¡Comprar aquí!");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
         jPanel16.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jPanel17.setBackground(new java.awt.Color(0, 0, 0));
@@ -415,6 +426,11 @@ public class contratar extends javax.swing.JFrame {
         jButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("¡Comprar aquí!");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
         jPanel12.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jPanel13.setBackground(new java.awt.Color(0, 0, 0));
@@ -489,6 +505,24 @@ public class contratar extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+  login lg = new login();
+        lg.setVisible(true);
+        this.dispose();              // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+  login lg = new login();
+        lg.setVisible(true);
+        this.dispose();              // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+  login lg = new login();
+        lg.setVisible(true);
+        this.dispose();              // TODO add your handling code here:
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -8,7 +8,7 @@ package model;
  *
  * @author Gyanela Meza
  */
-public class cliente {
+public class Administrador {
     private String nombre;
     private String apellido;
     private String tipo;
@@ -19,7 +19,7 @@ public class cliente {
     private String contrasena;
     private String confContrasena;
 
-    public cliente(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena) {
+    public Administrador(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.tipo = tipo;
@@ -49,3 +49,5 @@ public class cliente {
         return nombre + " " + apellido + " - " + tipo + "." + identificacion;
     }
 }
+
+
