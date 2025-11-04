@@ -14,30 +14,34 @@ public class Planes {
     private String velocidad;
     private int precio;
     private String descripcion;
-  
 
-    public Planes(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena) {
+    // Constructor correcto
+    public Planes(int codigo, String nombre, String velocidad, int precio, String descripcion) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.velocidad = velocidad;
         this.precio = precio;
         this.descripcion = descripcion;
-       
     }
 
+    // Getters
     public int getCodigo() { return codigo; }
     public String getNombre() { return nombre; }
     public String getVelocidad() { return velocidad; }
     public int getPrecio() { return precio; }
     public String getDescripcion() { return descripcion; }
-   
-    
-   
-   
 
-    
+    // Setters
+    public void setCodigo(int codigo) { this.codigo = codigo; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setVelocidad(String velocidad) { this.velocidad = velocidad; }
+    public void setPrecio(int precio) { this.precio = precio; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    // toString()
     public String toString() {
-        return codigo + " " + nombre + " - " + velocidad + " " + precio + " " + descripcion + " ";
+        return codigo + " " + nombre + " - " + velocidad + " " + precio + " " + descripcion;
     }
 }
+
 
