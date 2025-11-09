@@ -8,7 +8,7 @@ package model;
  *
  * @author Gyanela Meza
  */
-public class Cliente {
+public class cliente {
     private String nombre;
     private String apellido;
     private String tipo;
@@ -19,7 +19,7 @@ public class Cliente {
     private String contrasena;
     private String confContrasena;
 
-    public Cliente(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena) {
+    public cliente(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.tipo = tipo;

@@ -15,8 +15,10 @@ import model.*;
  * @author Gyanela Meza
  */
 public class crud_usuarios {
-    static final int ELEMENTOS = 2;
-    public static Cliente[] clientes = new Cliente[ELEMENTOS];
+
+    static final int ELEMENTOS = 3;
+    public static cliente[] clientes = new cliente[ELEMENTOS];
+
     public static int contadorClientes = 0;
     public static Administrador[] administrador = new Administrador[ELEMENTOS];
     public static int contadorAdministrador = 0;
@@ -71,7 +73,7 @@ public class crud_usuarios {
         } 
 
         
-        Cliente nuevo = new Cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena);
+        cliente nuevo = new cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena);
 
         if (contadorClientes < ELEMENTOS) {
             clientes[contadorClientes] = nuevo;
@@ -111,7 +113,7 @@ public class crud_usuarios {
 
     public static boolean usuarioExiste(String correo, String identificacion) {
         for (int i = 0; i < contadorClientes; i++) {
-            Cliente c = clientes[i];
+            cliente c = clientes[i];
             if (c != null && (c.getCorreo().equals(correo) || c.getIdentificacion().equals(identificacion))) {
                 return true;
             }
@@ -125,7 +127,7 @@ public class crud_usuarios {
         modelo.setRowCount(0); 
 
         for (int i = 0; i < contadorClientes; i++) {
-            Cliente c = clientes[i];
+            cliente c = clientes[i];
             if (c != null) {
                 Object[] fila = {
                     c.getTipo(),
@@ -220,7 +222,7 @@ public class crud_usuarios {
     boolean encontrado = false;
 
     for (int i = 0; i < contadorClientes; i++) {
-        Cliente c = clientes[i];
+        cliente c = clientes[i];
 
         if (c != null && c.getIdentificacion().equals(documento)) {
             encontrado = true;
@@ -266,7 +268,7 @@ public class crud_usuarios {
     boolean encontrado = false;
 
     for (int i = 0; i < contadorClientes; i++) {
-        Cliente c = clientes[i];
+        cliente c = clientes[i];
 
         if (c != null && c.getIdentificacion().equals(documentoBuscar)) {
             encontrado = true;
@@ -335,7 +337,7 @@ public class crud_usuarios {
 
     
     for (int i = 0; i < contadorClientes; i++) {
-        Cliente c = clientes[i];
+        cliente c = clientes[i];
         if (c != null && c.getIdentificacion().equalsIgnoreCase(identificacion)) {
 
             tx_nombre_buscar.setText(c.getNombre());

@@ -3,8 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
-
-import java.sql.*;
 import javax.swing.*;
 
 /**
@@ -19,6 +17,8 @@ public class login extends javax.swing.JFrame {
     public login() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
+      
     }
 
     /**
@@ -121,27 +121,30 @@ public class login extends javax.swing.JFrame {
     
     if (identificacion.isEmpty() || contrasena.isEmpty()){
     JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña");
+    return;
    
     }
-    try (Connection conn = ConexionDB.getConnection()){
-        String sql = "SELECT contrasena FROM usuarios WHERE identificacion = ? AND contrasena = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)){
-            pst.setString(1, identificacion);
-            pst.setString(2, contrasena);
-            
-            try (ResultSet rs = pst.executeQuery()){
-            if(rs.next()){
-            JOptionPane.showMessageDialog(this, "Bienvenido, acceso concedido");
-             vista_admin va = new vista_admin();
-             va.setVisible(true);
-            this.dispose();  
-            } else{
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
-            }
-            }
+    
+    String[] usuarios ={"admin"};
+    String[] contrasenas = {"1234"};
+    
+    boolean loginExitoso = false;
+    for (int i = 0; i < usuarios.length; i ++){
+        if (identificacion.equals(usuarios[i]) && contrasena.equals(contrasenas[i])){
+            loginExitoso = true;
+            break;
         }
-    }catch (SQLException e){
-    JOptionPane.showMessageDialog(this, "Error al iniciar sesion" + e.getMessage());
+    }
+    if (loginExitoso){
+     JOptionPane.showMessageDialog(this, "Bienvenido, Acceso concedido");
+     admin_view va = new admin_view();
+     va.setVisible(true);
+     this.dispose();
+    }
+    else {
+    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
+    jTextField1.setText("");
+    jPasswordField1.setText("");
     }
     
     }//GEN-LAST:event_jButton2ActionPerformed

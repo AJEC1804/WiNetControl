@@ -4,8 +4,9 @@
  */
 package view;
 
+import static entidades.Arreglos.*;
 import javax.swing.*;
-import java.sql.*;
+;
 
 /**
  *
@@ -52,6 +53,7 @@ public class registro extends javax.swing.JFrame {
         save = new javax.swing.JButton();
         txtContrasena = new javax.swing.JPasswordField();
         txtRepetirContrasena = new javax.swing.JPasswordField();
+        jButton2 = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -156,7 +158,7 @@ public class registro extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 490, -1, -1));
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 450, -1, -1));
 
         save.setBackground(new java.awt.Color(255, 204, 102));
         save.setText("Guardar");
@@ -165,9 +167,13 @@ public class registro extends javax.swing.JFrame {
                 saveActionPerformed(evt);
             }
         });
-        jPanel2.add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 490, -1, -1));
+        jPanel2.add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 450, -1, -1));
         jPanel2.add(txtContrasena, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 350, 150, -1));
         jPanel2.add(txtRepetirContrasena, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 390, 130, -1));
+
+        jButton2.setBackground(new java.awt.Color(255, 204, 102));
+        jButton2.setText("Siguiente");
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 490, -1, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 550));
 
@@ -233,45 +239,44 @@ public class registro extends javax.swing.JFrame {
     String contrasena = new String(txtContrasena.getPassword());
     String repetirContrasena = new String(txtRepetirContrasena.getPassword());
 
+    if (nombres.isEmpty() || apellidos.isEmpty() || identificacion.isEmpty() || contrasena.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "⚠️ Por favor, complete todos los campos obligatorios");
+        return;
+    }
+    
+    
     if (!contrasena.equals(repetirContrasena)) {
         JOptionPane.showMessageDialog(this, "⚠️ Las contraseñas no coinciden");
-        
+        txtContrasena.setText("");  // Limpiar solo contraseñas en caso de error
+        txtRepetirContrasena.setText("");
+        return;
     }
-        try (Connection conn = ConexionDB.getConnection()){
-            String sqlCliente = "INSERT INTO CLIENTES  (nombres, apellidos, tipo_identificacion, identificacion, telefono, correo, direccion)"
-                    + "VALUES (?, ?, ?, ?, ?, ?,?)";
-            
-            try (PreparedStatement pst = conn.prepareStatement(sqlCliente)){
-            pst.setString(1,nombres);
-            pst.setString(2,apellidos);
-            pst.setString(3,tipoId);
-            pst.setString(4,identificacion);
-            pst.setString(5,telefono);
-            pst.setString(6,correo);
-            pst.setString(7,direccion);
-            pst.executeUpdate();
-         
-            }
-            
-            String sqlUsuario = "INSERT INTO usuarios (identificacion, contrasena) VALUES (?, ?)";
-        try (PreparedStatement pst = conn.prepareStatement(sqlUsuario)) {
-            pst.setString(1, identificacion);
-            pst.setString(2, contrasena); // 🔐 en producción usa hash (ej: BCrypt)
-            pst.executeUpdate();
-        }
-        JOptionPane.showMessageDialog(this, "Registro guardado exitosamente");
-        limpiarcampos();
-        } catch (SQLException e){
-        JOptionPane.showMessageDialog(this, "Error al guardar" + e.getMessage());
-        }
-         login lg = new login();
-        lg.setVisible(true);
-        this.dispose();  
+
+    if (listaIdentificacion.contains(identificacion)) {
+        JOptionPane.showMessageDialog(this, "⚠️ La identificación ya está registrada");
+        txtIdentificacion.setText("");
+        return;
+    }
+
+    listaNombres.add(nombres);
+    listaApellidos.add(apellidos);
+    listaTipoId.add(tipoId);
+    listaIdentificacion.add(identificacion);
+    listaTelefono.add(telefono);
+    listaCorreo.add(correo);
+    listaDireccion.add(direccion);
+    listaContrasena.add(contrasena); 
+
+    JOptionPane.showMessageDialog(this, "✅ Usuario registrado exitosamente");
+    limpiarcampos();
+    
+       
     }//GEN-LAST:event_saveActionPerformed
     
     private void limpiarcampos(){
     txtNombres.setText("");
     txtApellidos.setText("");
+    comboTipoId.setSelectedIndex(0);
     txtIdentificacion.setText("");
     txtTelefono.setText("");
     txtCorreo.setText("");
@@ -318,6 +323,7 @@ public class registro extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> comboTipoId;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
