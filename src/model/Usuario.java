@@ -18,11 +18,11 @@ public class Usuario {
     private String tipodocumento;
     private String direccion;
     private String contrasena;
-    private plan PlanActual;
+    private plan planActual;
     
     
    
-    public Usuario(String nombre, String apellido, String telefono, String correo, String identificacion, String tipodocumento, String direccion, String contrasena) {
+    public Usuario(String nombre, String apellido, String telefono, String correo, String identificacion, String tipodocumento, String direccion, String contrasena, plan planActual) {
         
         this.nombre = nombre;
         this.apellido = apellido;
@@ -32,6 +32,7 @@ public class Usuario {
         this.tipodocumento = tipodocumento; 
         this.direccion = direccion;
         this.contrasena = contrasena; 
+        this.planActual = planActual;
     }  
     
     public String getNombre() { return nombre; }
@@ -42,16 +43,12 @@ public class Usuario {
     public String getTipoDocumento() { return tipodocumento; }
     public String getDireccion() { return direccion; }
     public String getContrasena() { return contrasena; }
+    public plan getPlanActual() { return planActual;}
     
     public boolean verificarContrasena(String contrasenaIngresada){
       return this.contrasena.equals(contrasenaIngresada);
     }
-    
-    public plan getPlanActual() {
-        return PlanActual;
-    }
 
-    
-}
+ }
 
 

@@ -7,11 +7,13 @@ import model.Usuario;
 import model.plan;
 import controlador.correoSoporte;
 import controlador.crud_planes;
+import controlador.ctrlFactura;
+import java.time.LocalDate;
+import model.factura;
 public class usuario extends javax.swing.JFrame {
    
-    private plan planActual;
+   
     private Usuario usuarioActual;
-    private soporte soporte;
     
     
     
@@ -79,7 +81,6 @@ public class usuario extends javax.swing.JFrame {
         btnFacturacion = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
-        btnOpciones = new javax.swing.JButton();
         btnDetalles = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         btnActualizarPlan = new javax.swing.JButton();
@@ -133,6 +134,15 @@ public class usuario extends javax.swing.JFrame {
         txtIdPlan = new javax.swing.JTextField();
         JpnFacturacion = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
+        cbMes = new javax.swing.JComboBox<>();
+        cbAno = new javax.swing.JComboBox<>();
+        btnVerFactura = new javax.swing.JButton();
+        jLabel38 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel40 = new javax.swing.JLabel();
+        jLabel58 = new javax.swing.JLabel();
+        jLabel59 = new javax.swing.JLabel();
+        jLabel60 = new javax.swing.JLabel();
         JpnCambiarPlan = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         JpnActualizarDatos = new javax.swing.JPanel();
@@ -471,23 +481,10 @@ public class usuario extends javax.swing.JFrame {
         JpnMiplan.add(btnFacturacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 170, 200, 40));
 
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-info-24.png"))); // NOI18N
-        JpnMiplan.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 40, 40));
+        JpnMiplan.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 40, 40));
 
         jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-update-24.png"))); // NOI18N
         JpnMiplan.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 120, 50, 40));
-
-        btnOpciones.setBackground(new java.awt.Color(59, 130, 246));
-        btnOpciones.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnOpciones.setForeground(new java.awt.Color(255, 255, 255));
-        btnOpciones.setText("Eliminar cuenta");
-        btnOpciones.setBorder(null);
-        btnOpciones.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnOpciones.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpcionesActionPerformed(evt);
-            }
-        });
-        JpnMiplan.add(btnOpciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 200, 250, 40));
 
         btnDetalles.setBackground(new java.awt.Color(59, 130, 246));
         btnDetalles.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -769,8 +766,64 @@ public class usuario extends javax.swing.JFrame {
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Facturacion");
+        jLabel9.setText("Mis facturas");
+        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         JpnFacturacion.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 10, -1, -1));
+
+        cbMes.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+        cbMes.setToolTipText("");
+        JpnFacturacion.add(cbMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 50, 110, -1));
+
+        cbAno.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbAno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025", "2024" }));
+        JpnFacturacion.add(cbAno, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 90, 110, -1));
+
+        btnVerFactura.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnVerFactura.setText("Ver factura");
+        btnVerFactura.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnVerFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerFacturaActionPerformed(evt);
+            }
+        });
+        JpnFacturacion.add(btnVerFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 140, 110, -1));
+
+        jLabel38.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel38.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel38.setText("Recuerda que en WiNet Control estamos para servirte");
+        jLabel38.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnFacturacion.add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 380, 30));
+
+        jLabel39.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        jLabel39.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel39.setText("Bienvenido a la sección facturación!!");
+        jLabel39.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnFacturacion.add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 400, 30));
+
+        jLabel40.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel40.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel40.setText("Aqui puedes:");
+        jLabel40.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnFacturacion.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 120, 30));
+
+        jLabel58.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel58.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel58.setText("- Consultar factura del mes en curso");
+        jLabel58.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnFacturacion.add(jLabel58, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 320, 30));
+
+        jLabel59.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel59.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel59.setText("- Total a pagar");
+        jLabel59.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnFacturacion.add(jLabel59, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 320, 30));
+
+        jLabel60.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel60.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel60.setText("- Servicios contratados");
+        jLabel60.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnFacturacion.add(jLabel60, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 320, 30));
 
         jTabbedPane1.addTab("5", JpnFacturacion);
 
@@ -1035,7 +1088,7 @@ public class usuario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtActualizarNombresActionPerformed
 
     private void btnEnviarSoporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarSoporteActionPerformed
-     String usuario = usuarioActual.getNombre(); // tu objeto Usuario
+     String usuario = usuarioActual.getNombre() + " " + usuarioActual.getApellido(); // tu objeto Usuario
     String asunto = txtAsunto.getText();
     String mensaje = txtDescripcion.getText();
 
@@ -1095,17 +1148,72 @@ public class usuario extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnDetallesActionPerformed
 
-    private void btnOpcionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpcionesActionPerformed
-        jTabbedPane1.setSelectedIndex(6);
-    }//GEN-LAST:event_btnOpcionesActionPerformed
-
     private void btnFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturacionActionPerformed
         jTabbedPane1.setSelectedIndex(5);
+        
+    Usuario usuario = usuarioActual;  
+    if (usuario == null) {
+        JOptionPane.showMessageDialog(this, "No hay usuario logueado.");
+        return;
+    }
+
+    // busca la factura del mes actual
+    java.time.LocalDate hoy = java.time.LocalDate.now();
+    int mes = hoy.getMonthValue();
+    int ano = hoy.getYear();
+
+    model.factura f = controlador.ctrlFactura.buscarFacturaMes(usuario.getNombre()+ "" + usuario.getApellido(), mes, ano);
+    if (f == null) {
+        JOptionPane.showMessageDialog(this, "No tienes facturas en este mes.");
+        return;
+    }
+
+    // abre el PDF directamente
+    try {
+        java.awt.Desktop.getDesktop().open(new java.io.File(f.getArchivoPDF()));
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al abrir el PDF: " + e.getMessage());
+    }
+
     }//GEN-LAST:event_btnFacturacionActionPerformed
 
     private void btnOpciones1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpciones1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnOpciones1ActionPerformed
+
+    private void btnVerFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerFacturaActionPerformed
+     String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
+    plan planUsuario = usuarioActual.getPlanActual();
+
+    int mesSeleccionado = cbMes.getSelectedIndex() + 1;
+    int anioSeleccionado = Integer.parseInt((String) cbAno.getSelectedItem());
+
+    LocalDate hoy = LocalDate.now();
+    int mesActual = hoy.getMonthValue();
+    int anioActual = hoy.getYear();
+
+    if(mesSeleccionado != mesActual || anioSeleccionado != anioActual) {
+
+        JOptionPane.showMessageDialog(this,"No se generaron facturas para meses anteriores.");
+        return;
+    }
+
+    String archivoPDF = "facturas/factura_" + nombreCompleto.replace(" ", "_") + "-" + mesActual + "-" + anioActual + ".pdf";
+
+    factura f = ctrlFactura.buscarFacturaMes(nombreCompleto, mesActual, anioActual);
+
+    if(f == null) {
+        f = ctrlFactura.crearFactura(nombreCompleto, planUsuario, archivoPDF);
+        ctrlFactura.generarFacturaPDF(f, planUsuario);
+    }
+
+    try {
+        java.awt.Desktop.getDesktop().open(new java.io.File(f.getArchivoPDF()));
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al abrir la factura: " + e.getMessage());
+    }
+    
+    }//GEN-LAST:event_btnVerFacturaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1138,8 +1246,8 @@ public class usuario extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
     public void run() {
         // objeto Usuario
-        Usuario usuario = new Usuario("Mauricio","Maldonado","3101234567","correo@gmail.com","123456","CC", "Calle 10", "clave123 ");
-        plan PlanActual = new plan (crud_planes.contadorId++, "Premium", "Acceso completo a todos los servicios","2025-11-02","2025-12-01","Activo",50000,"Tarjeta de crédito");
+        plan planActual = new plan (crud_planes.contadorId++, "Premium", "Acceso completo a todos los servicios","2025-11-02","2025-12-01","Activo",50000,"Tarjeta de crédito");
+        Usuario usuario = new Usuario("Mauricio","Maldonado","3101234567","correo@gmail.com","123456","CC", "Calle 10", "clave123",planActual );
         new usuario(usuario).setVisible(true);
         
     }
@@ -1166,8 +1274,10 @@ public class usuario extends javax.swing.JFrame {
     private javax.swing.JButton btnEnviarSoporte;
     private javax.swing.JButton btnFacturacion;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnOpciones;
     private javax.swing.JButton btnOpciones1;
+    private javax.swing.JButton btnVerFactura;
+    private javax.swing.JComboBox<String> cbAno;
+    private javax.swing.JComboBox<String> cbMes;
     private javax.swing.JComboBox<String> cbTipoDocumento;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1200,7 +1310,10 @@ public class usuario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel43;
@@ -1219,7 +1332,10 @@ public class usuario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel55;
     private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel57;
+    private javax.swing.JLabel jLabel58;
+    private javax.swing.JLabel jLabel59;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
