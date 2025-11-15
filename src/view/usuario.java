@@ -6,7 +6,7 @@ import model.soporte;
 import model.Usuario;
 import model.plan;
 import controlador.correoSoporte;
-import controlador.crud_planes;
+import controlador.Crud_Planes;
 public class usuario extends javax.swing.JFrame {
    
     private plan planActual;
@@ -161,9 +161,6 @@ public class usuario extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel37 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -430,7 +427,7 @@ public class usuario extends javax.swing.JFrame {
         jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
         jLabel18.setText("WiNet Control");
-        JpnPng.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
+        JpnPng.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
 
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/ChatGPT Image 22 oct 2025, 08_12_24 p.m..png"))); // NOI18N
         JpnPng.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 110));
@@ -541,9 +538,6 @@ public class usuario extends javax.swing.JFrame {
         jLabel24.setForeground(new java.awt.Color(0, 0, 0));
         jLabel24.setText("Mis datos");
         jPanel17.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, -1, -1));
-
-        txtDireccion.setBackground(new java.awt.Color(255, 255, 255));
-        txtDireccion.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 90, 170, -1));
 
         jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -553,20 +547,10 @@ public class usuario extends javax.swing.JFrame {
 
         cbTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CC", " " }));
         jPanel17.add(cbTipoDocumento, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, -1, -1));
-
-        txtIdentificacion.setBackground(new java.awt.Color(255, 255, 255));
-        txtIdentificacion.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txtIdentificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, 110, -1));
-
-        txtTelefono.setBackground(new java.awt.Color(255, 255, 255));
-        txtTelefono.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 150, -1));
-
-        txPassword.setBackground(new java.awt.Color(255, 255, 255));
-        txPassword.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, 160, 20));
 
-        btnActualizarInfo.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnActualizarInfo.setText("Actualizar mis datos");
         btnActualizarInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -604,17 +588,8 @@ public class usuario extends javax.swing.JFrame {
         jLabel49.setForeground(new java.awt.Color(0, 0, 0));
         jLabel49.setText("Dirección");
         jPanel17.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 90, -1, -1));
-
-        txtNombres.setBackground(new java.awt.Color(255, 255, 255));
-        txtNombres.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, 150, -1));
-
-        txtApellidos.setBackground(new java.awt.Color(255, 255, 255));
-        txtApellidos.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 140, 150, -1));
-
-        txtCorreo.setBackground(new java.awt.Color(255, 255, 255));
-        txtCorreo.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jPanel17.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 170, -1));
 
         javax.swing.GroupLayout JpnMisDatosLayout = new javax.swing.GroupLayout(JpnMisDatos);
@@ -657,7 +632,6 @@ public class usuario extends javax.swing.JFrame {
         jPanel7.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, -1, -1));
 
         btnEnviarSoporte.setBackground(new java.awt.Color(102, 102, 102));
-        btnEnviarSoporte.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnEnviarSoporte.setForeground(new java.awt.Color(255, 255, 255));
         btnEnviarSoporte.setText("Enviar");
         btnEnviarSoporte.addActionListener(new java.awt.event.ActionListener() {
@@ -667,15 +641,12 @@ public class usuario extends javax.swing.JFrame {
         });
         jPanel7.add(btnEnviarSoporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 230, 60, -1));
 
-        txtDescripcion.setBackground(new java.awt.Color(255, 255, 255));
         txtDescripcion.setColumns(20);
         txtDescripcion.setRows(5);
         txtDescripcion.setBorder(null);
         jScrollPane2.setViewportView(txtDescripcion);
 
         jPanel7.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 600, 100));
-
-        txtAsunto.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.add(txtAsunto, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 600, -1));
 
         jpnSoporte.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 650, 300));
@@ -724,42 +695,18 @@ public class usuario extends javax.swing.JFrame {
         jLabel42.setForeground(new java.awt.Color(0, 0, 0));
         jLabel42.setText("Costo mensual:");
         JpnDetalles.add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, -1, -1));
-
-        txtnombrePlan.setBackground(new java.awt.Color(255, 255, 255));
-        txtnombrePlan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtnombrePlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, 160, -1));
-
-        txtmetodoPago.setBackground(new java.awt.Color(255, 255, 255));
-        txtmetodoPago.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtmetodoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 150, 160, -1));
-
-        txtvalorMensual.setBackground(new java.awt.Color(255, 255, 255));
-        txtvalorMensual.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtvalorMensual, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, 160, -1));
-
-        txtfechaVencimiento.setBackground(new java.awt.Color(255, 255, 255));
-        txtfechaVencimiento.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtfechaVencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 70, 160, -1));
-
-        txtfechaActivacion.setBackground(new java.awt.Color(255, 255, 255));
-        txtfechaActivacion.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtfechaActivacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 110, 160, -1));
-
-        txtestado.setBackground(new java.awt.Color(255, 255, 255));
-        txtestado.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtestado, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 190, 160, -1));
-
-        txtDescripcionPlan.setBackground(new java.awt.Color(255, 255, 255));
-        txtDescripcionPlan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtDescripcionPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 190, 160, -1));
 
         jLabel36.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel36.setForeground(new java.awt.Color(0, 0, 0));
         jLabel36.setText("Nombre del plan:");
         JpnDetalles.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
-
-        txtIdPlan.setBackground(new java.awt.Color(255, 255, 255));
-        txtIdPlan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         JpnDetalles.add(txtIdPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 160, -1));
 
         jTabbedPane1.addTab("4", JpnDetalles);
@@ -800,7 +747,6 @@ public class usuario extends javax.swing.JFrame {
         jLabel51.setText("Nombres");
         jPanel6.add(jLabel51, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 70, -1));
 
-        txtActualizarNombres.setBackground(new java.awt.Color(255, 255, 255));
         txtActualizarNombres.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtActualizarNombresActionPerformed(evt);
@@ -822,19 +768,13 @@ public class usuario extends javax.swing.JFrame {
         jLabel54.setForeground(new java.awt.Color(0, 0, 0));
         jLabel54.setText("Correo Electronico");
         jPanel6.add(jLabel54, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 150, 140, -1));
-
-        txtActApellidos.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtActApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 180, -1));
-
-        txtActNoDocumento.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtActNoDocumento, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 180, -1));
 
         jLabel55.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel55.setForeground(new java.awt.Color(0, 0, 0));
         jLabel55.setText("Direccion");
         jPanel6.add(jLabel55, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, 140, -1));
-
-        txtActDireccion.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtActDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 180, -1));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -846,16 +786,12 @@ public class usuario extends javax.swing.JFrame {
         jLabel56.setForeground(new java.awt.Color(0, 0, 0));
         jLabel56.setText("Telefono");
         jPanel6.add(jLabel56, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 70, -1));
-
-        txtActTelefono.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtActTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 180, -1));
 
         jLabel57.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel57.setForeground(new java.awt.Color(0, 0, 0));
         jLabel57.setText("Contraseña actual");
         jPanel6.add(jLabel57, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 120, -1));
-
-        txtActCorreo.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtActCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 150, 180, -1));
 
         btnGuardar.setText("Guardar ");
@@ -868,11 +804,7 @@ public class usuario extends javax.swing.JFrame {
 
         btnCancelar.setText("Cancelar");
         jPanel6.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 270, 90, -1));
-
-        txtNuevaContraseña.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtNuevaContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 210, 170, -1));
-
-        txtContraseñaActual.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.add(txtContraseñaActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 140, -1));
 
         JpnActualizarDatos.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 370));
@@ -1139,7 +1071,7 @@ public class usuario extends javax.swing.JFrame {
     public void run() {
         // objeto Usuario
         Usuario usuario = new Usuario("Mauricio","Maldonado","3101234567","correo@gmail.com","123456","CC", "Calle 10", "clave123 ");
-        plan PlanActual = new plan (crud_planes.contadorId++, "Premium", "Acceso completo a todos los servicios","2025-11-02","2025-12-01","Activo",50000,"Tarjeta de crédito");
+        plan PlanActual = new plan (Crud_Planes.contadorId++, "Premium", "Acceso completo a todos los servicios","2025-11-02","2025-12-01","Activo",50000,"Tarjeta de crédito");
         new usuario(usuario).setVisible(true);
         
     }
