@@ -18,8 +18,9 @@ public class cliente {
     private String direccion;
     private String contrasena;
     private String confContrasena;
+    private String planActual;
 
-    public cliente(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena) {
+    public cliente(String nombre, String apellido,String tipo, String identificacion, String telefono, String correo, String direccion, String contrasena, String confContrasena, String planActual ) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.tipo = tipo;
@@ -29,6 +30,7 @@ public class cliente {
         this.direccion = direccion;
         this.contrasena = contrasena;
         this.confContrasena = confContrasena;
+        this.planActual = planActual;
     }
 
     public String getNombre() { return nombre; }
@@ -44,7 +46,13 @@ public class cliente {
 
    
 
-    
+    public String getPlanActual() {
+        return planActual;
+    }
+
+    public void setPlanActual(String planActual) {
+        this.planActual = planActual;
+    }
     public String toString() {
         return nombre + " " + apellido + " - " + tipo + "." + identificacion;
     }

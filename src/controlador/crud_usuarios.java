@@ -73,7 +73,7 @@ public class crud_usuarios {
         } 
 
         
-        cliente nuevo = new cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena);
+        cliente nuevo = new cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena, "Oro");
 
         if (contadorClientes < ELEMENTOS) {
             clientes[contadorClientes] = nuevo;

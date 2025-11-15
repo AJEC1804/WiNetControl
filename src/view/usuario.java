@@ -1148,8 +1148,8 @@ public class usuario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOpciones1ActionPerformed
 
     private void btnVerFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerFacturaActionPerformed
-     String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
-    Planes planUsuario = usuarioActual.getPlanActual();
+     /*String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
+     Planes planUsuario = usuarioActual.getPlanActual();
 
     int mesSeleccionado = cbMes.getSelectedIndex() + 1;
     int anioSeleccionado = Integer.parseInt((String) cbAno.getSelectedItem());
@@ -1178,7 +1178,7 @@ public class usuario extends javax.swing.JFrame {
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al abrir la factura: " + e.getMessage());
     }
-    
+    */
     }//GEN-LAST:event_btnVerFacturaActionPerformed
 
     /**
@@ -1213,8 +1213,8 @@ public class usuario extends javax.swing.JFrame {
     public void run() {
         // objeto Usuario
 
-        Planes planActual = new Planes (Crud_Planes.contadorId++, "Premium", "Acceso completo a todos los servicios", 50.000 ,"2025-11-02");
-        cliente usuario = new cliente("Mauricio","Maldonado","3101234567","correo@gmail.com","123456","CC", "Calle 10", "clave123",planActual );
+        Planes planActual = new Planes (Crud_Planes.contadorId++, "Premium", "Acceso completo a todos los servicios", 50.000 ,"2025-11-02"); 
+        cliente usuario = new cliente("Mauricio","Maldonado","3101234567","correo@gmail.com","123456","CC", "Calle 10", "clave123","clave123","Oro" );
 
         new usuario(usuario).setVisible(true);
         
