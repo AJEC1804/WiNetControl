@@ -861,8 +861,8 @@
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                                      <Component id="jPanel54" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="68" max="32767" attributes="0"/>
+                                      <Component id="jPanel54" min="-2" pref="362" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="48" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                             </DimensionLayout>
@@ -881,18 +881,23 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="lb_nombre2" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
-                                              <Component id="lb_telefono2" alignment="0" min="-2" pref="146" max="-2" attributes="0"/>
-                                              <Component id="tx_telefono" alignment="0" min="-2" pref="228" max="-2" attributes="0"/>
-                                              <Component id="lb_direccion2" min="-2" pref="146" max="-2" attributes="0"/>
-                                              <Component id="tx_direccion" min="-2" pref="228" max="-2" attributes="0"/>
-                                              <Component id="lb_conf_contrasena1" min="-2" pref="146" max="-2" attributes="0"/>
-                                              <Component id="tx_confContrasena" min="-2" pref="237" max="-2" attributes="0"/>
-                                              <Component id="jComboBox5" min="-2" max="-2" attributes="0"/>
-                                              <Component id="lb_tipo2" min="-2" pref="43" max="-2" attributes="0"/>
-                                              <Component id="tx_nombres" min="-2" pref="210" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="lb_nombre2" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                                  <Component id="lb_telefono2" alignment="0" min="-2" pref="146" max="-2" attributes="0"/>
+                                                  <Component id="tx_telefono" alignment="0" min="-2" pref="228" max="-2" attributes="0"/>
+                                                  <Component id="lb_direccion2" min="-2" pref="146" max="-2" attributes="0"/>
+                                                  <Component id="tx_direccion" min="-2" pref="228" max="-2" attributes="0"/>
+                                                  <Component id="lb_conf_contrasena1" min="-2" pref="146" max="-2" attributes="0"/>
+                                                  <Component id="tx_confContrasena" min="-2" pref="237" max="-2" attributes="0"/>
+                                                  <Component id="tx_nombres" min="-2" pref="210" max="-2" attributes="0"/>
+                                                  <Component id="lb_tipo2" alignment="0" min="-2" pref="43" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                                                  <Component id="jComboBox6" min="-2" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
-                                          <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Group type="102" attributes="0">
                                                   <Component id="lb_correo2" min="-2" pref="146" max="-2" attributes="0"/>
@@ -900,6 +905,10 @@
                                               </Group>
                                               <Group type="102" attributes="0">
                                                   <Group type="103" groupAlignment="0" attributes="0">
+                                                      <Group type="102" attributes="0">
+                                                          <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                                                          <Component id="bt_Agregarcliente1" min="-2" pref="216" max="-2" attributes="0"/>
+                                                      </Group>
                                                       <Component id="tx_apellidos" min="-2" pref="210" max="-2" attributes="0"/>
                                                       <Component id="tx_identificacion" min="-2" pref="210" max="-2" attributes="0"/>
                                                       <Component id="lb_contrasena1" min="-2" pref="146" max="-2" attributes="0"/>
@@ -907,9 +916,12 @@
                                                       <Component id="tx_correo" alignment="0" min="-2" pref="228" max="-2" attributes="0"/>
                                                       <Component id="lb_identificacion2" min="-2" pref="93" max="-2" attributes="0"/>
                                                       <Component id="lb_apellidos2" min="-2" pref="76" max="-2" attributes="0"/>
-                                                      <Component id="bt_Agregarcliente1" min="-2" pref="216" max="-2" attributes="0"/>
+                                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                                          <Component id="jComboBox5" alignment="0" max="32767" attributes="0"/>
+                                                          <Component id="lb_contrasena2" alignment="0" pref="146" max="32767" attributes="0"/>
+                                                      </Group>
                                                   </Group>
-                                                  <EmptySpace min="0" pref="29" max="32767" attributes="0"/>
+                                                  <EmptySpace min="0" pref="5" max="32767" attributes="0"/>
                                               </Group>
                                           </Group>
                                       </Group>
@@ -928,63 +940,57 @@
                                               <Component id="tx_nombres" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="tx_apellidos" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="lb_tipo2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="lb_identificacion2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jComboBox5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="tx_identificacion" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="lb_telefono2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="lb_correo2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="tx_telefono" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="tx_correo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="lb_direccion2" min="-2" max="-2" attributes="0"/>
-                                              <Component id="lb_contrasena1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Group type="102" attributes="0">
+                                                  <Group type="103" groupAlignment="3" attributes="0">
+                                                      <Component id="lb_tipo2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="lb_identificacion2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="tx_identificacion" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="1" attributes="0">
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="jComboBox6" min="-2" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="tx_direccion" min="-2" max="-2" attributes="0"/>
-                                              <Component id="tx_contrasena" min="-2" max="-2" attributes="0"/>
+                                              <Group type="102" attributes="0">
+                                                  <Component id="lb_telefono2" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="tx_telefono" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="lb_direccion2" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="tx_direccion" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                                                  <Component id="lb_conf_contrasena1" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="tx_confContrasena" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                                                  <Component id="bt_Agregarcliente1" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" attributes="0">
+                                                  <Component id="lb_correo2" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="tx_correo" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="lb_contrasena1" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="tx_contrasena" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                                  <Component id="lb_contrasena2" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="jComboBox5" min="-2" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="lb_conf_contrasena1" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="tx_confContrasena" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="bt_Agregarcliente1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace pref="19" max="32767" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                 </DimensionLayout>
                               </Layout>
                               <SubComponents>
-                                <Component class="javax.swing.JButton" name="bt_Agregarcliente1">
-                                  <Properties>
-                                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                                      <Font name="Segoe UI" size="14" style="0"/>
-                                    </Property>
-                                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                                      <Color blue="66" green="cc" red="ff" type="rgb"/>
-                                    </Property>
-                                    <Property name="text" type="java.lang.String" value="Agregar Cliente"/>
-                                  </Properties>
-                                  <Events>
-                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_AgregarclienteActionPerformed"/>
-                                  </Events>
-                                </Component>
                                 <Component class="javax.swing.JLabel" name="lb_nombre2">
                                   <Properties>
                                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -1064,11 +1070,10 @@
                                 <Component class="javax.swing.JComboBox" name="jComboBox5">
                                   <Properties>
                                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                                      <StringArray count="4">
-                                        <StringItem index="0" value="CC"/>
-                                        <StringItem index="1" value="TI"/>
-                                        <StringItem index="2" value="CE"/>
-                                        <StringItem index="3" value="PEP"/>
+                                      <StringArray count="3">
+                                        <StringItem index="0" value="Oro"/>
+                                        <StringItem index="1" value="Diamante"/>
+                                        <StringItem index="2" value="Esmeralda"/>
                                       </StringArray>
                                     </Property>
                                   </Properties>
@@ -1087,12 +1092,52 @@
                                 <Component class="javax.swing.JTextField" name="tx_telefono">
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="tx_correo">
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tx_correoActionPerformed"/>
+                                  </Events>
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="tx_direccion">
                                 </Component>
                                 <Component class="javax.swing.JPasswordField" name="tx_contrasena">
                                 </Component>
                                 <Component class="javax.swing.JPasswordField" name="tx_confContrasena">
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="lb_contrasena2">
+                                  <Properties>
+                                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                                      <Font name="Segoe UI" size="14" style="0"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="Seleccionar plan*"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JButton" name="bt_Agregarcliente1">
+                                  <Properties>
+                                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                                      <Font name="Segoe UI" size="14" style="0"/>
+                                    </Property>
+                                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                      <Color blue="66" green="cc" red="ff" type="rgb"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="Agregar Cliente"/>
+                                  </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_AgregarclienteActionPerformed"/>
+                                  </Events>
+                                </Component>
+                                <Component class="javax.swing.JComboBox" name="jComboBox6">
+                                  <Properties>
+                                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                                      <StringArray count="4">
+                                        <StringItem index="0" value="CC"/>
+                                        <StringItem index="1" value="TI"/>
+                                        <StringItem index="2" value="CE"/>
+                                        <StringItem index="3" value="PEP"/>
+                                      </StringArray>
+                                    </Property>
+                                  </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                                  </AuxValues>
                                 </Component>
                               </SubComponents>
                             </Container>

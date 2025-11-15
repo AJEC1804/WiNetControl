@@ -9,39 +9,38 @@ package model;
  * @author Gyanela Meza
  */
 public class Planes {
-    private int codigo;
-    private String nombre;
-    private String velocidad;
-    private int precio;
-    private String descripcion;
 
-    // Constructor correcto
-    public Planes(int codigo, String nombre, String velocidad, int precio, String descripcion) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.velocidad = velocidad;
+    public int idPlan;
+    public String nombrePlan;
+    public String velocidadplan;  // Lo dejo por si lo necesitas luego
+    public String descripcionPlan;
+    public String fechaActivacion;
+    public double precio;
+
+    // Constructor básico corregido
+    public Planes(int idPlan, String nombrePlan, String descripcionPlan, double precio, String fechaActivacion) {
+
+        this.idPlan = idPlan;
+        this.nombrePlan = nombrePlan;
+        this.descripcionPlan = descripcionPlan;
         this.precio = precio;
-        this.descripcion = descripcion;
+        this.fechaActivacion = fechaActivacion;
     }
 
     // Getters
-    public int getCodigo() { return codigo; }
-    public String getNombre() { return nombre; }
-    public String getVelocidad() { return velocidad; }
-    public int getPrecio() { return precio; }
-    public String getDescripcion() { return descripcion; }
+    public int getIdPlan() { return idPlan; }
+    public String getNombrePlan() { return nombrePlan; }
+    public String getVelocidadPlan() { return velocidadplan; }
+    public String getDescripcionPlan() { return descripcionPlan; }
+    public String getFechaActivacion() { return fechaActivacion; }
+    public double getPrecio() { return precio; }
 
     // Setters
-    public void setCodigo(int codigo) { this.codigo = codigo; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setVelocidad(String velocidad) { this.velocidad = velocidad; }
-    public void setPrecio(int precio) { this.precio = precio; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-    // toString()
-    public String toString() {
-        return codigo + " " + nombre + " - " + velocidad + " " + precio + " " + descripcion;
-    }
+    public void setIdPlan(int idPlan) { this.idPlan = idPlan; }
+    public void setNombrePlan(String nombrePlan) { this.nombrePlan = nombrePlan; }
+    public void setVelocidadPlan(String velocidadPlan) { this.velocidadplan = velocidadPlan; }
+    public void setDescripcionPlan(String descripcionPlan) { this.descripcionPlan = descripcionPlan; }
+    public void setFechaActivacion(String fechaActivacion) { this.fechaActivacion = fechaActivacion; }
+    public void setPrecio(double precio) { this.precio = precio; }
 }
-
 
