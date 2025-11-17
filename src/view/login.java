@@ -4,7 +4,9 @@
  */
 package view;
 import javax.swing.*;
-
+import static controlador.crud_usuarios.contadorClientes;
+import static controlador.crud_usuarios.clientes;
+import model.cliente;
 /**
  *
  * @author Jarvi
@@ -122,31 +124,18 @@ public class login extends javax.swing.JFrame {
     if (identificacion.isEmpty() || contrasena.isEmpty()){
     JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña");
     return;
-   
     }
-    
-    String[] usuarios ={"admin"};
-    String[] contrasenas = {"1234"};
-    
-    boolean loginExitoso = false;
-    for (int i = 0; i < usuarios.length; i ++){
-        if (identificacion.equals(usuarios[i]) && contrasena.equals(contrasenas[i])){
-            loginExitoso = true;
-            break;
+
+    for (int i = 0; i < contadorClientes; i++) {
+            if (clientes[i].getIdentificacion().equals(identificacion) && clientes[i].getContrasena().equals(contrasena)) {
+                String usuario = clientes[i].getNombre();
+                JOptionPane.showMessageDialog(null, "Bienvenido "+usuario);
+                usuarioVista usu = new usuarioVista();
+                usu.setVisible(true);
+                this.dispose();
+                break;
+            }
         }
-    }
-    if (loginExitoso){
-     JOptionPane.showMessageDialog(this, "Bienvenido, Acceso concedido");
-     admin_view va = new admin_view();
-     va.setVisible(true);
-     this.dispose();
-    }
-    else {
-    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
-    jTextField1.setText("");
-    jPasswordField1.setText("");
-    }
-    
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

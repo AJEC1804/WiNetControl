@@ -19,5 +19,6 @@ public class Arreglos {
     public static ArrayList<String> listaCorreo = new ArrayList<>();
     public static ArrayList<String> listaDireccion = new ArrayList<>();
     public static ArrayList<String> listaContrasena = new ArrayList<>();
+    public static ArrayList<String> listaPlanes = new ArrayList<>();
     
 }

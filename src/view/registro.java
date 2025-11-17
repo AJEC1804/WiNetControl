@@ -3,10 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
-
-import static entidades.Arreglos.*;
-import javax.swing.*;
-;
+import static controlador.crud_usuarios.agregarCliente;
 
 /**
  *
@@ -225,65 +222,25 @@ public class registro extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         login lg = new login();
         lg.setVisible(true);
-        this.dispose();      
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-     String nombres = txtNombres.getText();
-    String apellidos = txtApellidos.getText();
-    String tipoId = (String) comboTipoId.getSelectedItem();
-    String identificacion = txtIdentificacion.getText();
-    String telefono = txtTelefono.getText();
-    String correo = txtCorreo.getText();
-    String direccion = txtDireccion.getText();
-    String contrasena = new String(txtContrasena.getPassword());
-    String repetirContrasena = new String(txtRepetirContrasena.getPassword());
-
-    if (nombres.isEmpty() || apellidos.isEmpty() || identificacion.isEmpty() || contrasena.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "⚠️ Por favor, complete todos los campos obligatorios");
-        return;
-    }
-    
-    
-    if (!contrasena.equals(repetirContrasena)) {
-        JOptionPane.showMessageDialog(this, "⚠️ Las contraseñas no coinciden");
-        txtContrasena.setText("");  // Limpiar solo contraseñas en caso de error
-        txtRepetirContrasena.setText("");
-        return;
-    }
-
-    if (listaIdentificacion.contains(identificacion)) {
-        JOptionPane.showMessageDialog(this, "⚠️ La identificación ya está registrada");
-        txtIdentificacion.setText("");
-        return;
-    }
-
-    listaNombres.add(nombres);
-    listaApellidos.add(apellidos);
-    listaTipoId.add(tipoId);
-    listaIdentificacion.add(identificacion);
-    listaTelefono.add(telefono);
-    listaCorreo.add(correo);
-    listaDireccion.add(direccion);
-    listaContrasena.add(contrasena); 
-
-    JOptionPane.showMessageDialog(this, "✅ Usuario registrado exitosamente");
-    limpiarcampos();
-    
-       
+        agregarCliente(txtNombres, txtApellidos, comboTipoId, txtIdentificacion, txtTelefono, txtCorreo, txtDireccion, txtContrasena, txtContrasena);
     }//GEN-LAST:event_saveActionPerformed
-    
-    private void limpiarcampos(){
-    txtNombres.setText("");
-    txtApellidos.setText("");
-    comboTipoId.setSelectedIndex(0);
-    txtIdentificacion.setText("");
-    txtTelefono.setText("");
-    txtCorreo.setText("");
-    txtDireccion.setText("");
-    txtContrasena.setText("");
-    txtRepetirContrasena.setText("");
+
+    private void limpiarcampos() {
+        txtNombres.setText("");
+        txtApellidos.setText("");
+        comboTipoId.setSelectedIndex(0);
+        txtIdentificacion.setText("");
+        txtTelefono.setText("");
+        txtCorreo.setText("");
+        txtDireccion.setText("");
+        txtContrasena.setText("");
+        txtRepetirContrasena.setText("");
     }
+
     /**
      * @param args the command line arguments
      */
