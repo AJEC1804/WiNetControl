@@ -16,10 +16,9 @@ public class Planes {
     public String descripcionPlan;
     public String fechaActivacion;
     public double precio;
-
+    public String planActual;
     // Constructor básico corregido
     public Planes(int idPlan, String nombrePlan, String descripcionPlan, double precio, String fechaActivacion) {
-
         this.idPlan = idPlan;
         this.nombrePlan = nombrePlan;
         this.descripcionPlan = descripcionPlan;
