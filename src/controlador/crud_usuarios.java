@@ -28,6 +28,9 @@ public class crud_usuarios {
     public static int contadorClientes = 0;
     public static Administrador[] administrador = new Administrador[ELEMENTOS];
     public static int contadorAdministrador = 0;
+    
+
+
 
     public static void agregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo, JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
             JPasswordField tx_contrasena, JPasswordField tx_confContrasena) {

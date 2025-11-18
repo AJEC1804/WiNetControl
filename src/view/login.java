@@ -3,9 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
+import static controlador.crud_usuarios.administrador;
 import javax.swing.*;
 import static controlador.crud_usuarios.contadorClientes;
 import static controlador.crud_usuarios.clientes;
+import static controlador.crud_usuarios.contadorAdministrador;
 import model.cliente;
 /**
  *
@@ -125,7 +127,6 @@ public class login extends javax.swing.JFrame {
     JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña");
     return;
     }
-
     for (int i = 0; i < contadorClientes; i++) {
             if (clientes[i].getIdentificacion().equals(identificacion) && clientes[i].getContrasena().equals(contrasena)) {
                 String usuario = clientes[i].getNombre();
@@ -136,6 +137,17 @@ public class login extends javax.swing.JFrame {
                 break;
             }
         }
+    for (int i = 0; i < contadorAdministrador; i++) {
+            if (administrador[i].getIdentificacion().equals(identificacion) && administrador[i].getContrasena().equals(contrasena)) {
+                String usuario = administrador[i].getNombre();
+                JOptionPane.showMessageDialog(null, "Bienvenido "+usuario);
+                admin_view ad = new admin_view();
+                ad.setVisible(true);
+                this.dispose();
+                break;
+            }
+        }
+    
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

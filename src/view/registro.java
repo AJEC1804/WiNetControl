@@ -227,6 +227,10 @@ public class registro extends javax.swing.JFrame {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         agregarCliente(txtNombres, txtApellidos, comboTipoId, txtIdentificacion, txtTelefono, txtCorreo, txtDireccion, txtContrasena, txtContrasena);
+        limpiarcampos();
+        login lg = new login();
+        lg.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_saveActionPerformed
 
     private void limpiarcampos() {
