@@ -6,6 +6,8 @@ import model.cliente;
 import controlador.correoSoporte;
 import controlador.Crud_Planes;
 import model.Planes;
+import static entidades.Arreglos.*;
+
 
 public class usuarioVista extends javax.swing.JFrame {
    
@@ -48,21 +50,19 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         JpnPng = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         JpnBienvenida = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
+        jLabel61 = new javax.swing.JLabel();
         JpnMiplan = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         btnFacturacion = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
         btnDetalles = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        btnActualizarPlan = new javax.swing.JButton();
+        btnCambioplan = new javax.swing.JButton();
         jLabel43 = new javax.swing.JLabel();
-        btnOpciones1 = new javax.swing.JButton();
         jLabel62 = new javax.swing.JLabel();
         JpnMisDatos = new javax.swing.JPanel();
         jPanel17 = new javax.swing.JPanel();
@@ -83,7 +83,7 @@ public class usuarioVista extends javax.swing.JFrame {
         txtNombres = new javax.swing.JTextField();
         txtApellidos = new javax.swing.JTextField();
         txtCorreo = new javax.swing.JTextField();
-        jLabel61 = new javax.swing.JLabel();
+        btnvolver1 = new javax.swing.JButton();
         jpnSoporte = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -93,7 +93,8 @@ public class usuarioVista extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtDescripcion = new javax.swing.JTextArea();
         txtAsunto = new javax.swing.JTextField();
-        jLabel63 = new javax.swing.JLabel();
+        btnVolver2 = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
         JpnDetalles = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
@@ -113,6 +114,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel36 = new javax.swing.JLabel();
         txtIdPlan = new javax.swing.JTextField();
         jLabel64 = new javax.swing.JLabel();
+        btnvolver3 = new javax.swing.JButton();
         JpnFacturacion = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         cbMes = new javax.swing.JComboBox<>();
@@ -124,10 +126,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel58 = new javax.swing.JLabel();
         jLabel59 = new javax.swing.JLabel();
         jLabel60 = new javax.swing.JLabel();
-        jLabel65 = new javax.swing.JLabel();
-        JpnCambiarPlan = new javax.swing.JPanel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel66 = new javax.swing.JLabel();
+        btnvolver4 = new javax.swing.JButton();
         JpnActualizarDatos = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel50 = new javax.swing.JLabel();
@@ -147,19 +146,11 @@ public class usuarioVista extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
         txtNuevaContraseña = new javax.swing.JPasswordField();
         txtContraseñaActual = new javax.swing.JPasswordField();
-        jLabel67 = new javax.swing.JLabel();
-        JpnActualizarMetodoPago = new javax.swing.JPanel();
-        jLabel35 = new javax.swing.JLabel();
-        jLabel68 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel37 = new javax.swing.JLabel();
-        jLabel69 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        JpnMenu.setBackground(new java.awt.Color(59, 130, 246));
+        JpnMenu.setBackground(new java.awt.Color(255, 204, 102));
         JpnMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/gente.png"))); // NOI18N
@@ -175,7 +166,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel2.setText("Usuario");
         JpnMenu.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(53, 99, -1, -1));
 
-        jPanelInicio.setBackground(new java.awt.Color(59, 130, 246));
+        jPanelInicio.setBackground(new java.awt.Color(255, 204, 102));
         jPanelInicio.setForeground(new java.awt.Color(255, 255, 255));
         jPanelInicio.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -188,37 +179,19 @@ public class usuarioVista extends javax.swing.JFrame {
                 jPanelInicioMouseExited(evt);
             }
         });
+        jPanelInicio.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("INICIO");
+        jPanelInicio.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 6, 160, -1));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-home-28.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanelInicioLayout = new javax.swing.GroupLayout(jPanelInicio);
-        jPanelInicio.setLayout(jPanelInicioLayout);
-        jPanelInicioLayout.setHorizontalGroup(
-            jPanelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInicioLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addContainerGap(103, Short.MAX_VALUE))
-        );
-        jPanelInicioLayout.setVerticalGroup(
-            jPanelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInicioLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3))
-                .addGap(135, 135, 135))
-        );
+        jPanelInicio.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         JpnMenu.add(jPanelInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 158, -1, 36));
 
-        JpnCerrarSesion.setBackground(new java.awt.Color(59, 130, 246));
+        JpnCerrarSesion.setBackground(new java.awt.Color(255, 204, 102));
         JpnCerrarSesion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 JpnCerrarSesionMouseClicked(evt);
@@ -238,11 +211,11 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel53.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel53.setForeground(new java.awt.Color(255, 255, 255));
         jLabel53.setText("Cerrar Sesion");
-        JpnCerrarSesion.add(jLabel53, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, -1, 50));
+        JpnCerrarSesion.add(jLabel53, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 160, 50));
 
         JpnMenu.add(JpnCerrarSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 447, 200, 50));
 
-        jPanelMiplan.setBackground(new java.awt.Color(59, 130, 246));
+        jPanelMiplan.setBackground(new java.awt.Color(255, 204, 102));
         jPanelMiplan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanelMiplanMouseClicked(evt);
@@ -254,37 +227,19 @@ public class usuarioVista extends javax.swing.JFrame {
                 jPanelMiplanMouseExited(evt);
             }
         });
+        jPanelMiplan.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("MI PLAN");
+        jPanelMiplan.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 6, 160, -1));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-list-28 (1).png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanelMiplanLayout = new javax.swing.GroupLayout(jPanelMiplan);
-        jPanelMiplan.setLayout(jPanelMiplanLayout);
-        jPanelMiplanLayout.setHorizontalGroup(
-            jPanelMiplanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMiplanLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addContainerGap(85, Short.MAX_VALUE))
-        );
-        jPanelMiplanLayout.setVerticalGroup(
-            jPanelMiplanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMiplanLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanelMiplanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5))
-                .addGap(92, 92, 92))
-        );
+        jPanelMiplan.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         JpnMenu.add(jPanelMiplan, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, -1, 40));
 
-        jPanelMisDatos.setBackground(new java.awt.Color(59, 130, 246));
+        jPanelMisDatos.setBackground(new java.awt.Color(255, 204, 102));
         jPanelMisDatos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanelMisDatosMouseClicked(evt);
@@ -296,37 +251,19 @@ public class usuarioVista extends javax.swing.JFrame {
                 jPanelMisDatosMouseExited(evt);
             }
         });
+        jPanelMisDatos.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setText("MIS DATOS");
+        jPanelMisDatos.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 6, 160, 28));
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-male-user-28.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanelMisDatosLayout = new javax.swing.GroupLayout(jPanelMisDatos);
-        jPanelMisDatos.setLayout(jPanelMisDatosLayout);
-        jPanelMisDatosLayout.setHorizontalGroup(
-            jPanelMisDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMisDatosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanelMisDatosLayout.setVerticalGroup(
-            jPanelMisDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMisDatosLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanelMisDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(46, 46, 46))
-        );
+        jPanelMisDatos.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         JpnMenu.add(jPanelMisDatos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 246, 200, 40));
 
-        JpnSoporte.setBackground(new java.awt.Color(59, 130, 246));
+        JpnSoporte.setBackground(new java.awt.Color(255, 204, 102));
         JpnSoporte.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 JpnSoporteMouseClicked(evt);
@@ -338,50 +275,29 @@ public class usuarioVista extends javax.swing.JFrame {
                 JpnSoporteMouseExited(evt);
             }
         });
+        JpnSoporte.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("SOPORTE");
+        JpnSoporte.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 6, 160, -1));
 
         jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-support-28.png"))); // NOI18N
-
-        javax.swing.GroupLayout JpnSoporteLayout = new javax.swing.GroupLayout(JpnSoporte);
-        JpnSoporte.setLayout(JpnSoporteLayout);
-        JpnSoporteLayout.setHorizontalGroup(
-            JpnSoporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JpnSoporteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel13)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-        JpnSoporteLayout.setVerticalGroup(
-            JpnSoporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JpnSoporteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(JpnSoporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel13))
-                .addGap(0, 8, Short.MAX_VALUE))
-        );
+        JpnSoporte.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         JpnMenu.add(JpnSoporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 292, -1, -1));
 
-        getContentPane().add(JpnMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 520));
+        getContentPane().add(JpnMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 500));
 
-        JpnPng.setBackground(new java.awt.Color(255, 255, 255));
+        JpnPng.setBackground(new java.awt.Color(137, 207, 240));
         JpnPng.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
         jLabel18.setText("WiNet Control");
-        JpnPng.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
+        JpnPng.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 42, 250, 50));
 
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/ChatGPT Image 22 oct 2025, 08_12_24 p.m..png"))); // NOI18N
-        JpnPng.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 110));
-
-        getContentPane().add(JpnPng, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 780, 100));
+        getContentPane().add(JpnPng, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 780, 140));
 
         JpnBienvenida.setBackground(new java.awt.Color(255, 255, 255));
         JpnBienvenida.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -393,6 +309,11 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-waving-hand-medium-skin-tone-48.png"))); // NOI18N
         JpnBienvenida.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 130, -1, -1));
 
+        jLabel61.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel61.setText("Recuerda que en WiNet Control estamos para servirte...");
+        jLabel61.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        JpnBienvenida.add(jLabel61, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 380, 20));
+
         jTabbedPane1.addTab("0", JpnBienvenida);
 
         JpnMiplan.setBackground(new java.awt.Color(255, 255, 255));
@@ -402,7 +323,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel16.setText("MI PLAN");
         JpnMiplan.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
 
-        btnFacturacion.setBackground(new java.awt.Color(59, 130, 246));
+        btnFacturacion.setBackground(new java.awt.Color(137, 207, 240));
         btnFacturacion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnFacturacion.setForeground(new java.awt.Color(255, 255, 255));
         btnFacturacion.setText("Mis facturas");
@@ -412,15 +333,12 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnFacturacionActionPerformed(evt);
             }
         });
-        JpnMiplan.add(btnFacturacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 170, 200, 40));
+        JpnMiplan.add(btnFacturacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, 250, 40));
 
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/informacion_1.png"))); // NOI18N
-        JpnMiplan.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 40, 40));
+        JpnMiplan.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 90, 40, 40));
 
-        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-update-24.png"))); // NOI18N
-        JpnMiplan.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 120, 40, 40));
-
-        btnDetalles.setBackground(new java.awt.Color(59, 130, 246));
+        btnDetalles.setBackground(new java.awt.Color(137, 207, 240));
         btnDetalles.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnDetalles.setForeground(new java.awt.Color(255, 255, 255));
         btnDetalles.setText("Detalles de mi plan");
@@ -430,38 +348,25 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnDetallesActionPerformed(evt);
             }
         });
-        JpnMiplan.add(btnDetalles, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 200, 40));
+        JpnMiplan.add(btnDetalles, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, 250, 40));
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-invoices-24.png"))); // NOI18N
-        JpnMiplan.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 40, 40));
+        JpnMiplan.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, 40, 40));
 
-        btnActualizarPlan.setBackground(new java.awt.Color(59, 130, 246));
-        btnActualizarPlan.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnActualizarPlan.setForeground(new java.awt.Color(255, 255, 255));
-        btnActualizarPlan.setText(" Actualizar plan");
-        btnActualizarPlan.setBorder(null);
-        btnActualizarPlan.addActionListener(new java.awt.event.ActionListener() {
+        btnCambioplan.setBackground(new java.awt.Color(137, 207, 240));
+        btnCambioplan.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnCambioplan.setForeground(new java.awt.Color(255, 255, 255));
+        btnCambioplan.setText("Solicitar cambio plan");
+        btnCambioplan.setBorder(null);
+        btnCambioplan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarPlanActionPerformed(evt);
+                btnCambioplanActionPerformed(evt);
             }
         });
-        JpnMiplan.add(btnActualizarPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 250, 200, 40));
+        JpnMiplan.add(btnCambioplan, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 250, 250, 40));
 
         jLabel43.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-update-24.png"))); // NOI18N
-        JpnMiplan.add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 40, 40));
-
-        btnOpciones1.setBackground(new java.awt.Color(59, 130, 246));
-        btnOpciones1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnOpciones1.setForeground(new java.awt.Color(255, 255, 255));
-        btnOpciones1.setText("Actualizar metodo de pago");
-        btnOpciones1.setBorder(null);
-        btnOpciones1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnOpciones1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpciones1ActionPerformed(evt);
-            }
-        });
-        JpnMiplan.add(btnOpciones1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 120, 250, 40));
+        JpnMiplan.add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 250, 40, 40));
 
         jLabel62.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
         JpnMiplan.add(jLabel62, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
@@ -535,8 +440,13 @@ public class usuarioVista extends javax.swing.JFrame {
         txtCorreo.setFocusable(false);
         jPanel17.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 170, -1));
 
-        jLabel61.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        jPanel17.add(jLabel61, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        btnvolver1.setText("Volver");
+        btnvolver1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnvolver1ActionPerformed(evt);
+            }
+        });
+        jPanel17.add(btnvolver1, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 210, 160, -1));
 
         javax.swing.GroupLayout JpnMisDatosLayout = new javax.swing.GroupLayout(JpnMisDatos);
         JpnMisDatos.setLayout(JpnMisDatosLayout);
@@ -560,18 +470,18 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel20.setText("Soporte");
-        jpnSoporte.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, -1, -1));
+        jpnSoporte.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, -1, -1));
 
         jPanel7.setBackground(new java.awt.Color(153, 153, 153));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel25.setText("Asunto:");
-        jPanel7.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
+        jPanel7.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         jLabel23.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel23.setText("Descripcion del problema:");
-        jPanel7.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, -1, -1));
+        jPanel7.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         btnEnviarSoporte.setBackground(new java.awt.Color(102, 102, 102));
         btnEnviarSoporte.setForeground(new java.awt.Color(255, 255, 255));
@@ -581,20 +491,31 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnEnviarSoporteActionPerformed(evt);
             }
         });
-        jPanel7.add(btnEnviarSoporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 230, 60, -1));
+        jPanel7.add(btnEnviarSoporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 200, 80, -1));
 
         txtDescripcion.setColumns(20);
         txtDescripcion.setRows(5);
         txtDescripcion.setBorder(null);
+        txtDescripcion.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane2.setViewportView(txtDescripcion);
 
-        jPanel7.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 600, 100));
-        jPanel7.add(txtAsunto, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 600, -1));
+        jPanel7.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 640, -1));
+        jPanel7.add(txtAsunto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 630, -1));
 
-        jpnSoporte.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 650, 300));
+        btnVolver2.setText("Volver");
+        btnVolver2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolver2ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(btnVolver2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 230, 80, -1));
 
-        jLabel63.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        jpnSoporte.add(jLabel63, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        jpnSoporte.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 690, 270));
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel17.setText("Aqui puedes solicitar el cambio de tu plan, o reportar fallos en el sistema.");
+        jpnSoporte.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 510, -1));
 
         jTabbedPane1.addTab("3", jpnSoporte);
 
@@ -664,6 +585,14 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel64.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
         JpnDetalles.add(jLabel64, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
+        btnvolver3.setText("Volver");
+        btnvolver3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnvolver3ActionPerformed(evt);
+            }
+        });
+        JpnDetalles.add(btnvolver3, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 90, -1));
+
         jTabbedPane1.addTab("4", JpnDetalles);
 
         JpnFacturacion.setBackground(new java.awt.Color(255, 255, 255));
@@ -723,22 +652,16 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel60.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         JpnFacturacion.add(jLabel60, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 320, 30));
 
-        jLabel65.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        JpnFacturacion.add(jLabel65, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        btnvolver4.setBackground(new java.awt.Color(137, 207, 240));
+        btnvolver4.setText("Volver");
+        btnvolver4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnvolver4ActionPerformed(evt);
+            }
+        });
+        JpnFacturacion.add(btnvolver4, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 180, 110, -1));
 
         jTabbedPane1.addTab("5", JpnFacturacion);
-
-        JpnCambiarPlan.setBackground(new java.awt.Color(255, 255, 255));
-        JpnCambiarPlan.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel17.setText("Cambiar plan");
-        JpnCambiarPlan.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
-
-        jLabel66.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        JpnCambiarPlan.add(jLabel66, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jTabbedPane1.addTab("6", JpnCambiarPlan);
 
         JpnActualizarDatos.setBackground(new java.awt.Color(204, 204, 204));
         JpnActualizarDatos.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -798,52 +721,20 @@ public class usuarioVista extends javax.swing.JFrame {
         jPanel6.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 270, 90, -1));
 
         btnCancelar.setText("Cancelar");
-        jPanel6.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 270, 90, -1));
-        jPanel6.add(txtNuevaContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 170, -1));
-
-        txtContraseñaActual.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtContraseñaActualActionPerformed(evt);
+                btnCancelarActionPerformed(evt);
             }
         });
-        jPanel6.add(txtContraseñaActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 140, -1));
-
-        jLabel67.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        jPanel6.add(jLabel67, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        jPanel6.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 270, 90, -1));
+        jPanel6.add(txtNuevaContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 160, -1));
+        jPanel6.add(txtContraseñaActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 170, -1));
 
         JpnActualizarDatos.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 370));
 
-        jTabbedPane1.addTab("7", JpnActualizarDatos);
+        jTabbedPane1.addTab("6", JpnActualizarDatos);
 
-        JpnActualizarMetodoPago.setBackground(new java.awt.Color(255, 255, 255));
-        JpnActualizarMetodoPago.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel35.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel35.setText("Actualizar metodo de pago");
-        JpnActualizarMetodoPago.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, -1, -1));
-
-        jLabel68.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        JpnActualizarMetodoPago.add(jLabel68, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jTabbedPane1.addTab("8", JpnActualizarMetodoPago);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel37.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel37.setText("Actualizar mi plan");
-        jPanel1.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, -1, -1));
-
-        jLabel69.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/flecha-izquierda.png"))); // NOI18N
-        jPanel1.add(jLabel69, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jTabbedPane1.addTab("9", jPanel1);
-
-        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jTabbedPane1.addTab("10", jPanel2);
-
-        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 780, 400));
+        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 780, 390));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -853,11 +744,11 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanelInicioMouseClicked
 
     private void jPanelInicioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelInicioMouseEntered
-        jPanelInicio.setBackground(new Color(30, 58, 138));
+        jPanelInicio.setBackground(new Color(204,204,204));
     }//GEN-LAST:event_jPanelInicioMouseEntered
 
     private void jPanelInicioMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelInicioMouseExited
-        jPanelInicio.setBackground(new Color(59, 130, 246));
+        jPanelInicio.setBackground(new Color(255,204,102));
     }//GEN-LAST:event_jPanelInicioMouseExited
 
     private void jPanelMiplanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMiplanMouseClicked
@@ -865,11 +756,11 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanelMiplanMouseClicked
 
     private void jPanelMiplanMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMiplanMouseEntered
-        jPanelMiplan.setBackground(new Color(30, 58, 138));
+        jPanelMiplan.setBackground(new Color(204,204,204));
     }//GEN-LAST:event_jPanelMiplanMouseEntered
 
     private void jPanelMiplanMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMiplanMouseExited
-        jPanelMiplan.setBackground(new Color(59, 130, 246));
+        jPanelMiplan.setBackground(new Color(255,204,102));
     }//GEN-LAST:event_jPanelMiplanMouseExited
 
     private void jPanelMisDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMisDatosMouseClicked
@@ -877,11 +768,11 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanelMisDatosMouseClicked
 
     private void jPanelMisDatosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMisDatosMouseEntered
-        jPanelMisDatos.setBackground(new Color(30, 58, 138));
+        jPanelMisDatos.setBackground(new Color(204,204,204));
     }//GEN-LAST:event_jPanelMisDatosMouseEntered
 
     private void jPanelMisDatosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMisDatosMouseExited
-        jPanelMisDatos.setBackground(new Color(59, 130, 246));
+        jPanelMisDatos.setBackground(new Color(255,204,102));
     }//GEN-LAST:event_jPanelMisDatosMouseExited
 
     private void JpnSoporteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnSoporteMouseClicked
@@ -889,11 +780,11 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_JpnSoporteMouseClicked
 
     private void JpnSoporteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnSoporteMouseEntered
-        JpnSoporte.setBackground(new Color(30, 58, 138));
+        JpnSoporte.setBackground(new Color(204,204,204));
     }//GEN-LAST:event_JpnSoporteMouseEntered
 
     private void JpnSoporteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnSoporteMouseExited
-        JpnSoporte.setBackground(new Color(59, 130, 246));
+        JpnSoporte.setBackground(new Color(255,204,102));
     }//GEN-LAST:event_JpnSoporteMouseExited
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -901,11 +792,11 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void JpnCerrarSesionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnCerrarSesionMouseEntered
-        JpnCerrarSesion.setBackground(new Color (30, 58, 138));
+        JpnCerrarSesion.setBackground(new Color (204,204,204));
     }//GEN-LAST:event_JpnCerrarSesionMouseEntered
 
     private void JpnCerrarSesionMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnCerrarSesionMouseExited
-        JpnCerrarSesion.setBackground(new Color (59, 130, 246));
+        JpnCerrarSesion.setBackground(new Color (255,204,102));
     }//GEN-LAST:event_JpnCerrarSesionMouseExited
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
@@ -975,13 +866,13 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEnviarSoporteActionPerformed
 
     private void btnActualizarInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarInfoActionPerformed
-        jTabbedPane1.setSelectedIndex(7);
+        jTabbedPane1.setSelectedIndex(6);
        
     }//GEN-LAST:event_btnActualizarInfoActionPerformed
 
-    private void btnActualizarPlanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarPlanActionPerformed
-       jTabbedPane1.setSelectedIndex(10);
-    }//GEN-LAST:event_btnActualizarPlanActionPerformed
+    private void btnCambioplanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambioplanActionPerformed
+       jTabbedPane1.setSelectedIndex(3);
+    }//GEN-LAST:event_btnCambioplanActionPerformed
 
     private void btnDetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallesActionPerformed
         jTabbedPane1.setSelectedIndex(4);
@@ -1039,10 +930,6 @@ public class usuarioVista extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnFacturacionActionPerformed
 
-    private void btnOpciones1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpciones1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnOpciones1ActionPerformed
-
     private void btnVerFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerFacturaActionPerformed
      /*String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
      Planes planUsuario = usuarioActual.getPlanActual();
@@ -1077,15 +964,31 @@ public class usuarioVista extends javax.swing.JFrame {
     */
     }//GEN-LAST:event_btnVerFacturaActionPerformed
 
-    private void txtContraseñaActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaActualActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtContraseñaActualActionPerformed
-
     private void JpnCerrarSesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnCerrarSesionMouseClicked
         login log = new login();
         log.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_JpnCerrarSesionMouseClicked
+
+    private void btnvolver1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver1ActionPerformed
+        jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_btnvolver1ActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnVolver2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolver2ActionPerformed
+        jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_btnVolver2ActionPerformed
+
+    private void btnvolver3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver3ActionPerformed
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_btnvolver3ActionPerformed
+
+    private void btnvolver4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver4ActionPerformed
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_btnvolver4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1127,9 +1030,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel JpnActualizarDatos;
-    private javax.swing.JPanel JpnActualizarMetodoPago;
     private javax.swing.JPanel JpnBienvenida;
-    private javax.swing.JPanel JpnCambiarPlan;
     private javax.swing.JPanel JpnCerrarSesion;
     private javax.swing.JPanel JpnDetalles;
     private javax.swing.JPanel JpnFacturacion;
@@ -1139,14 +1040,17 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JPanel JpnPng;
     private javax.swing.JPanel JpnSoporte;
     private javax.swing.JButton btnActualizarInfo;
-    private javax.swing.JButton btnActualizarPlan;
+    private javax.swing.JButton btnCambioplan;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnDetalles;
     private javax.swing.JButton btnEnviarSoporte;
     private javax.swing.JButton btnFacturacion;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnOpciones1;
     private javax.swing.JButton btnVerFactura;
+    private javax.swing.JButton btnVolver2;
+    private javax.swing.JButton btnvolver1;
+    private javax.swing.JButton btnvolver3;
+    private javax.swing.JButton btnvolver4;
     private javax.swing.JComboBox<String> cbAno;
     private javax.swing.JComboBox<String> cbMes;
     private javax.swing.JComboBox<String> cbTipoDocumento;
@@ -1160,11 +1064,9 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
@@ -1177,9 +1079,7 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
-    private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
@@ -1208,19 +1108,11 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel61;
     private javax.swing.JLabel jLabel62;
-    private javax.swing.JLabel jLabel63;
     private javax.swing.JLabel jLabel64;
-    private javax.swing.JLabel jLabel65;
-    private javax.swing.JLabel jLabel66;
-    private javax.swing.JLabel jLabel67;
-    private javax.swing.JLabel jLabel68;
-    private javax.swing.JLabel jLabel69;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanelInicio;

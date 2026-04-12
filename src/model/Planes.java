@@ -10,36 +10,34 @@ package model;
  */
 public class Planes {
 
-    public int idPlan;
-    public String nombrePlan;
-    public String velocidadplan;  // Lo dejo por si lo necesitas luego
-    public String descripcionPlan;
-    public String fechaActivacion;
-    public double precio;
-    public String planActual;
-    // Constructor básico corregido
-    public Planes(int idPlan, String nombrePlan, String descripcionPlan, double precio, String fechaActivacion) {
+    private int idPlan;
+    private String nombrePlan;
+    private String velocidadPlan;
+    private String descripcionPlan;
+    private double precio;
+    private String fechaActivacion; 
+
+    public Planes(int idPlan, String nombrePlan, String velocidadPlan, double precio, String descripcionPlan) {
         this.idPlan = idPlan;
         this.nombrePlan = nombrePlan;
-        this.descripcionPlan = descripcionPlan;
+        this.velocidadPlan = velocidadPlan;
         this.precio = precio;
-        this.fechaActivacion = fechaActivacion;
+        this.descripcionPlan = descripcionPlan;
+        this.fechaActivacion = ""; 
     }
 
-    // Getters
     public int getIdPlan() { return idPlan; }
     public String getNombrePlan() { return nombrePlan; }
-    public String getVelocidadPlan() { return velocidadplan; }
+    public String getVelocidadPlan() { return velocidadPlan; }
     public String getDescripcionPlan() { return descripcionPlan; }
-    public String getFechaActivacion() { return fechaActivacion; }
     public double getPrecio() { return precio; }
+    public String getFechaActivacion() { return fechaActivacion; }
 
-    // Setters
     public void setIdPlan(int idPlan) { this.idPlan = idPlan; }
     public void setNombrePlan(String nombrePlan) { this.nombrePlan = nombrePlan; }
-    public void setVelocidadPlan(String velocidadPlan) { this.velocidadplan = velocidadPlan; }
+    public void setVelocidadPlan(String velocidadPlan) { this.velocidadPlan = velocidadPlan; }
     public void setDescripcionPlan(String descripcionPlan) { this.descripcionPlan = descripcionPlan; }
-    public void setFechaActivacion(String fechaActivacion) { this.fechaActivacion = fechaActivacion; }
     public void setPrecio(double precio) { this.precio = precio; }
+    public void setFechaActivacion(String fechaActivacion) { this.fechaActivacion = fechaActivacion; }
 }
 

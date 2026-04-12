@@ -4,8 +4,8 @@
  */
 package view;
 import javax.swing.*;
-import static controlador.crud_usuarios.contadorClientes;
-import static controlador.crud_usuarios.clientes;
+
+import static entidades.Arreglos.*;
 import model.cliente;
 /**
  *
@@ -135,7 +135,13 @@ public class login extends javax.swing.JFrame {
                 this.dispose();
                 break;
             }
-        }
+        } 
+    if (identificacion.equals("admin123") && contrasena.equals("123456")) {
+                admin_view admin = new admin_view();
+                admin.setVisible(true);
+                this.dispose();
+                return;   
+}
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

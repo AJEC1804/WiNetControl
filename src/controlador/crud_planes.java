@@ -176,75 +176,95 @@ public class Crud_Planes {
         tx_cod_buscar_actualizar_plan.setText("");
     }
    public static void actualizarPlan(JTextField tx_cod_plan_mostrar,
-                                      JTextField tx_nombre_plan_mostrar,
-                                      JTextField tx_velocidad_plan_mostrar,
-                                      JTextField tx_precio_plan_mostrar,
-                                      JTextPane tx_descripcion_plan2,
-                                      JTextField tx_cod_plan_act,
-                                      JTextField tx_nombre_plan_act,
-                                      JTextField tx_velocidad_plan_act,
-                                      JTextField tx_precio_plan_act,
-                                      JTextPane tx_descripcion_plan_act) {
+                                  JTextField tx_nombre_plan_mostrar,
+                                  JTextField tx_velocidad_plan_mostrar,
+                                  JTextField tx_precio_plan_mostrar,
+                                  JTextPane tx_descripcion_plan2,
+                                  JTextField tx_cod_plan_act,
+                                  JTextField tx_nombre_plan_act,
+                                  JTextField tx_velocidad_plan_act,
+                                  JTextField tx_precio_plan_act,
+                                  JTextPane tx_descripcion_plan_act) {
 
-        String codigoBuscarStr = tx_cod_plan_mostrar.getText().trim();
+    String codigoBuscarStr = tx_cod_plan_mostrar.getText().trim();
 
-        if (codigoBuscarStr.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Busque un plan antes de actualizar.");
-            return;
-        }
-
-        try {
-            int codigoBuscar = Integer.parseInt(codigoBuscarStr);
-            boolean encontrado = false;
-
-            for (int i = 0; i < contadorPlanes; i++) {
-                Planes p = plan[i];
-
-                if (p != null && p.getIdPlan() == codigoBuscar) {
-
-                    String nuevoCodigoStr = tx_cod_plan_act.getText().trim();
-                    String nuevoNombre = tx_nombre_plan_act.getText().trim();
-                    String nuevaVelocidad = tx_velocidad_plan_act.getText().trim();
-                    String nuevoPrecioStr = tx_precio_plan_act.getText().trim();
-                    String nuevaDescripcion = tx_descripcion_plan_act.getText().trim();
-
-                    if (!nuevoCodigoStr.isEmpty()) {
-                        p.setIdPlan(Integer.parseInt(nuevoCodigoStr));
-                    }
-                    if (!nuevoNombre.isEmpty()) p.setNombrePlan(nuevoNombre);
-                    if (!nuevaVelocidad.isEmpty()) p.setVelocidadPlan(nuevaVelocidad);
-                    if (!nuevoPrecioStr.isEmpty()) p.setPrecio(Integer.parseInt(nuevoPrecioStr));
-                    if (!nuevaDescripcion.isEmpty()) p.setDescripcionPlan(nuevaDescripcion);
-
-                    JOptionPane.showMessageDialog(null, "Plan actualizado correctamente.");
-
-                    tx_cod_plan_mostrar.setText(String.valueOf(p.getIdPlan()));
-                    tx_nombre_plan_mostrar.setText(p.getNombrePlan());
-                    tx_velocidad_plan_mostrar.setText(p.getVelocidadPlan());
-                    tx_precio_plan_mostrar.setText(String.valueOf(p.getPrecio()));
-                    tx_descripcion_plan2.setText(p.getDescripcionPlan());
-
-                    tx_cod_plan_act.setText("");
-                    tx_nombre_plan_act.setText("");
-                    tx_velocidad_plan_act.setText("");
-                    tx_precio_plan_act.setText("");
-                    tx_descripcion_plan_act.setText("");
-
-                    encontrado = true;
-                    break;
-                }
-            }
-
-            if (!encontrado) {
-                JOptionPane.showMessageDialog(null, "Plan no encontrado.");
-            }
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Código inválido.");
-        }
+    if (codigoBuscarStr.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Busque un plan antes de actualizar.");
+        return;
     }
+
+    try {
+        int codigoBuscar = Integer.parseInt(codigoBuscarStr);
+        boolean encontrado = false;
+
+        for (int i = 0; i < contadorPlanes; i++) {
+            Planes p = plan[i];
+
+            if (p != null && p.getIdPlan() == codigoBuscar) {
+
+                String nuevoCodigoStr = tx_cod_plan_act.getText().trim();
+                String nuevoNombre = tx_nombre_plan_act.getText().trim();
+                String nuevaVelocidad = tx_velocidad_plan_act.getText().trim();
+                String nuevoPrecioStr = tx_precio_plan_act.getText().trim();
+                String nuevaDescripcion = tx_descripcion_plan_act.getText().trim();
+
+                if (!nuevoCodigoStr.isEmpty() && !nuevoCodigoStr.matches("\\d+")) {
+                    JOptionPane.showMessageDialog(null, "El código solo puede contener números.");
+                    return;
+                }
+
+                if (!nuevoPrecioStr.isEmpty() && !nuevoPrecioStr.matches("\\d+")) {
+                    JOptionPane.showMessageDialog(null, "El precio solo puede contener números.");
+                    return;
+                }
+
+                if (!nuevoCodigoStr.isEmpty()) {
+                    int nuevoCodigo = Integer.parseInt(nuevoCodigoStr);
+
+                    if (codigoPlanExisteActualizar(nuevoCodigo, i)) {
+                        JOptionPane.showMessageDialog(null, "Ya existe un plan con este código.");
+                        return;
+                    }
+
+                    p.setIdPlan(nuevoCodigo);
+                }
+
+                if (!nuevoNombre.isEmpty()) p.setNombrePlan(nuevoNombre);
+                if (!nuevaVelocidad.isEmpty()) p.setVelocidadPlan(nuevaVelocidad);
+                if (!nuevoPrecioStr.isEmpty()) p.setPrecio(Integer.parseInt(nuevoPrecioStr));
+                if (!nuevaDescripcion.isEmpty()) p.setDescripcionPlan(nuevaDescripcion);
+
+                JOptionPane.showMessageDialog(null, "Plan actualizado correctamente.");
+
+                tx_cod_plan_mostrar.setText(String.valueOf(p.getIdPlan()));
+                tx_nombre_plan_mostrar.setText(p.getNombrePlan());
+                tx_velocidad_plan_mostrar.setText(p.getVelocidadPlan());
+                tx_precio_plan_mostrar.setText(String.valueOf(p.getPrecio()));
+                tx_descripcion_plan2.setText(p.getDescripcionPlan());
+                
+                tx_cod_plan_act.setText("");
+                tx_nombre_plan_act.setText("");
+                tx_velocidad_plan_act.setText("");
+                tx_precio_plan_act.setText("");
+                tx_descripcion_plan_act.setText("");
+
+
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            JOptionPane.showMessageDialog(null, "Plan no encontrado.");
+        }
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "El código debe ser numérico.");
+    }
+}
    public static void buscarPlanEliminar(JTextField tx_idPlan_buscar1,
                                           JTextField tx_cod_plan_mostrar1,
+                                          JTextField tx_nombre_plan_mostrar1,
                                           JTextField tx_velocidad_plan_mostrar1,
                                           JTextField tx_precio_plan_mostrar1,
                                           JTextPane tx_descripcion_plan3) {
@@ -257,6 +277,7 @@ public class Crud_Planes {
                 String.valueOf(plan[i].getIdPlan()).equals(codigoBuscar)) {
 
                 tx_cod_plan_mostrar1.setText(String.valueOf(plan[i].getIdPlan()));
+                tx_nombre_plan_mostrar1.setText(String.valueOf(plan[i].getNombrePlan()));
                 tx_velocidad_plan_mostrar1.setText(plan[i].getVelocidadPlan());
                 tx_precio_plan_mostrar1.setText(String.valueOf(plan[i].getPrecio()));
                 tx_descripcion_plan3.setText(plan[i].getDescripcionPlan());
@@ -271,6 +292,7 @@ public class Crud_Planes {
         }
     }
 public static void eliminarPlan(JTextField tx_cod_plan_mostrar1,
+                                    JTextField tx_nombre_plan_mostrar1,
                                     JTextField tx_velocidad_plan_mostrar1,
                                     JTextField tx_precio_plan_mostrar1,
                                     JTextPane tx_descripcion_plan3,
@@ -303,11 +325,21 @@ public static void eliminarPlan(JTextField tx_cod_plan_mostrar1,
         }
 
         tx_cod_plan_mostrar1.setText("");
+        tx_nombre_plan_mostrar1.setText("");
         tx_velocidad_plan_mostrar1.setText("");
         tx_precio_plan_mostrar1.setText("");
         tx_descripcion_plan3.setText("");
         tx_idPlan_buscar1.setText("");
     }
+    
+public static boolean codigoPlanExisteActualizar(int codigoNuevo, int indiceActual) {
+    for (int i = 0; i < contadorPlanes; i++) {
+        if (plan[i] != null && plan[i].getIdPlan() == codigoNuevo && i != indiceActual) {
+            return true;
+        }
+    }
+    return false;
+}
 
 
     ///////////////

@@ -67,10 +67,12 @@ public class admin_view extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jButton22 = new javax.swing.JButton();
+        jLabel35 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -113,14 +115,12 @@ public class admin_view extends javax.swing.JFrame {
         lb_correo2 = new javax.swing.JLabel();
         lb_direccion2 = new javax.swing.JLabel();
         lb_contrasena1 = new javax.swing.JLabel();
-        jComboBox5 = new javax.swing.JComboBox<>();
         lb_conf_contrasena1 = new javax.swing.JLabel();
         tx_telefono = new javax.swing.JTextField();
         tx_correo = new javax.swing.JTextField();
         tx_direccion = new javax.swing.JTextField();
         tx_contrasena = new javax.swing.JPasswordField();
         tx_confContrasena = new javax.swing.JPasswordField();
-        lb_contrasena2 = new javax.swing.JLabel();
         bt_Agregarcliente1 = new javax.swing.JButton();
         jComboBox6 = new javax.swing.JComboBox<>();
         jLabel22 = new javax.swing.JLabel();
@@ -160,7 +160,7 @@ public class admin_view extends javax.swing.JFrame {
         lb_contraseña4 = new javax.swing.JLabel();
         tx_telefonoCambiar1 = new javax.swing.JTextField();
         tx_correoCambiar1 = new javax.swing.JTextField();
-        txdireccionCambiar = new javax.swing.JTextField();
+        tx_direccionCambiar1 = new javax.swing.JTextField();
         tx_passwordCambiar1 = new javax.swing.JPasswordField();
         jtipo_cambiar = new javax.swing.JComboBox<>();
         jPanel48 = new javax.swing.JPanel();
@@ -348,7 +348,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/lan.png"))); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Planes");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -360,7 +361,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -379,9 +380,10 @@ public class admin_view extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/perfil (1).png"))); // NOI18N
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 21, -1, 74));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Administrador");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 101, -1, -1));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
 
         jPanel8.setBackground(new java.awt.Color(255, 204, 102));
         jPanel8.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -398,7 +400,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/casa-inteligente.png"))); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Inicio");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -410,7 +413,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,6 +430,7 @@ public class admin_view extends javax.swing.JFrame {
         jPanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 210, 50));
 
         jPanel9.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel9.setForeground(new java.awt.Color(255, 255, 255));
         jPanel9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel9MouseClicked(evt);
@@ -441,7 +445,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/comentarios-de-los-clientes.png"))); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Clientes");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -453,7 +458,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -473,6 +478,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(137, 207, 240));
 
+        jButton22.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton22.setText("Volver al login");
         jButton22.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -480,12 +486,18 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
 
+        jLabel35.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        jLabel35.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel35.setText("WiNet Control");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(659, Short.MAX_VALUE)
+                .addContainerGap(195, Short.MAX_VALUE)
+                .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(114, 114, 114)
                 .addComponent(jButton22)
                 .addContainerGap())
         );
@@ -493,18 +505,27 @@ public class admin_view extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton22)
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton22)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                        .addGap(14, 14, 14))))
         );
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 770, -1));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 770, 140));
 
-        jPanel11.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel11.setBackground(new java.awt.Color(255, 255, 255));
         jPanel11.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(137, 207, 240));
         jLabel15.setText("Bienvenido, Administrador! ");
         jPanel11.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, -1, -1));
+
+        jLabel36.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/icons8-waving-hand-medium-skin-tone-48.png"))); // NOI18N
+        jPanel11.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, -1, -1));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -521,22 +542,23 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab1", jPanel4);
 
-        jPanel12.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel12.setBackground(new java.awt.Color(255, 255, 255));
         jPanel12.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel9.setText("Gestión de Clientes ");
-        jPanel12.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 10, -1, -1));
+        jPanel12.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, -1, -1));
 
-        jButton4.setBackground(new java.awt.Color(255, 204, 102));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton4.setBackground(new java.awt.Color(137, 207, 240));
+        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Agregar Clientes");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
-        jPanel12.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 205, -1));
+        jPanel12.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 205, 40));
 
         jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/agregar-usuario (1).png"))); // NOI18N
         jPanel12.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, 36));
@@ -544,25 +566,27 @@ public class admin_view extends javax.swing.JFrame {
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/base-de-datos.png"))); // NOI18N
         jPanel12.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, -1, 36));
 
-        jButton5.setBackground(new java.awt.Color(255, 204, 102));
-        jButton5.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton5.setBackground(new java.awt.Color(137, 207, 240));
+        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("Buscar Clientes");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
-        jPanel12.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, 205, -1));
+        jPanel12.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, 205, 40));
 
-        jButton7.setBackground(new java.awt.Color(255, 204, 102));
-        jButton7.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton7.setBackground(new java.awt.Color(137, 207, 240));
+        jButton7.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
         jButton7.setText("Listar Clientes");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
             }
         });
-        jPanel12.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 250, 205, -1));
+        jPanel12.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 250, 205, 40));
 
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/lista-de-contactos.png"))); // NOI18N
         jPanel12.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, -1, 36));
@@ -573,25 +597,27 @@ public class admin_view extends javax.swing.JFrame {
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/usuario (1).png"))); // NOI18N
         jPanel12.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 140, -1, 36));
 
-        jButton13.setBackground(new java.awt.Color(255, 204, 102));
-        jButton13.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton13.setBackground(new java.awt.Color(137, 207, 240));
+        jButton13.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton13.setForeground(new java.awt.Color(255, 255, 255));
         jButton13.setText("Actualizar Clientes");
         jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton13ActionPerformed(evt);
             }
         });
-        jPanel12.add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 140, 205, -1));
+        jPanel12.add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 140, 220, 40));
 
-        jButton6.setBackground(new java.awt.Color(255, 204, 102));
-        jButton6.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton6.setBackground(new java.awt.Color(137, 207, 240));
+        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton6.setForeground(new java.awt.Color(255, 255, 255));
         jButton6.setText("Eliminar Clientes");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
             }
         });
-        jPanel12.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 220, 205, -1));
+        jPanel12.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 220, 220, 40));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -601,25 +627,27 @@ public class admin_view extends javax.swing.JFrame {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("tab2", jPanel5);
 
-        jPanel13.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel13.setBackground(new java.awt.Color(255, 255, 255));
         jPanel13.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel14.setText("Gestión de Planes ");
-        jPanel13.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, -1, -1));
+        jPanel13.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, -1, -1));
 
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/lan.png"))); // NOI18N
         jPanel13.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
 
-        jButton9.setBackground(new java.awt.Color(255, 204, 102));
-        jButton9.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton9.setBackground(new java.awt.Color(137, 207, 240));
+        jButton9.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton9.setForeground(new java.awt.Color(255, 255, 255));
         jButton9.setText("Agregar Planes");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -628,8 +656,9 @@ public class admin_view extends javax.swing.JFrame {
         });
         jPanel13.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 100, 190, -1));
 
-        jButton12.setBackground(new java.awt.Color(255, 204, 102));
-        jButton12.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton12.setBackground(new java.awt.Color(137, 207, 240));
+        jButton12.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton12.setForeground(new java.awt.Color(255, 255, 255));
         jButton12.setText("Buscar Planes");
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -644,8 +673,9 @@ public class admin_view extends javax.swing.JFrame {
         jLabel20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/repetir.png"))); // NOI18N
         jPanel13.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 260, -1, -1));
 
-        jButton8.setBackground(new java.awt.Color(255, 204, 102));
-        jButton8.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton8.setBackground(new java.awt.Color(137, 207, 240));
+        jButton8.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton8.setForeground(new java.awt.Color(255, 255, 255));
         jButton8.setText("Listar Planes");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -660,25 +690,27 @@ public class admin_view extends javax.swing.JFrame {
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/mantenimiento.png"))); // NOI18N
         jPanel13.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 150, -1, -1));
 
-        jButton11.setBackground(new java.awt.Color(255, 204, 102));
-        jButton11.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton11.setBackground(new java.awt.Color(137, 207, 240));
+        jButton11.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton11.setForeground(new java.awt.Color(255, 255, 255));
         jButton11.setText("Actualizar Planes");
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton11ActionPerformed(evt);
             }
         });
-        jPanel13.add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 140, 190, -1));
+        jPanel13.add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 140, 200, -1));
 
-        jButton10.setBackground(new java.awt.Color(255, 204, 102));
-        jButton10.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton10.setBackground(new java.awt.Color(137, 207, 240));
+        jButton10.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jButton10.setForeground(new java.awt.Color(255, 255, 255));
         jButton10.setText("Eliminar Planes");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
             }
         });
-        jPanel13.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 230, 180, -1));
+        jPanel13.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 230, 190, -1));
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -702,9 +734,9 @@ public class admin_view extends javax.swing.JFrame {
         jPanel24.setBackground(new java.awt.Color(204, 204, 204));
         jPanel24.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel39.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel39.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel54.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel54.setBackground(new java.awt.Color(137, 207, 240));
 
         lb_nombre2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lb_nombre2.setText("Nombres*");
@@ -736,8 +768,6 @@ public class admin_view extends javax.swing.JFrame {
         lb_contrasena1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lb_contrasena1.setText("Contraseña*");
 
-        jComboBox5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Oro", "Diamante", "Esmeralda" }));
-
         lb_conf_contrasena1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lb_conf_contrasena1.setText("Repetir contraseña*");
 
@@ -747,11 +777,7 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
 
-        lb_contrasena2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lb_contrasena2.setText("Seleccionar plan*");
-
-        bt_Agregarcliente1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        bt_Agregarcliente1.setForeground(new java.awt.Color(255, 204, 102));
+        bt_Agregarcliente1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         bt_Agregarcliente1.setText("Agregar Cliente");
         bt_Agregarcliente1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -787,9 +813,6 @@ public class admin_view extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel54Layout.createSequentialGroup()
                         .addGroup(jPanel54Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel54Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(bt_Agregarcliente1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(tx_apellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tx_identificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lb_contrasena1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -797,9 +820,7 @@ public class admin_view extends javax.swing.JFrame {
                             .addComponent(tx_correo, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lb_identificacion2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lb_apellidos2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel54Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jComboBox5, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lb_contrasena2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)))
+                            .addComponent(bt_Agregarcliente1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 5, Short.MAX_VALUE))))
         );
         jPanel54Layout.setVerticalGroup(
@@ -836,9 +857,9 @@ public class admin_view extends javax.swing.JFrame {
                         .addGap(12, 12, 12)
                         .addComponent(lb_conf_contrasena1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tx_confContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(8, 8, 8)
-                        .addComponent(bt_Agregarcliente1))
+                        .addGroup(jPanel54Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tx_confContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bt_Agregarcliente1)))
                     .addGroup(jPanel54Layout.createSequentialGroup()
                         .addComponent(lb_correo2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -846,17 +867,15 @@ public class admin_view extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lb_contrasena1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tx_contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lb_contrasena2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                        .addComponent(tx_contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
-        jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel22.setText("Agregar Clientes ");
 
+        jButton1.setBackground(new java.awt.Color(137, 207, 240));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setText("Back");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -889,7 +908,7 @@ public class admin_view extends javax.swing.JFrame {
                         .addComponent(jButton1)))
                 .addGap(12, 12, 12)
                 .addComponent(jPanel54, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 48, Short.MAX_VALUE))
+                .addGap(0, 67, Short.MAX_VALUE))
         );
 
         jPanel24.add(jPanel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(3, 0, 770, 470));
@@ -912,12 +931,12 @@ public class admin_view extends javax.swing.JFrame {
         jPanel26.setBackground(new java.awt.Color(204, 204, 204));
         jPanel26.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel37.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel37.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel23.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel23.setText("Actualizar Clientes ");
 
-        jPanel38.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel38.setBackground(new java.awt.Color(137, 207, 240));
 
         lb_nombre1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lb_nombre1.setText("Nombres");
@@ -1016,8 +1035,8 @@ public class admin_view extends javax.swing.JFrame {
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
-        bt_actualizarCliente.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        bt_actualizarCliente.setForeground(new java.awt.Color(255, 204, 102));
+        bt_actualizarCliente.setBackground(new java.awt.Color(137, 207, 240));
+        bt_actualizarCliente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         bt_actualizarCliente.setText("Actualizar Cliente");
         bt_actualizarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1025,7 +1044,7 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
 
-        jPanel46.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel46.setBackground(new java.awt.Color(137, 207, 240));
 
         lb_nombre4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lb_nombre4.setText("Nuevo nombre");
@@ -1082,7 +1101,7 @@ public class admin_view extends javax.swing.JFrame {
                             .addGroup(jPanel46Layout.createSequentialGroup()
                                 .addComponent(lb_direccion4, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txdireccionCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(tx_direccionCambiar1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel46Layout.createSequentialGroup()
                         .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1130,7 +1149,7 @@ public class admin_view extends javax.swing.JFrame {
                     .addComponent(tx_correoCambiar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txdireccionCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tx_direccionCambiar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lb_direccion4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1139,14 +1158,14 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(28, 28, 28))
         );
 
-        jPanel48.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel48.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel28.setText("Deje en blanco los campos que no desea actualizar");
 
         jLabel79.setText("Documento ");
 
-        bt_buscar_ClienteActualizar.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_ClienteActualizar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_buscar_ClienteActualizar.setText("Buscar");
         bt_buscar_ClienteActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1183,6 +1202,8 @@ public class admin_view extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jButton3.setBackground(new java.awt.Color(137, 207, 240));
+        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton3.setText("Back");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1252,14 +1273,14 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab5", jPanel15);
 
-        jPanel27.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel27.setBackground(new java.awt.Color(255, 255, 255));
         jPanel27.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel43.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel43.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel63.setText("Documento ");
 
-        bt_buscar_Cliente5.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_Cliente5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_buscar_Cliente5.setText("Buscar");
         bt_buscar_Cliente5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1291,7 +1312,7 @@ public class admin_view extends javax.swing.JFrame {
 
         tx_direccion_buscar.setEditable(false);
 
-        jLabel59.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel59.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel59.setText("Cliente ");
 
         jLabel70.setText("Dirección");
@@ -1333,7 +1354,7 @@ public class admin_view extends javax.swing.JFrame {
                             .addComponent(tx_correo_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel43Layout.createSequentialGroup()
-                .addGap(251, 251, 251)
+                .addGap(267, 267, 267)
                 .addComponent(jLabel59)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1380,10 +1401,12 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel27.add(jPanel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 620, 350));
 
-        jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel24.setText("Buscar Clientes");
-        jPanel27.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, -1, -1));
+        jPanel27.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, -1, -1));
 
+        jButton14.setBackground(new java.awt.Color(137, 207, 240));
+        jButton14.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton14.setText("Back");
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1410,12 +1433,12 @@ public class admin_view extends javax.swing.JFrame {
         jPanel28.setBackground(new java.awt.Color(204, 204, 204));
         jPanel28.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel44.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel44.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel25.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel25.setText("Eliminar Clientes");
 
-        jPanel45.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel45.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel71.setText("Documento ");
 
@@ -1447,7 +1470,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel26.setText("Seguro desea eliminar este Cliente?");
 
-        bt_eliminarCliente.setForeground(new java.awt.Color(255, 204, 102));
+        bt_eliminarCliente.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_eliminarCliente.setText("Eliminar Cliente ");
         bt_eliminarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1457,7 +1480,7 @@ public class admin_view extends javax.swing.JFrame {
 
         tx_correo_eliminar.setEditable(false);
 
-        bt_buscar_Cliente_eliminar.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_Cliente_eliminar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_buscar_Cliente_eliminar.setText("Buscar");
         bt_buscar_Cliente_eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1465,7 +1488,7 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
 
-        jLabel60.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel60.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel60.setText("Cliente ");
 
         javax.swing.GroupLayout jPanel45Layout = new javax.swing.GroupLayout(jPanel45);
@@ -1561,6 +1584,8 @@ public class admin_view extends javax.swing.JFrame {
                 .addGap(54, 54, 54))
         );
 
+        jButton15.setBackground(new java.awt.Color(137, 207, 240));
+        jButton15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton15.setText("Back");
         jButton15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1577,7 +1602,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addGroup(jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel44Layout.createSequentialGroup()
                         .addComponent(jLabel25)
-                        .addGap(92, 92, 92)
+                        .addGap(83, 83, 83)
                         .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel44Layout.createSequentialGroup()
                         .addComponent(jPanel45, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1586,12 +1611,14 @@ public class admin_view extends javax.swing.JFrame {
         jPanel44Layout.setVerticalGroup(
             jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel44Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel25)
                     .addGroup(jPanel44Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton15)))
-                .addGap(18, 18, 18)
+                        .addComponent(jButton15)
+                        .addGap(53, 53, 53))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel44Layout.createSequentialGroup()
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(jPanel45, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(86, Short.MAX_VALUE))
         );
@@ -1611,10 +1638,10 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab7", jPanel17);
 
-        jPanel29.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel29.setBackground(new java.awt.Color(255, 255, 255));
         jPanel29.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel27.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel27.setText("Listar Clientes");
         jPanel29.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
@@ -1633,8 +1660,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel29.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 340));
 
-        bt_Listar_clientes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        bt_Listar_clientes.setForeground(new java.awt.Color(255, 204, 102));
+        bt_Listar_clientes.setBackground(new java.awt.Color(137, 207, 240));
+        bt_Listar_clientes.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         bt_Listar_clientes.setText("Listar Clientes");
         bt_Listar_clientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1643,6 +1670,8 @@ public class admin_view extends javax.swing.JFrame {
         });
         jPanel29.add(bt_Listar_clientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 420, -1, -1));
 
+        jButton16.setBackground(new java.awt.Color(137, 207, 240));
+        jButton16.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton16.setText("Back");
         jButton16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1664,14 +1693,14 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab8", jPanel18);
 
-        jPanel30.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel30.setBackground(new java.awt.Color(255, 255, 255));
         jPanel30.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel29.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel29.setText("Agregar Planes");
-        jPanel30.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, -1, -1));
+        jPanel30.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, -1, -1));
 
-        jPanel40.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel40.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel38.setText("Código*");
 
@@ -1687,7 +1716,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel41.setText("Drescripción*");
 
-        bt_guardar_plan.setForeground(new java.awt.Color(255, 204, 102));
+        bt_guardar_plan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_guardar_plan.setText("Guardar Plan");
         bt_guardar_plan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1768,6 +1797,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel30.add(jPanel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 90, 370, 320));
 
+        jButton17.setBackground(new java.awt.Color(137, 207, 240));
+        jButton17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton17.setText("Back");
         jButton17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1789,7 +1820,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab9", jPanel19);
 
-        jPanel20.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel20.setBackground(new java.awt.Color(255, 255, 255));
         jPanel20.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel31.setBackground(new java.awt.Color(204, 204, 204));
@@ -1800,11 +1831,11 @@ public class admin_view extends javax.swing.JFrame {
         jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanel20.add(jPanel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel30.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel30.setText("Actualizar Planes");
         jPanel20.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, -1, -1));
 
-        jPanel49.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel49.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel43.setText("Código");
 
@@ -1886,7 +1917,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel20.add(jPanel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, 350, 270));
 
-        jPanel50.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel50.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel48.setText("Código");
 
@@ -1975,11 +2006,11 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel20.add(jPanel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 350, 270));
 
-        jPanel51.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel51.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel80.setText("Código");
 
-        bt_buscar_Planes_Actualizar.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_Planes_Actualizar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_buscar_Planes_Actualizar.setText("Buscar");
         bt_buscar_Planes_Actualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2013,7 +2044,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel20.add(jPanel51, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 710, -1));
 
-        jButton2.setForeground(new java.awt.Color(255, 204, 102));
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setText("Actualizar plan");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2022,6 +2053,8 @@ public class admin_view extends javax.swing.JFrame {
         });
         jPanel20.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 400, 160, -1));
 
+        jButton21.setBackground(new java.awt.Color(137, 207, 240));
+        jButton21.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton21.setText("Back");
         jButton21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2032,7 +2065,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab10", jPanel20);
 
-        jPanel21.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel21.setBackground(new java.awt.Color(255, 255, 255));
         jPanel21.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel34.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -2050,15 +2083,15 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel21.add(jPanel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 770, -1));
 
-        jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel31.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel31.setText("Buscar Planes");
         jPanel21.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, -1, -1));
 
-        jPanel53.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel53.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel81.setText("Código*");
 
-        bt_buscar_plan.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_plan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_buscar_plan.setText("Buscar");
         bt_buscar_plan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2084,7 +2117,7 @@ public class admin_view extends javax.swing.JFrame {
 
         tx_vel_buscar.setEditable(false);
 
-        jLabel61.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel61.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel61.setText("Plan");
 
         jScrollPane12.setViewportView(tx_descripcion_plan1);
@@ -2162,6 +2195,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel21.add(jPanel53, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 360));
 
+        jButton20.setBackground(new java.awt.Color(137, 207, 240));
+        jButton20.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton20.setText("Back");
         jButton20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2172,14 +2207,14 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab11", jPanel21);
 
-        jPanel35.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel35.setBackground(new java.awt.Color(255, 255, 255));
         jPanel35.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel32.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel32.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel32.setText("Eliminar Planes");
-        jPanel35.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 330, 70));
+        jPanel35.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 350, 70));
 
-        jPanel52.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel52.setBackground(new java.awt.Color(137, 207, 240));
 
         jLabel53.setText("Código");
 
@@ -2214,7 +2249,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel90.setText("Código");
 
-        bt_buscar_plan_eliminar.setForeground(new java.awt.Color(255, 204, 102));
+        bt_buscar_plan_eliminar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_buscar_plan_eliminar.setText("Buscar");
         bt_buscar_plan_eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2224,7 +2259,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel34.setText("Seguro desea eliminar este Plan?");
 
-        bt_eliminarPlan.setForeground(new java.awt.Color(255, 204, 102));
+        bt_eliminarPlan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_eliminarPlan.setText("Eliminar Plan ");
         bt_eliminarPlan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2318,6 +2353,8 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel35.add(jPanel52, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 70, 350, 380));
 
+        jButton19.setBackground(new java.awt.Color(137, 207, 240));
+        jButton19.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton19.setText("Back");
         jButton19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2339,10 +2376,10 @@ public class admin_view extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab12", jPanel22);
 
-        jPanel36.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel36.setBackground(new java.awt.Color(255, 255, 255));
         jPanel36.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel33.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         jLabel33.setText("Listar Planes");
         jPanel36.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 0, -1, -1));
 
@@ -2361,7 +2398,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jPanel36.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, -1, 350));
 
-        bt_listar_plan.setForeground(new java.awt.Color(255, 204, 102));
+        bt_listar_plan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bt_listar_plan.setText("Listar planes");
         bt_listar_plan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2370,6 +2407,8 @@ public class admin_view extends javax.swing.JFrame {
         });
         jPanel36.add(bt_listar_plan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 420, 160, -1));
 
+        jButton18.setBackground(new java.awt.Color(137, 207, 240));
+        jButton18.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton18.setText("Back");
         jButton18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2531,11 +2570,11 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_buscar_planbt_buscar_ClienteActionPerformed
 
     private void bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed
-    Crud_Planes.buscarPlanEliminar(tx_idPlan_buscar1, tx_cod_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3);
+    Crud_Planes.buscarPlanEliminar(tx_idPlan_buscar1, tx_cod_plan_mostrar1,tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3);
     }//GEN-LAST:event_bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed
 
     private void bt_AgregarclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_AgregarclienteActionPerformed
-        crud_usuarios.agregarCliente(tx_nombres, tx_apellidos, jComboBox5, tx_identificacion, tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
+        crud_usuarios.agregarCliente(tx_nombres, tx_apellidos, jComboBox6, tx_identificacion, tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
     }//GEN-LAST:event_bt_AgregarclienteActionPerformed
 
     private void bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Cliente_eliminarbt_buscar_ClienteActionPerformed
@@ -2570,8 +2609,10 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_eliminarClienteActionPerformed
 
     private void bt_actualizarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualizarClienteActionPerformed
-    crud_usuarios.actualizarCliente(tx_docu_buscar_actualizar,tx_nombreCambiar1,tx_apellidosCambiar1,jtipo_cambiar,
-    tx_identificacionCambiar1,tx_telefonoCambiar1,tx_correoCambiar1,tx_direccionCambiar,tx_passwordCambiar1);
+    crud_usuarios.actualizarCliente(tx_docu_buscar_actualizar, tx_nombreCambiar, tx_apellidosCambiar, tx_tipoDocuCambiar, 
+        tx_identificacionCambiar, tx_telefonoCambiar, tx_correoCambiar, tx_direccionCambiar,
+        tx_nombreCambiar1, tx_apellidosCambiar1, jtipo_cambiar, tx_identificacionCambiar1, tx_telefonoCambiar1, 
+        tx_correoCambiar1, tx_direccionCambiar1, tx_passwordCambiar1);
     }//GEN-LAST:event_bt_actualizarClienteActionPerformed
 
     private void bt_guardar_planActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_guardar_planActionPerformed
@@ -2628,7 +2669,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void bt_eliminarPlanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_eliminarPlanActionPerformed
-    Crud_Planes.eliminarPlan(tx_cod_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
+    Crud_Planes.eliminarPlan(tx_cod_plan_mostrar1, tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
     }//GEN-LAST:event_bt_eliminarPlanActionPerformed
 
     private void tx_correoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_correoActionPerformed
@@ -2717,7 +2758,6 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox<String> jComboBox5;
     private javax.swing.JComboBox<String> jComboBox6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -2747,6 +2787,8 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
@@ -2866,7 +2908,6 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JLabel lb_apellidos4;
     private javax.swing.JLabel lb_conf_contrasena1;
     private javax.swing.JLabel lb_contrasena1;
-    private javax.swing.JLabel lb_contrasena2;
     private javax.swing.JLabel lb_contraseña4;
     private javax.swing.JLabel lb_correo1;
     private javax.swing.JLabel lb_correo2;
@@ -2911,6 +2952,7 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextPane tx_descripcion_plan_act;
     private javax.swing.JTextField tx_direccion;
     public static javax.swing.JTextField tx_direccionCambiar;
+    private javax.swing.JTextField tx_direccionCambiar1;
     public static javax.swing.JTextField tx_direccion_buscar;
     private javax.swing.JTextField tx_direccion_eliminar;
     private javax.swing.JTextField tx_docu_buscar;
@@ -2952,6 +2994,5 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JTextField tx_velocidad_plan_act;
     private javax.swing.JTextField tx_velocidad_plan_mostrar;
     private javax.swing.JTextField tx_velocidad_plan_mostrar1;
-    private javax.swing.JTextField txdireccionCambiar;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,20 +5,19 @@
 package entidades;
 
 import java.util.*;
+import model.Administrador;
+import model.cliente;
 
 /**
  *
  * @author Jarvi
  */
 public class Arreglos {
-    public static ArrayList<String> listaNombres = new ArrayList<>();
-    public static ArrayList<String> listaApellidos = new ArrayList<>();
-    public static ArrayList<String> listaTipoId = new ArrayList<>();
-    public static ArrayList<String> listaIdentificacion = new ArrayList<>();
-    public static ArrayList<String> listaTelefono = new ArrayList<>();
-    public static ArrayList<String> listaCorreo = new ArrayList<>();
-    public static ArrayList<String> listaDireccion = new ArrayList<>();
-    public static ArrayList<String> listaContrasena = new ArrayList<>();
-    public static ArrayList<String> listaPlanes = new ArrayList<>();
+    public static final int ELEMENTOS = 3;
+    public static cliente[] clientes = new cliente[ELEMENTOS];
+
+    public static int contadorClientes = 0;
+    public static Administrador[] administrador = new Administrador[ELEMENTOS];
+    public static int contadorAdministrador = 0;
     
 }
