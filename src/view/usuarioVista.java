@@ -4,7 +4,7 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 import model.cliente;
 import controlador.correoSoporte;
-import controlador.Crud_Planes;
+import controlador.crud_planes;
 import model.Planes;
 import static entidades.Arreglos.*;
 
@@ -20,6 +20,23 @@ public class usuarioVista extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(this);
 }
+
+    public void setUsuarioActual(cliente usuarioActual) {
+        this.usuarioActual = usuarioActual;
+    }
+
+    private Planes obtenerPlanDelUsuario() {
+        if (usuarioActual == null) {
+            return null;
+        }
+
+        Planes planAsignado = crud_planes.buscarPlanPorNombre(usuarioActual.getPlanActual());
+        if (planAsignado != null) {
+            return planAsignado;
+        }
+
+        return crud_planes.obtenerPrimerPlanDisponible();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -877,9 +894,8 @@ public class usuarioVista extends javax.swing.JFrame {
     private void btnDetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallesActionPerformed
         jTabbedPane1.setSelectedIndex(4);
         
-          if (Crud_Planes.contadorPlanes > 0) {
-        Planes planActual = Crud_Planes.plan[0]; 
-
+        Planes planActual = obtenerPlanDelUsuario();
+        if (planActual != null) {
         txtIdPlan.setText(String.valueOf(planActual.getIdPlan()));
         txtnombrePlan.setText(planActual.getNombrePlan());
         txtvalorMensual.setText(String.valueOf(planActual.getPrecio()));

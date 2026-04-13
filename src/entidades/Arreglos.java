@@ -4,8 +4,8 @@
  */
 package entidades;
 
-import java.util.*;
 import model.Administrador;
+import model.Planes;
 import model.cliente;
 
 /**
@@ -19,5 +19,7 @@ public class Arreglos {
     public static int contadorClientes = 0;
     public static Administrador[] administrador = new Administrador[ELEMENTOS];
     public static int contadorAdministrador = 0;
+    public static Planes[] plan = new Planes[ELEMENTOS];
+    public static int contadorPlanes = 0;
     
 }

@@ -131,6 +131,7 @@ public class login extends javax.swing.JFrame {
                 String usuario = clientes[i].getNombre();
                 JOptionPane.showMessageDialog(null, "Bienvenido "+usuario);
                 usuarioVista usu = new usuarioVista();
+                usu.setUsuarioActual(clientes[i]);
                 usu.setVisible(true);
                 this.dispose();
                 break;

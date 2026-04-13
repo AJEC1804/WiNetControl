@@ -15,7 +15,6 @@ import model.*;
  */
 public class crud_usuarios {
 
-    
     public static void agregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo, JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
             JPasswordField tx_contrasena, JPasswordField tx_confContrasena) {
 
@@ -48,7 +47,7 @@ public class crud_usuarios {
             return;
         }
         if (!validarPassword(contrasena)) {
-            JOptionPane.showMessageDialog(null, "Las contraseña debe tener al menos 6 caracteres.");
+            JOptionPane.showMessageDialog(null, "La contraseña debe tener al menos 6 caracteres e incluir letra y numero.");
             return;
         }
 
@@ -97,7 +96,45 @@ public class crud_usuarios {
     }
 
     public static boolean validarPassword(String contrasena) {
-        return contrasena.length() >= 6;
+        return contrasena.length() >= 6
+                && contrasena.matches(".*[A-Za-z].*")
+                && contrasena.matches(".*\\d.*");
+    }
+
+    private static int buscarIndiceClientePorIdentificacion(String identificacion) {
+        for (int i = 0; i < contadorClientes; i++) {
+            cliente c = clientes[i];
+            if (c != null && c.getIdentificacion().equals(identificacion)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean identificacionExisteEnOtroCliente(String identificacion, int indiceActual) {
+        for (int i = 0; i < contadorClientes; i++) {
+            if (i == indiceActual) {
+                continue;
+            }
+            cliente c = clientes[i];
+            if (c != null && c.getIdentificacion().equals(identificacion)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean correoExisteEnOtroCliente(String correo, int indiceActual) {
+        for (int i = 0; i < contadorClientes; i++) {
+            if (i == indiceActual) {
+                continue;
+            }
+            cliente c = clientes[i];
+            if (c != null && c.getCorreo().equals(correo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean usuarioExiste(String correo, String identificacion) {
@@ -110,6 +147,7 @@ public class crud_usuarios {
         return false;
 
     }
+
     public static boolean correoExiste(String correo) {
         for (int i = 0; i < contadorClientes; i++) {
             cliente c = clientes[i];
@@ -150,23 +188,18 @@ public class crud_usuarios {
             JTextField tx_direccion_eliminar
     ) {
         String docBuscar = tx_docu_buscar_elim.getText().trim();
-        boolean encontrado = false;
+        int indice = buscarIndiceClientePorIdentificacion(docBuscar);
 
-        for (int i = 0; i < contadorClientes; i++) {
-            if (clientes[i] != null && clientes[i].getIdentificacion().equals(docBuscar)) {
-                tx_nombre_eliminar.setText(clientes[i].getNombre());
-                tx_apellido_eliminar.setText(clientes[i].getApellido());
-                tx_tipo_eliminar.setText(clientes[i].getTipo());
-                tx_documento_eliminar.setText(clientes[i].getIdentificacion());
-                tx_telefono_eliminar.setText(clientes[i].getTelefono());
-                tx_correo_eliminar.setText(clientes[i].getCorreo());
-                tx_direccion_eliminar.setText(clientes[i].getDireccion());
-                encontrado = true;
-                break;
-            }
-        }
-
-        if (!encontrado) {
+        if (indice != -1) {
+            cliente c = clientes[indice];
+            tx_nombre_eliminar.setText(c.getNombre());
+            tx_apellido_eliminar.setText(c.getApellido());
+            tx_tipo_eliminar.setText(c.getTipo());
+            tx_documento_eliminar.setText(c.getIdentificacion());
+            tx_telefono_eliminar.setText(c.getTelefono());
+            tx_correo_eliminar.setText(c.getCorreo());
+            tx_direccion_eliminar.setText(c.getDireccion());
+        } else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
         }
     }
@@ -175,24 +208,29 @@ public class crud_usuarios {
             JTextField tx_tipo_eliminar, JTextField tx_telefono_eliminar, JTextField tx_correo_eliminar, JTextField tx_direccion_eliminar,
             JTextField tx_docu_buscar_elim) {
         String docEliminar = tx_documento_eliminar.getText().trim();
-        boolean eliminado = false;
 
-        for (int i = 0; i < contadorClientes; i++) {
-            if (clientes[i] != null && clientes[i].getIdentificacion().equals(docEliminar)) {
-                for (int j = i; j < contadorClientes - 1; j++) {
-                    clientes[j] = clientes[j + 1];
-                }
-                clientes[contadorClientes - 1] = null;
-                contadorClientes--;
-                eliminado = true;
-                JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente");
-                break;
-            }
+        if (docEliminar.isEmpty()) {
+            docEliminar = tx_docu_buscar_elim.getText().trim();
         }
 
-        if (!eliminado) {
+        if (docEliminar.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un documento para eliminar.");
+            return;
+        }
+
+        int indiceEliminar = buscarIndiceClientePorIdentificacion(docEliminar);
+
+        if (indiceEliminar != -1) {
+            for (int j = indiceEliminar; j < contadorClientes - 1; j++) {
+                clientes[j] = clientes[j + 1];
+            }
+            clientes[contadorClientes - 1] = null;
+            contadorClientes--;
+            JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente");
+        } else {
             JOptionPane.showMessageDialog(null, "No se encontró el cliente a eliminar");
         }
+
         tx_documento_eliminar.setText("");
         tx_nombre_eliminar.setText("");
         tx_apellido_eliminar.setText("");
@@ -213,37 +251,29 @@ public class crud_usuarios {
             JTextField tx_correoCambiar,
             JTextField tx_direccionCambiar
     ) {
-        String documento = tx_docu_buscar_actualizar.getText().trim();
+        String docBuscar = tx_docu_buscar_actualizar.getText().trim();
 
-        if (documento.isEmpty()) {
+        if (docBuscar.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese el documento del cliente a buscar.");
             return;
         }
 
-        boolean encontrado = false;
-
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
-
-            if (c != null && c.getIdentificacion().equals(documento)) {
-                encontrado = true;
-
-                tx_nombreCambiar.setText(c.getNombre());
-                tx_apellidoCambiar.setText(c.getApellido());
-                tx_tipo1.setText(c.getTipo());
-                tx_identificacionCambiar.setText(c.getIdentificacion());
-                tx_telefonoCambiar.setText(c.getTelefono());
-                tx_correoCambiar.setText(c.getCorreo());
-                tx_direccionCambiar.setText(c.getDireccion());
-
-                JOptionPane.showMessageDialog(null, "Cliente encontrado. Puede modificar los datos y presionar 'Actualizar'.");
-                break;
-            }
-        }
-
-        if (!encontrado) {
+        int indice = buscarIndiceClientePorIdentificacion(docBuscar);
+        if (indice == -1) {
             JOptionPane.showMessageDialog(null, "No se encontró ningún cliente con ese documento.");
+            return;
         }
+
+        cliente c = clientes[indice];
+        tx_nombreCambiar.setText(c.getNombre());
+        tx_apellidoCambiar.setText(c.getApellido());
+        tx_tipo1.setText(c.getTipo());
+        tx_identificacionCambiar.setText(c.getIdentificacion());
+        tx_telefonoCambiar.setText(c.getTelefono());
+        tx_correoCambiar.setText(c.getCorreo());
+        tx_direccionCambiar.setText(c.getDireccion());
+
+        JOptionPane.showMessageDialog(null, "Cliente encontrado. Puede modificar los datos y presionar 'Actualizar'.");
     }
 
     public static void actualizarCliente(
@@ -263,110 +293,92 @@ public class crud_usuarios {
         JTextField tx_direccionCambiar1,
         JPasswordField tx_passwordCambiar1
 ) {
-    String documentoBuscar = tx_docu_buscar_actualizar.getText().trim();
+    String docBuscar = tx_docu_buscar_actualizar.getText().trim();
 
-    if (documentoBuscar.isEmpty()) {
+    if (docBuscar.isEmpty()) {
         JOptionPane.showMessageDialog(null, "Por favor, busque un cliente antes de actualizar.");
         return;
     }
 
-    boolean encontrado = false;
-
-    for (int i = 0; i < contadorClientes; i++) {
-        cliente c = clientes[i];
-
-        if (c != null && c.getIdentificacion().equals(documentoBuscar)) {
-            encontrado = true;
-
-            String idOriginal = c.getIdentificacion();
-
-            String nuevoNombre = tx_nombreCambiar1.getText().trim();
-            String nuevoApellido = tx_apellidosCambiar1.getText().trim();
-            String nuevoTipo = (jtipo_cambiar.getSelectedItem() != null)
-                    ? jtipo_cambiar.getSelectedItem().toString()
-                    : "";
-            String nuevoIdentificacion = tx_identificacionCambiar1.getText().trim();
-
-            String nuevoTelefono = tx_telefonoCambiar1.getText().trim();
-            String nuevoCorreo = tx_correoCambiar1.getText().trim();
-            String nuevoDireccion = tx_direccionCambiar1.getText().trim();
-            String nuevoPassword = new String(tx_passwordCambiar1.getPassword()).trim();
-
-            if (!nuevoIdentificacion.isEmpty() && !validarIdentificacion(nuevoIdentificacion)) {
-                JOptionPane.showMessageDialog(null, "La identificación es inválida. Debe tener entre 8 y 10 dígitos numéricos.");
-                return;
-            }
-
-            if (!nuevoIdentificacion.isEmpty() && !nuevoIdentificacion.equals(idOriginal)) {
-                for (int j = 0; j < contadorClientes; j++) {
-                    if (clientes[j] != null &&
-                        clientes[j].getIdentificacion().equals(nuevoIdentificacion) &&
-                        j != i) {
-
-                        JOptionPane.showMessageDialog(null, "Ya existe un cliente con esa identificación.");
-                        return;
-                    }
-                }
-            }
-
-            if (!nuevoTelefono.isEmpty() && !validarTelefono(nuevoTelefono)) {
-                JOptionPane.showMessageDialog(null, "El teléfono debe ser numérico de 10 dígitos.");
-                return;
-            }
-
-            if (!nuevoCorreo.isEmpty() && !validarCorreo(nuevoCorreo)) {
-                JOptionPane.showMessageDialog(null, "El correo electrónico tiene un formato inválido.");
-                return;
-            }
-
-            if (correoExiste(nuevoCorreo)) {
-                JOptionPane.showMessageDialog(null, "Ya existe un cliente con este correo.");
-                return;
-            }
-
-            if (!nuevoPassword.isEmpty() && !validarPassword(nuevoPassword)) {
-                JOptionPane.showMessageDialog(null, "La contraseña debe tener al menos 4 caracteres.");
-                return;
-            }
-
-            // Actualizar datos del cliente
-            if (!nuevoNombre.isEmpty()) c.setNombre(nuevoNombre);
-            if (!nuevoApellido.isEmpty()) c.setApellido(nuevoApellido);
-            if (!nuevoTipo.isEmpty()) c.setTipo(nuevoTipo);
-            if (!nuevoIdentificacion.isEmpty()) c.setIdentificacion(nuevoIdentificacion);
-            if (!nuevoTelefono.isEmpty()) c.setTelefono(nuevoTelefono);
-            if (!nuevoCorreo.isEmpty()) c.setCorreo(nuevoCorreo);
-            if (!nuevoDireccion.isEmpty()) c.setDireccion(nuevoDireccion);
-            if (!nuevoPassword.isEmpty()) c.setContrasena(nuevoPassword);
-
-            JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
-
-            
-            tx_nombreCambiar.setText(c.getNombre()); 
-            tx_apellidosCambiar.setText(c.getApellido()); 
-            jtipo_cambiar.setSelectedItem(c.getTipo());
-            tx_identificacionCambiar.setText(c.getIdentificacion()); 
-            tx_telefonoCambiar.setText(c.getTelefono()); 
-            tx_correoCambiar.setText(c.getCorreo()); 
-            tx_direccionCambiar.setText(c.getDireccion()); 
-
-            
-            tx_nombreCambiar1.setText(""); 
-            tx_apellidosCambiar1.setText(""); 
-            jtipo_cambiar.setSelectedItem(0); 
-            tx_identificacionCambiar1.setText(""); 
-            tx_telefonoCambiar1.setText("");
-            tx_correoCambiar1.setText("");
-            tx_direccionCambiar1.setText("");
-            tx_passwordCambiar1.setText("");
-
-            break;
-        }
-    }
-
-    if (!encontrado) {
+    int indice = buscarIndiceClientePorIdentificacion(docBuscar);
+    if (indice == -1) {
         JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
+        return;
     }
+
+    cliente c = clientes[indice];
+
+    String nuevoNombre = tx_nombreCambiar1.getText().trim();
+    String nuevoApellido = tx_apellidosCambiar1.getText().trim();
+    String nuevoTipo = (jtipo_cambiar.getSelectedItem() != null)
+            ? jtipo_cambiar.getSelectedItem().toString().trim()
+            : "";
+    String nuevoIdentificacion = tx_identificacionCambiar1.getText().trim();
+    String nuevoTelefono = tx_telefonoCambiar1.getText().trim();
+    String nuevoCorreo = tx_correoCambiar1.getText().trim();
+    String nuevoDireccion = tx_direccionCambiar1.getText().trim();
+    String nuevoPassword = new String(tx_passwordCambiar1.getPassword()).trim();
+
+    if (!nuevoIdentificacion.isEmpty() && !nuevoIdentificacion.equals(c.getIdentificacion())) {
+        if (!validarIdentificacion(nuevoIdentificacion)) {
+            JOptionPane.showMessageDialog(null, "La nueva identificación no es válida.");
+            return;
+        }
+        if (identificacionExisteEnOtroCliente(nuevoIdentificacion, indice)) {
+            JOptionPane.showMessageDialog(null, "La identificación ya está registrada en otro cliente.");
+            return;
+        }
+        c.setIdentificacion(nuevoIdentificacion);
+    }
+
+    if (!nuevoNombre.isEmpty()) {
+        c.setNombre(nuevoNombre);
+    }
+    if (!nuevoApellido.isEmpty()) {
+        c.setApellido(nuevoApellido);
+    }
+    if (!nuevoTipo.isEmpty()) {
+        c.setTipo(nuevoTipo);
+    }
+    if (!nuevoTelefono.isEmpty()) {
+        if (!validarTelefono(nuevoTelefono)) {
+            JOptionPane.showMessageDialog(null, "El teléfono debe ser numérico y tener 10 dígitos.");
+            return;
+        }
+        c.setTelefono(nuevoTelefono);
+    }
+    if (!nuevoCorreo.isEmpty()) {
+        if (!validarCorreo(nuevoCorreo)) {
+            JOptionPane.showMessageDialog(null, "El correo tiene un formato inválido.");
+            return;
+        }
+        if (correoExisteEnOtroCliente(nuevoCorreo, indice)) {
+            JOptionPane.showMessageDialog(null, "Ya existe otro cliente con este correo.");
+            return;
+        }
+        c.setCorreo(nuevoCorreo);
+    }
+    if (!nuevoDireccion.isEmpty()) {
+        c.setDireccion(nuevoDireccion);
+    }
+    if (!nuevoPassword.isEmpty()) {
+        if (!validarPassword(nuevoPassword)) {
+            JOptionPane.showMessageDialog(null, "La contraseña debe tener al menos 6 caracteres e incluir letra y numero.");
+            return;
+        }
+        c.setContrasena(nuevoPassword);
+    }
+
+    JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
+
+    tx_nombreCambiar.setText(c.getNombre());
+    tx_apellidosCambiar.setText(c.getApellido());
+    jtipo_cambiar.setSelectedItem(c.getTipo());
+    tx_identificacionCambiar.setText(c.getIdentificacion());
+    tx_telefonoCambiar.setText(c.getTelefono());
+    tx_correoCambiar.setText(c.getCorreo());
+    tx_direccionCambiar.setText(c.getDireccion());
+    tx_passwordCambiar1.setText("");
 }
     
 
@@ -441,5 +453,5 @@ public class crud_usuarios {
     }
 
 
-///////////////////////////
+    ///////////////////////////
 }

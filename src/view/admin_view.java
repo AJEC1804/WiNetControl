@@ -4,7 +4,7 @@
  */
 package view;
 
-import controlador.Crud_Planes;
+import controlador.crud_planes;
 import controlador.crud_usuarios;
 import java.awt.Color;
 import javax.swing.*;
@@ -2553,7 +2553,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_tx_precio_plan_mostrarjTextField3ActionPerformed
 
     private void bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed
-    Crud_Planes.buscarPlanActualizar(tx_cod_buscar_actualizar_plan,tx_cod_plan_mostrar,tx_nombre_plan_mostrar,tx_velocidad_plan_mostrar,
+    crud_planes.buscarPlanActualizar(tx_cod_buscar_actualizar_plan,tx_cod_plan_mostrar,tx_nombre_plan_mostrar,tx_velocidad_plan_mostrar,
     tx_precio_plan_mostrar,tx_descripcion_plan2);
     }//GEN-LAST:event_bt_buscar_Planes_Actualizarbt_buscar_ClienteActionPerformed
 
@@ -2566,11 +2566,11 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_tx_precio_plan_mostrar1jTextField3ActionPerformed
 
     private void bt_buscar_planbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_planbt_buscar_ClienteActionPerformed
-    Crud_Planes.buscarPlan(tx_idPlan_buscar,tx_codigo_buscado,tx_nombrePlan_buscado, tx_vel_buscar,tx_precio_buscar,tx_descripcion_plan1);
+    crud_planes.buscarPlan(tx_idPlan_buscar,tx_codigo_buscado,tx_nombrePlan_buscado, tx_vel_buscar,tx_precio_buscar,tx_descripcion_plan1);
     }//GEN-LAST:event_bt_buscar_planbt_buscar_ClienteActionPerformed
 
     private void bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed
-    Crud_Planes.buscarPlanEliminar(tx_idPlan_buscar1, tx_cod_plan_mostrar1,tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3);
+    crud_planes.buscarPlanEliminar(tx_idPlan_buscar1, tx_cod_plan_mostrar1,tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3);
     }//GEN-LAST:event_bt_buscar_plan_eliminarbt_buscar_ClienteActionPerformed
 
     private void bt_AgregarclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_AgregarclienteActionPerformed
@@ -2616,7 +2616,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_actualizarClienteActionPerformed
 
     private void bt_guardar_planActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_guardar_planActionPerformed
-    Crud_Planes.agregarPlan(tx_cod_plan,tx_nombre_plan,tx_velocidad_plan,tx_precio_plan,tx_descripcion_plan);
+    crud_planes.agregarPlan(tx_cod_plan,tx_nombre_plan,tx_velocidad_plan,tx_precio_plan,tx_descripcion_plan);
     }//GEN-LAST:event_bt_guardar_planActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2660,16 +2660,16 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton21ActionPerformed
 
     private void bt_listar_planActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_listar_planActionPerformed
-    Crud_Planes.listarPlanes(Tab_Plan);
+    crud_planes.listarPlanes(Tab_Plan);
     }//GEN-LAST:event_bt_listar_planActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    Crud_Planes.actualizarPlan(tx_cod_plan_mostrar, tx_nombre_plan_mostrar, tx_velocidad_plan_mostrar,tx_precio_plan_mostrar, tx_descripcion_plan2, tx_cod_plan_act, 
+    crud_planes.actualizarPlan(tx_cod_plan_mostrar, tx_nombre_plan_mostrar, tx_velocidad_plan_mostrar,tx_precio_plan_mostrar, tx_descripcion_plan2, tx_cod_plan_act, 
     tx_nombre_plan_act,tx_velocidad_plan_act, tx_precio_plan_act, tx_descripcion_plan_act);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void bt_eliminarPlanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_eliminarPlanActionPerformed
-    Crud_Planes.eliminarPlan(tx_cod_plan_mostrar1, tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
+    crud_planes.eliminarPlan(tx_cod_plan_mostrar1, tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
     }//GEN-LAST:event_bt_eliminarPlanActionPerformed
 
     private void tx_correoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_correoActionPerformed
