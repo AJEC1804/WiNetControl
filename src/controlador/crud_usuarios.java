@@ -61,22 +61,16 @@ public class crud_usuarios {
             return;
         }
 
-        cliente nuevo = new cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena, "Oro");
+        String planInicial = obtenerPlanInicialCliente();
+        cliente nuevo = new cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena, planInicial);
 
         if (contadorClientes < ELEMENTOS) {
             clientes[contadorClientes] = nuevo;
             contadorClientes++;
             JOptionPane.showMessageDialog(null, "Cliente agregado correctamente.");
 
-            tx_nombres.setText("");
-            tx_apellidos.setText("");
-            cb_tipo.setSelectedIndex(0);
-            tx_identificacion.setText("");
-            tx_telefono.setText("");
-            tx_correo.setText("");
-            tx_direccion.setText("");
-            tx_contrasena.setText("");
-            tx_confContrasena.setText("");
+            limpiarCamposAgregarCliente(tx_nombres, tx_apellidos, cb_tipo, tx_identificacion,
+                    tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
 
         } else {
             JOptionPane.showMessageDialog(null, "Error: límite de clientes alcanzado.");
@@ -159,6 +153,31 @@ public class crud_usuarios {
 
     }
 
+    public static void asignarPlanACliente(JTextField tx_identificacion_cliente, JTextField tx_nombre_plan) {
+        String identificacion = tx_identificacion_cliente.getText().trim();
+        String nombrePlan = tx_nombre_plan.getText().trim();
+
+        if (identificacion.isEmpty() || nombrePlan.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese identificacion del cliente y nombre del plan.");
+            return;
+        }
+
+        int indiceCliente = buscarIndiceClientePorIdentificacion(identificacion);
+        if (indiceCliente == -1) {
+            JOptionPane.showMessageDialog(null, "No se encontro cliente con esa identificacion.");
+            return;
+        }
+
+        Planes planSeleccionado = crud_planes.buscarPlanPorNombre(nombrePlan);
+        if (planSeleccionado == null) {
+            JOptionPane.showMessageDialog(null, "No existe un plan con ese nombre.");
+            return;
+        }
+
+        clientes[indiceCliente].setPlanActual(planSeleccionado);
+        JOptionPane.showMessageDialog(null, "Plan asignado correctamente al cliente.");
+    }
+
     public static void listarClientes(JTable tabla) {
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
@@ -201,6 +220,8 @@ public class crud_usuarios {
             tx_direccion_eliminar.setText(c.getDireccion());
         } else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
+            limpiarCamposClienteEliminar(tx_documento_eliminar, tx_nombre_eliminar, tx_apellido_eliminar,
+                    tx_tipo_eliminar, tx_telefono_eliminar, tx_correo_eliminar, tx_direccion_eliminar, tx_docu_buscar_elim);
         }
     }
 
@@ -231,14 +252,8 @@ public class crud_usuarios {
             JOptionPane.showMessageDialog(null, "No se encontró el cliente a eliminar");
         }
 
-        tx_documento_eliminar.setText("");
-        tx_nombre_eliminar.setText("");
-        tx_apellido_eliminar.setText("");
-        tx_tipo_eliminar.setText("");
-        tx_telefono_eliminar.setText("");
-        tx_correo_eliminar.setText("");
-        tx_direccion_eliminar.setText("");
-        tx_docu_buscar_elim.setText("");
+        limpiarCamposClienteEliminar(tx_documento_eliminar, tx_nombre_eliminar, tx_apellido_eliminar,
+            tx_tipo_eliminar, tx_telefono_eliminar, tx_correo_eliminar, tx_direccion_eliminar, tx_docu_buscar_elim);
     }
 
     public static void buscarClienteActualizar(
@@ -261,6 +276,8 @@ public class crud_usuarios {
         int indice = buscarIndiceClientePorIdentificacion(docBuscar);
         if (indice == -1) {
             JOptionPane.showMessageDialog(null, "No se encontró ningún cliente con ese documento.");
+            limpiarCamposClienteActualizar(tx_nombreCambiar, tx_apellidoCambiar, tx_tipo1,
+                    tx_identificacionCambiar, tx_telefonoCambiar, tx_correoCambiar, tx_direccionCambiar, tx_docu_buscar_actualizar);
             return;
         }
 
@@ -378,7 +395,8 @@ public class crud_usuarios {
     tx_telefonoCambiar.setText(c.getTelefono());
     tx_correoCambiar.setText(c.getCorreo());
     tx_direccionCambiar.setText(c.getDireccion());
-    tx_passwordCambiar1.setText("");
+    limpiarCamposEdicionActualizar(tx_nombreCambiar1, tx_apellidosCambiar1, jtipo_cambiar,
+            tx_identificacionCambiar1, tx_telefonoCambiar1, tx_correoCambiar1, tx_direccionCambiar1, tx_passwordCambiar1);
 }
     
 
@@ -414,13 +432,9 @@ public class crud_usuarios {
         if (!encontrado) {
             JOptionPane.showMessageDialog(null, "No se encontró ningún cliente con esa identificación.");
 
-            tx_nombre_buscar.setText("");
-            tx_apellido_buscar.setText("");
-            tx_tipo_buscar.setText("");
-            tx_documento_buscar.setText("");
-            tx_telefono_buscar.setText("");
-            tx_correo_buscar.setText("");
-            tx_direccion_buscar.setText("");
+            limpiarCamposBuscarCliente(tx_nombre_buscar, tx_apellido_buscar, tx_tipo_buscar,
+                    tx_documento_buscar, tx_telefono_buscar, tx_correo_buscar, tx_direccion_buscar, tx_docu_buscar);
+            return;
         }
 
         tx_docu_buscar.setText("");
@@ -450,6 +464,82 @@ public class crud_usuarios {
         if (!hayClientes) {
             JOptionPane.showMessageDialog(null, "No hay clientes registrados.");
         }
+    }
+
+    private static String obtenerPlanInicialCliente() {
+        Planes planInicial = crud_planes.obtenerPrimerPlanDisponible();
+        if (planInicial != null) {
+            return planInicial.getNombrePlan();
+        }
+        return "Sin plan";
+    }
+
+    private static void limpiarCamposAgregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo,
+            JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
+            JPasswordField tx_contrasena, JPasswordField tx_confContrasena) {
+        tx_nombres.setText("");
+        tx_apellidos.setText("");
+        cb_tipo.setSelectedIndex(0);
+        tx_identificacion.setText("");
+        tx_telefono.setText("");
+        tx_correo.setText("");
+        tx_direccion.setText("");
+        tx_contrasena.setText("");
+        tx_confContrasena.setText("");
+    }
+
+    private static void limpiarCamposClienteEliminar(JTextField tx_documento_eliminar, JTextField tx_nombre_eliminar,
+            JTextField tx_apellido_eliminar, JTextField tx_tipo_eliminar, JTextField tx_telefono_eliminar,
+            JTextField tx_correo_eliminar, JTextField tx_direccion_eliminar, JTextField tx_docu_buscar_elim) {
+        tx_documento_eliminar.setText("");
+        tx_nombre_eliminar.setText("");
+        tx_apellido_eliminar.setText("");
+        tx_tipo_eliminar.setText("");
+        tx_telefono_eliminar.setText("");
+        tx_correo_eliminar.setText("");
+        tx_direccion_eliminar.setText("");
+        tx_docu_buscar_elim.setText("");
+    }
+
+    private static void limpiarCamposClienteActualizar(JTextField tx_nombreCambiar, JTextField tx_apellidoCambiar,
+            JTextField tx_tipo1, JTextField tx_identificacionCambiar, JTextField tx_telefonoCambiar,
+            JTextField tx_correoCambiar, JTextField tx_direccionCambiar, JTextField tx_docu_buscar_actualizar) {
+        tx_nombreCambiar.setText("");
+        tx_apellidoCambiar.setText("");
+        tx_tipo1.setText("");
+        tx_identificacionCambiar.setText("");
+        tx_telefonoCambiar.setText("");
+        tx_correoCambiar.setText("");
+        tx_direccionCambiar.setText("");
+        tx_docu_buscar_actualizar.setText("");
+    }
+
+    private static void limpiarCamposEdicionActualizar(JTextField tx_nombreCambiar1, JTextField tx_apellidosCambiar1,
+            JComboBox<String> jtipo_cambiar, JTextField tx_identificacionCambiar1, JTextField tx_telefonoCambiar1,
+            JTextField tx_correoCambiar1, JTextField tx_direccionCambiar1, JPasswordField tx_passwordCambiar1) {
+        tx_nombreCambiar1.setText("");
+        tx_apellidosCambiar1.setText("");
+        if (jtipo_cambiar.getItemCount() > 0) {
+            jtipo_cambiar.setSelectedIndex(0);
+        }
+        tx_identificacionCambiar1.setText("");
+        tx_telefonoCambiar1.setText("");
+        tx_correoCambiar1.setText("");
+        tx_direccionCambiar1.setText("");
+        tx_passwordCambiar1.setText("");
+    }
+
+    private static void limpiarCamposBuscarCliente(JTextField tx_nombre_buscar, JTextField tx_apellido_buscar,
+            JTextField tx_tipo_buscar, JTextField tx_documento_buscar, JTextField tx_telefono_buscar,
+            JTextField tx_correo_buscar, JTextField tx_direccion_buscar, JTextField tx_docu_buscar) {
+        tx_nombre_buscar.setText("");
+        tx_apellido_buscar.setText("");
+        tx_tipo_buscar.setText("");
+        tx_documento_buscar.setText("");
+        tx_telefono_buscar.setText("");
+        tx_correo_buscar.setText("");
+        tx_direccion_buscar.setText("");
+        tx_docu_buscar.setText("");
     }
 
 
