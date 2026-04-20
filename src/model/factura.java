@@ -6,7 +6,7 @@ package model;
 
 /**
  *
- * @author EUMAPE
+ * @author Juanes
  */
 public class factura {
     private int idFactura;

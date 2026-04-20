@@ -6,7 +6,7 @@ import java.util.Properties;
 
 /**
  *
- * @author EUMAPE
+ * @author Juanes
  */
 public class correoSoporte {
 

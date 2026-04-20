@@ -5,9 +5,16 @@ import javax.swing.JOptionPane;
 import model.cliente;
 import controlador.correoSoporte;
 import controlador.crud_planes;
+import controlador.ctrlFactura;
 import model.Planes;
 import static entidades.Arreglos.*;
+import java.time.LocalDate;
+import model.factura;
 
+/**
+ *
+ * @author Juanes
+ */
 
 public class usuarioVista extends javax.swing.JFrame {
    
@@ -947,27 +954,32 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFacturacionActionPerformed
 
     private void btnVerFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerFacturaActionPerformed
-     /*String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
-     Planes planUsuario = usuarioActual.getPlanActual();
+  
+    String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
 
-    int mesSeleccionado = cbMes.getSelectedIndex() + 1;
-    int anioSeleccionado = Integer.parseInt((String) cbAno.getSelectedItem());
-
-    LocalDate hoy = LocalDate.now();
-    int mesActual = hoy.getMonthValue();
-    int anioActual = hoy.getYear();
-
-    if(mesSeleccionado != mesActual || anioSeleccionado != anioActual) {
-
-        JOptionPane.showMessageDialog(this,"No se generaron facturas para meses anteriores.");
+    Planes planUsuario = obtenerPlanDelUsuario();
+    if (planUsuario == null) {
+        JOptionPane.showMessageDialog(this, "No hay planes disponibles para generar factura.");
         return;
     }
 
-    String archivoPDF = "facturas/factura_" + nombreCompleto.replace(" ", "_") + "-" + mesActual + "-" + anioActual + ".pdf";
+    int mesSeleccionado = cbMes.getSelectedIndex() + 1;
+    int anoSeleccionado = Integer.parseInt((String) cbAno.getSelectedItem());
 
-    factura f = ctrlFactura.buscarFacturaMes(nombreCompleto, mesActual, anioActual);
+    LocalDate hoy = LocalDate.now();
+    int mesActual = hoy.getMonthValue();
+    int anoActual = hoy.getYear();
 
-    if(f == null) {
+    if (mesSeleccionado != mesActual || anoSeleccionado != anoActual) {
+        JOptionPane.showMessageDialog(this, "No se generaron facturas para meses anteriores.");
+        return;
+    }
+
+    String archivoPDF = "facturas/factura_" + nombreCompleto.replace(" ", "_") + "-" + mesActual + "-" + anoActual + ".pdf";
+
+    factura f = ctrlFactura.buscarFacturaMes(nombreCompleto, mesActual, anoActual);
+
+    if (f == null) {
         f = ctrlFactura.crearFactura(nombreCompleto, planUsuario, archivoPDF);
         ctrlFactura.generarFacturaPDF(f, planUsuario);
     }
@@ -977,12 +989,13 @@ public class usuarioVista extends javax.swing.JFrame {
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al abrir la factura: " + e.getMessage());
     }
-    */
+
+        
     }//GEN-LAST:event_btnVerFacturaActionPerformed
 
     private void JpnCerrarSesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JpnCerrarSesionMouseClicked
-        login log = new login();
-        log.setVisible(true);
+        login Login = new login();
+        Login.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_JpnCerrarSesionMouseClicked
 

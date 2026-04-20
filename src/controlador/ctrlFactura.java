@@ -29,11 +29,11 @@ public class ctrlFactura {
     return f;
 }
 
-    public static factura buscarFacturaMes(String Usuario, int mes, int anio) {
-        String token = "-" + mes + "-" + anio + ".pdf";
+    public static factura buscarFacturaMes(String nombreCompleto, int mes, int ano) {
+        String token = "-" + mes + "-" + ano + ".pdf";
         for (int i = 0; i < contador; i++) {
             factura f = facturas[i];
-            if (f != null && f.getUsuario().equalsIgnoreCase(Usuario) && f.getArchivoPDF().contains(token)) {
+            if (f != null && f.getUsuario().equalsIgnoreCase(nombreCompleto) && f.getArchivoPDF().contains(token)) {
                 return f;
             }
         }
@@ -67,7 +67,7 @@ public class ctrlFactura {
         return resultado;
     }
     
-    public static boolean generarFacturaPDF(factura f, Planes p) {
+    public static boolean generarFacturaPDF(factura f, Planes planUsuario) {
     try {
         File carpeta = new File("facturas");
         if (!carpeta.exists()) carpeta.mkdirs();
@@ -81,9 +81,9 @@ public class ctrlFactura {
         doc.add(new Paragraph("Factura numero: " + f.getIdFactura()));
         doc.add(new Paragraph("Fecha en que se genera: " + f.getFecha()));
         doc.add(new Paragraph("Usuario: " + f.getUsuario()));
-        doc.add(new Paragraph("ID Plan: " + p.getIdPlan()));
-        doc.add(new Paragraph("Nombre del Plan: " + p.getNombrePlan()));
-        doc.add(new Paragraph("Valor mensual: $" + p.getPrecio()));
+        doc.add(new Paragraph("ID Plan: " + planUsuario.getIdPlan()));
+        doc.add(new Paragraph("Nombre del Plan: " + planUsuario.getNombrePlan()));
+        doc.add(new Paragraph("Valor mensual: $" + planUsuario.getPrecio()));
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("¡Gracias por confiar en nosotros, recuerda hacer tus pagos a tiempo!", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12)));
         doc.close();
