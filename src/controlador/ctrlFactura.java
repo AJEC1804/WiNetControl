@@ -1,5 +1,10 @@
 package controlador;
 
+/**
+ *
+ * @author Juanes
+ */
+
 import model.factura;
 import model.Planes;
 import java.time.LocalDate;
@@ -19,15 +24,17 @@ public class ctrlFactura {
 
     // Crear una nueva factura
     public static factura crearFactura(String nombreUsuario, Planes planUsuario, String archivoPDF) {
-    if (contador >= MAX) return null;
+        if (contador >= MAX) {
+            return null;
+        }
 
-    LocalDate hoy = LocalDate.now();
-    String fecha = hoy.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        LocalDate hoy = LocalDate.now();
+        String fecha = hoy.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-    factura f = new factura(IdFactura++, nombreUsuario, planUsuario.getIdPlan(), fecha, planUsuario.getPrecio(), archivoPDF);
-    facturas[contador++] = f;
-    return f;
-}
+        factura f = new factura(IdFactura++, nombreUsuario, planUsuario.getIdPlan(), fecha, planUsuario.getPrecio(), archivoPDF);
+        facturas[contador++] = f;
+        return f;
+    }
 
     public static factura buscarFacturaMes(String nombreCompleto, int mes, int ano) {
         String token = "-" + mes + "-" + ano + ".pdf";
@@ -54,7 +61,7 @@ public class ctrlFactura {
     }
 
     public static String rutaFacturaEsperada(String usuario, int mes, int ano) {
-        return RUTA + "factura_" + usuario.replace(" ", "_") + "_" + mes + "_" + ano + ".pdf";
+        return RUTA + "factura_" + usuario.replace(" ", "_") + "-" + mes + "-" + ano + ".pdf";
     }
 
     public static int getContador() {
@@ -66,32 +73,34 @@ public class ctrlFactura {
         System.arraycopy(facturas, 0, resultado, 0, contador);
         return resultado;
     }
-    
+
     public static boolean generarFacturaPDF(factura f, Planes planUsuario) {
-    try {
-        File carpeta = new File("facturas");
-        if (!carpeta.exists()) carpeta.mkdirs();
+        try {
+            File carpeta = new File("facturas");
+            if (!carpeta.exists()) {
+                carpeta.mkdirs();
+            }
 
-        Document doc = new Document();
-        PdfWriter.getInstance(doc, new FileOutputStream(f.getArchivoPDF()));
-        doc.open();
+            Document doc = new Document();
+            PdfWriter.getInstance(doc, new FileOutputStream(f.getArchivoPDF()));
+            doc.open();
 
-        doc.add(new Paragraph("WiNet Control- FACTURA DE SERVICIO", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Factura numero: " + f.getIdFactura()));
-        doc.add(new Paragraph("Fecha en que se genera: " + f.getFecha()));
-        doc.add(new Paragraph("Usuario: " + f.getUsuario()));
-        doc.add(new Paragraph("ID Plan: " + planUsuario.getIdPlan()));
-        doc.add(new Paragraph("Nombre del Plan: " + planUsuario.getNombrePlan()));
-        doc.add(new Paragraph("Valor mensual: $" + planUsuario.getPrecio()));
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("¡Gracias por confiar en nosotros, recuerda hacer tus pagos a tiempo!", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12)));
-        doc.close();
-        return true;
+            doc.add(new Paragraph("WiNet Control- FACTURA DE SERVICIO", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+            doc.add(new Paragraph("\n"));
+            doc.add(new Paragraph("Factura numero: " + f.getIdFactura()));
+            doc.add(new Paragraph("Fecha en que se genera: " + f.getFecha()));
+            doc.add(new Paragraph("Usuario: " + f.getUsuario()));
+            doc.add(new Paragraph("ID Plan: " + planUsuario.getIdPlan()));
+            doc.add(new Paragraph("Nombre del Plan: " + planUsuario.getNombrePlan()));
+            doc.add(new Paragraph("Valor mensual: $" + planUsuario.getPrecio()));
+            doc.add(new Paragraph("\n"));
+            doc.add(new Paragraph("¡Gracias por confiar en nosotros, recuerda hacer tus pagos a tiempo!", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12)));
+            doc.close();
+            return true;
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-}
 }

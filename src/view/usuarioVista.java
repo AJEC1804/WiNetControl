@@ -108,6 +108,8 @@ public class usuarioVista extends javax.swing.JFrame {
         txtApellidos = new javax.swing.JTextField();
         txtCorreo = new javax.swing.JTextField();
         btnvolver1 = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
         jpnSoporte = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -321,7 +323,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel18.setText("WiNet Control");
         JpnPng.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 42, 250, 50));
 
-        getContentPane().add(JpnPng, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 780, 140));
+        getContentPane().add(JpnPng, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 780, 110));
 
         JpnBienvenida.setBackground(new java.awt.Color(255, 255, 255));
         JpnBienvenida.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -405,23 +407,23 @@ public class usuarioVista extends javax.swing.JFrame {
         jPanel17.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, -1, -1));
 
         txtDireccion.setFocusable(false);
-        jPanel17.add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 90, 170, -1));
+        jPanel17.add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 60, 170, -1));
 
         jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel33.setText("Numero Telefono");
-        jPanel17.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, -1, -1));
+        jPanel17.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, -1));
 
         cbTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CC", " " }));
-        jPanel17.add(cbTipoDocumento, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 180, -1, -1));
+        jPanel17.add(cbTipoDocumento, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 140, -1, -1));
 
         txtIdentificacion.setFocusable(false);
-        jPanel17.add(txtIdentificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, 110, -1));
+        jPanel17.add(txtIdentificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 140, 120, -1));
 
         txtTelefono.setFocusable(false);
-        jPanel17.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 150, -1));
+        jPanel17.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 180, 130, -1));
 
         txPassword.setFocusable(false);
-        jPanel17.add(txPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, 160, 20));
+        jPanel17.add(txPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 100, 170, 20));
 
         btnActualizarInfo.setText("Actualizar mis datos");
         btnActualizarInfo.addActionListener(new java.awt.event.ActionListener() {
@@ -429,40 +431,40 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnActualizarInfoActionPerformed(evt);
             }
         });
-        jPanel17.add(btnActualizarInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 170, 160, -1));
+        jPanel17.add(btnActualizarInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 290, 160, -1));
 
         jLabel44.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel44.setText("Nombres");
-        jPanel17.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
+        jPanel17.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, -1, -1));
 
         jLabel45.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel45.setText("Apellidos");
-        jPanel17.add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, -1, -1));
+        jPanel17.add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
 
         jLabel46.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel46.setText("Documento");
-        jPanel17.add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, -1));
+        jPanel17.add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
 
         jLabel47.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel47.setText("Contraseña");
-        jPanel17.add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, -1, -1));
+        jPanel17.add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, -1, -1));
 
         jLabel48.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel48.setText("Correo Electronico");
-        jPanel17.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, -1, -1));
+        jPanel17.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, -1, -1));
 
         jLabel49.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel49.setText("Dirección");
-        jPanel17.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 90, -1, -1));
+        jPanel17.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 60, -1, -1));
 
         txtNombres.setFocusable(false);
-        jPanel17.add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, 150, -1));
+        jPanel17.add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 60, 150, -1));
 
         txtApellidos.setFocusable(false);
-        jPanel17.add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 140, 150, -1));
+        jPanel17.add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, 150, -1));
 
         txtCorreo.setFocusable(false);
-        jPanel17.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 170, -1));
+        jPanel17.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 130, -1));
 
         btnvolver1.setText("Volver");
         btnvolver1.addActionListener(new java.awt.event.ActionListener() {
@@ -470,7 +472,15 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnvolver1ActionPerformed(evt);
             }
         });
-        jPanel17.add(btnvolver1, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 210, 160, -1));
+        jPanel17.add(btnvolver1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 280, 160, -1));
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel19.setText("¿Deseas actualizar tus datos?");
+        jPanel17.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 230, -1, -1));
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel22.setText("Presiona el siguente botón ");
+        jPanel17.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 260, 190, -1));
 
         javax.swing.GroupLayout JpnMisDatosLayout = new javax.swing.GroupLayout(JpnMisDatos);
         JpnMisDatos.setLayout(JpnMisDatosLayout);
@@ -494,7 +504,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel20.setText("Soporte");
-        jpnSoporte.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, -1, -1));
+        jpnSoporte.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
 
         jPanel7.setBackground(new java.awt.Color(153, 153, 153));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -508,7 +518,6 @@ public class usuarioVista extends javax.swing.JFrame {
         jPanel7.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         btnEnviarSoporte.setBackground(new java.awt.Color(102, 102, 102));
-        btnEnviarSoporte.setForeground(new java.awt.Color(255, 255, 255));
         btnEnviarSoporte.setText("Enviar");
         btnEnviarSoporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -532,12 +541,11 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnVolver2ActionPerformed(evt);
             }
         });
-        jPanel7.add(btnVolver2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 230, 80, -1));
+        jPanel7.add(btnVolver2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 230, 160, -1));
 
         jpnSoporte.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 690, 270));
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(0, 0, 0));
         jLabel17.setText("Aqui puedes solicitar el cambio de tu plan, o reportar fallos en el sistema.");
         jpnSoporte.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 510, -1));
 
@@ -556,7 +564,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel30.setText("ID del plan:");
-        JpnDetalles.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, -1, -1));
+        JpnDetalles.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
 
         jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel31.setText("Fecha de activacion: ");
@@ -564,7 +572,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel32.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel32.setText("Descripcion del plan:");
-        JpnDetalles.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, -1, -1));
+        JpnDetalles.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 140, -1));
 
         jLabel34.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel34.setText("Fecha de vencimiento:");
@@ -576,7 +584,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel42.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel42.setText("Costo mensual:");
-        JpnDetalles.add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, -1, -1));
+        JpnDetalles.add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, -1, -1));
 
         txtnombrePlan.setFocusable(false);
         JpnDetalles.add(txtnombrePlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, 160, -1));
@@ -601,7 +609,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel36.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel36.setText("Nombre del plan:");
-        JpnDetalles.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
+        JpnDetalles.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
 
         txtIdPlan.setFocusable(false);
         JpnDetalles.add(txtIdPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 160, -1));
@@ -615,7 +623,7 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnvolver3ActionPerformed(evt);
             }
         });
-        JpnDetalles.add(btnvolver3, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 230, 90, -1));
+        JpnDetalles.add(btnvolver3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 280, 160, -1));
 
         jTabbedPane1.addTab("4", JpnDetalles);
 
@@ -633,7 +641,7 @@ public class usuarioVista extends javax.swing.JFrame {
         JpnFacturacion.add(cbMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 50, 110, -1));
 
         cbAno.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cbAno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025", "2024" }));
+        cbAno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2026", "2025", "2024" }));
         JpnFacturacion.add(cbAno, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 90, 110, -1));
 
         btnVerFactura.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -644,7 +652,7 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnVerFacturaActionPerformed(evt);
             }
         });
-        JpnFacturacion.add(btnVerFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 140, 110, -1));
+        JpnFacturacion.add(btnVerFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 170, 110, -1));
 
         jLabel38.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel38.setText("Recuerda que en WiNet Control estamos para servirte");
@@ -662,19 +670,19 @@ public class usuarioVista extends javax.swing.JFrame {
         JpnFacturacion.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 120, 30));
 
         jLabel58.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel58.setText("- Consultar factura del mes en curso");
+        jLabel58.setText("- Consultar tu factura del mes en curso");
         jLabel58.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         JpnFacturacion.add(jLabel58, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 320, 30));
 
         jLabel59.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel59.setText("- Total a pagar");
+        jLabel59.setText("- El total a pagar");
         jLabel59.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        JpnFacturacion.add(jLabel59, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 320, 30));
+        JpnFacturacion.add(jLabel59, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 320, 30));
 
         jLabel60.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel60.setText("- Servicios contratados");
+        jLabel60.setText("- Tus servicios contratados");
         jLabel60.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        JpnFacturacion.add(jLabel60, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 320, 30));
+        JpnFacturacion.add(jLabel60, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 320, 30));
 
         btnvolver4.setBackground(new java.awt.Color(137, 207, 240));
         btnvolver4.setText("Volver");
@@ -683,7 +691,7 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnvolver4ActionPerformed(evt);
             }
         });
-        JpnFacturacion.add(btnvolver4, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 180, 110, -1));
+        JpnFacturacion.add(btnvolver4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 280, 160, -1));
 
         jTabbedPane1.addTab("5", JpnFacturacion);
 
@@ -720,7 +728,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel55.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel55.setText("Direccion");
         jPanel6.add(jLabel55, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 60, 140, -1));
-        jPanel6.add(txtActDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 180, -1));
+        jPanel6.add(txtActDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 60, 170, -1));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel10.setText("Actualizar mis datos");
@@ -734,7 +742,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel57.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel57.setText("Contraseña actual");
         jPanel6.add(jLabel57, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 140, 120, -1));
-        jPanel6.add(txtActCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 180, -1));
+        jPanel6.add(txtActCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 170, -1));
 
         btnGuardar.setText("Guardar ");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -742,7 +750,7 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnGuardarActionPerformed(evt);
             }
         });
-        jPanel6.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 270, 90, -1));
+        jPanel6.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 240, 90, -1));
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -750,8 +758,8 @@ public class usuarioVista extends javax.swing.JFrame {
                 btnCancelarActionPerformed(evt);
             }
         });
-        jPanel6.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 270, 90, -1));
-        jPanel6.add(txtNuevaContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 160, -1));
+        jPanel6.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 310, 90, -1));
+        jPanel6.add(txtNuevaContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 170, -1));
         jPanel6.add(txtContraseñaActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 170, -1));
 
         JpnActualizarDatos.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 370));
@@ -1093,9 +1101,11 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
