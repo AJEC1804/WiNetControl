@@ -121,7 +121,7 @@ public class crud_planes {
         tx_precio_buscar.setText(String.valueOf((int) p.getPrecio()));
         tx_descripcion_plan1.setText(p.getDescripcionPlan());
 
-        tx_idPlan_buscar.setText("");
+        limpiarCampoBusqueda(tx_idPlan_buscar);
     }
 
     public static void buscarPlanActualizar(JTextField tx_cod_buscar_actualizar_plan,
@@ -158,7 +158,7 @@ public class crud_planes {
         tx_descripcion_plan2.setText(p.getDescripcionPlan());
 
         JOptionPane.showMessageDialog(null, "Plan encontrado. Deje en blanco los campos que no desea actualizar.");
-        tx_cod_buscar_actualizar_plan.setText("");
+        limpiarCampoBusqueda(tx_cod_buscar_actualizar_plan);
     }
 
     public static void actualizarPlan(JTextField tx_cod_plan_mostrar,
@@ -314,11 +314,15 @@ public class crud_planes {
             return;
         }
 
+        String nombrePlanEliminado = plan[indiceEliminar].getNombrePlan();
+
         for (int j = indiceEliminar; j < contadorPlanes - 1; j++) {
             plan[j] = plan[j + 1];
         }
         plan[contadorPlanes - 1] = null;
         contadorPlanes--;
+
+        actualizarPlanClientesTrasEliminar(nombrePlanEliminado);
 
         JOptionPane.showMessageDialog(null, "Plan eliminado correctamente.");
         limpiarCamposEliminar(tx_cod_plan_mostrar1, tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
@@ -375,6 +379,23 @@ public class crud_planes {
         return -1;
     }
 
+    private static void actualizarPlanClientesTrasEliminar(String nombrePlanEliminado) {
+        if (nombrePlanEliminado == null || nombrePlanEliminado.trim().isEmpty()) {
+            return;
+        }
+
+        Planes planReemplazo = obtenerPrimerPlanDisponible();
+        String nombreReemplazo = (planReemplazo != null) ? planReemplazo.getNombrePlan() : "Sin plan";
+
+        for (int i = 0; i < contadorClientes; i++) {
+            cliente c = clientes[i];
+            if (c != null && c.getPlanActual() != null
+                    && c.getPlanActual().equalsIgnoreCase(nombrePlanEliminado)) {
+                c.setPlanActual(nombreReemplazo);
+            }
+        }
+    }
+
     private static void limpiarCamposAgregar(JTextField tx_cod_plan, JTextField tx_nombre_plan,
             JTextField tx_velocidad_plan, JTextField tx_precio_plan, JTextPane tx_descripcion_plan) {
         tx_cod_plan.setText("");
@@ -411,6 +432,10 @@ public class crud_planes {
         tx_precio_plan_mostrar1.setText("");
         tx_descripcion_plan3.setText("");
         tx_idPlan_buscar1.setText("");
+    }
+
+    private static void limpiarCampoBusqueda(JTextField campoBusqueda) {
+        campoBusqueda.setText("");
     }
 
 }
