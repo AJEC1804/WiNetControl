@@ -832,6 +832,10 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_JpnCerrarSesionMouseExited
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (usuarioActual == null) {
+            JOptionPane.showMessageDialog(this, "No hay usuario logueado.");
+            return;
+        }
         String nombre= txtActualizarNombres.getText().trim();
         String apellidos= txtActApellidos.getText().trim();
         String telefono= txtActTelefono.getText().trim();
@@ -866,7 +870,25 @@ public class usuarioVista extends javax.swing.JFrame {
 
         }
 
+        if(!nombre.isEmpty()) {
+            usuarioActual.setNombre(nombre);
+        }
+        if(!apellidos.isEmpty()) {
+            usuarioActual.setApellido(apellidos);
+        }
+        if(!telefono.isEmpty()) {
+            usuarioActual.setTelefono(telefono);
+        }
+        if(!direccion.isEmpty()) {
+            usuarioActual.setDireccion(direccion);
+        }
+        if(!contrasenanueva.isEmpty()) {
+            usuarioActual.setContrasena(contrasenanueva);
+        }
+
         JOptionPane.showMessageDialog(this, "Datos actualizados correctamente");
+
+
 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -875,6 +897,10 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_txtActualizarNombresActionPerformed
 
     private void btnEnviarSoporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarSoporteActionPerformed
+        if (usuarioActual == null) {
+            JOptionPane.showMessageDialog(this, "No hay usuario logueado.");
+            return;
+        }
      String usuario = usuarioActual.getNombre() + " " + usuarioActual.getApellido(); // tu objeto Usuario
     String asunto = txtAsunto.getText();
     String mensaje = txtDescripcion.getText();
@@ -962,6 +988,10 @@ public class usuarioVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFacturacionActionPerformed
 
     private void btnVerFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerFacturaActionPerformed
+        if (usuarioActual == null) {
+            JOptionPane.showMessageDialog(this, "No hay usuario logueado.");
+            return;
+        }
   
     String nombreCompleto = usuarioActual.getNombre() + " " + usuarioActual.getApellido();
 
