@@ -7,6 +7,7 @@ package view;
 import controlador.ctrlFactura;
 import controlador.crud_planes;
 import controlador.crud_usuarios;
+import controlador.ctrlAsignacionPlan;
 import entidades.Arreglos;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -42,21 +43,40 @@ public class admin_view extends javax.swing.JFrame {
             limpiarCamposAsignacionPlan();
         }
 
+        // Limpiar campos según la pestaña que se selecciona
         switch (index) {
-            case 0 -> getRootPane().setDefaultButton(bt_Agregarcliente1);          
-            case 1 -> getRootPane().setDefaultButton(bt_buscar_ClienteActualizar); 
-            case 2 -> getRootPane().setDefaultButton(bt_actualizarCliente);        
-            case 3 -> getRootPane().setDefaultButton(bt_buscar_Cliente5);          
-            case 4 -> getRootPane().setDefaultButton(bt_buscar_Cliente_eliminar);  
-            case 5 -> getRootPane().setDefaultButton(bt_Listar_clientes);          
-            case 6 -> getRootPane().setDefaultButton(bt_guardar_plan);             
-            case 7 -> getRootPane().setDefaultButton(bt_buscar_Planes_Actualizar); 
-            case 8 -> getRootPane().setDefaultButton(bt_buscar_plan);              
-            case 9 -> getRootPane().setDefaultButton(bt_buscar_plan_eliminar);     
+            case 0 -> getRootPane().setDefaultButton(bt_Agregarcliente1);
+            case 1 -> {
+                getRootPane().setDefaultButton(bt_buscar_ClienteActualizar);
+                limpiarCamposBuscarActualizarCliente();
+            }
+            case 2 -> getRootPane().setDefaultButton(bt_actualizarCliente);
+            case 3 -> {
+                getRootPane().setDefaultButton(bt_buscar_Cliente5);
+                limpiarCamposBuscarCliente();
+            }
+            case 4 -> {
+                getRootPane().setDefaultButton(bt_buscar_Cliente_eliminar);
+                limpiarCamposBuscarEliminarCliente();
+            }
+            case 5 -> getRootPane().setDefaultButton(bt_Listar_clientes);
+            case 6 -> getRootPane().setDefaultButton(bt_guardar_plan);
+            case 7 -> {
+                getRootPane().setDefaultButton(bt_buscar_Planes_Actualizar);
+                limpiarCamposBuscarActualizarPlan();
+            }
+            case 8 -> {
+                getRootPane().setDefaultButton(bt_buscar_plan);
+                limpiarCamposBuscarPlan();
+            }
+            case 9 -> {
+                getRootPane().setDefaultButton(bt_buscar_plan_eliminar);
+                limpiarCamposBuscarEliminarPlan();
+            }
             case 10 -> getRootPane().setDefaultButton(bt_listar_plan);
             case 13 -> getRootPane().setDefaultButton(bt_buscar_asigPlan2);
             case 14 -> getRootPane().setDefaultButton(bt_buscar_asigPlan3);
-            default -> getRootPane().setDefaultButton(null);                       
+            default -> getRootPane().setDefaultButton(null);
         }
     });
 }
@@ -87,6 +107,9 @@ public class admin_view extends javax.swing.JFrame {
         jPanel25 = new javax.swing.JPanel();
         jLabel37 = new javax.swing.JLabel();
         jLabel58 = new javax.swing.JLabel();
+        jPanel63 = new javax.swing.JPanel();
+        jLabel113 = new javax.swing.JLabel();
+        jLabel114 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jButton22 = new javax.swing.JButton();
         jLabel35 = new javax.swing.JLabel();
@@ -436,7 +459,7 @@ public class admin_view extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Asignacion plan");
+        jLabel8.setText("Consulta");
         jLabel8.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel8MouseClicked(evt);
@@ -454,7 +477,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addComponent(jLabel91)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -466,7 +489,7 @@ public class admin_view extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 210, 50));
+        jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 350, 210, 50));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/perfil (1).png"))); // NOI18N
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 21, -1, 74));
@@ -608,6 +631,53 @@ public class admin_view extends javax.swing.JFrame {
         );
 
         jPanel2.add(jPanel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 210, 50));
+
+        jPanel63.setBackground(new java.awt.Color(255, 204, 102));
+        jPanel63.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel63MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jPanel63MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jPanel63MouseExited(evt);
+            }
+        });
+
+        jLabel113.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        jLabel113.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel113.setText("Asignacion plan");
+        jLabel113.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel113MouseClicked(evt);
+            }
+        });
+
+        jLabel114.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/lista-de-contactos.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel63Layout = new javax.swing.GroupLayout(jPanel63);
+        jPanel63.setLayout(jPanel63Layout);
+        jPanel63Layout.setHorizontalGroup(
+            jPanel63Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel63Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel114)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel113)
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        jPanel63Layout.setVerticalGroup(
+            jPanel63Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel63Layout.createSequentialGroup()
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addGroup(jPanel63Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel114, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel113))
+                .addContainerGap())
+        );
+
+        jPanel2.add(jPanel63, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 210, 50));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 210, 590));
 
@@ -1424,7 +1494,7 @@ public class admin_view extends javax.swing.JFrame {
                         .addGroup(jPanel37Layout.createSequentialGroup()
                             .addGap(250, 250, 250)
                             .addComponent(jLabel23)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
                             .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel37Layout.createSequentialGroup()
                             .addContainerGap()
@@ -1439,7 +1509,7 @@ public class admin_view extends javax.swing.JFrame {
                                 .addComponent(bt_actualizarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
         jPanel37Layout.setVerticalGroup(
             jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1954,8 +2024,8 @@ public class admin_view extends javax.swing.JFrame {
                                     .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(28, 28, 28)
                                     .addComponent(tx_cod_plan, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel40Layout.createSequentialGroup()
                                 .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -2079,8 +2149,8 @@ public class admin_view extends javax.swing.JFrame {
                             .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(28, 28, 28)
                             .addComponent(tx_cod_plan_act, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel49Layout.createSequentialGroup()
                         .addComponent(jLabel45, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -2168,8 +2238,8 @@ public class admin_view extends javax.swing.JFrame {
                             .addComponent(jLabel48, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(28, 28, 28)
                             .addComponent(tx_cod_plan_mostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel50Layout.createSequentialGroup()
                         .addComponent(jLabel50, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -2356,11 +2426,11 @@ public class admin_view extends javax.swing.JFrame {
                         .addGap(184, 184, 184)
                         .addComponent(jLabel61))
                     .addGroup(jPanel53Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel86))
-                    .addGroup(jPanel53Layout.createSequentialGroup()
                         .addGap(70, 70, 70)
-                        .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel53Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jLabel86, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel53Layout.setVerticalGroup(
@@ -3054,7 +3124,7 @@ public class admin_view extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
-        jTabbedPane1.setSelectedIndex(13);
+        jTabbedPane1.setSelectedIndex(14);
     }//GEN-LAST:event_jPanel6MouseClicked
 
     private void jPanel6MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseEntered
@@ -3094,6 +3164,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        limpiarCamposBuscarActualizarPlan();
         jTabbedPane1.setSelectedIndex(9);
     }//GEN-LAST:event_jButton11ActionPerformed
 
@@ -3102,6 +3173,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+    limpiarCamposBuscarPlan();
     jTabbedPane1.setSelectedIndex(10);
     }//GEN-LAST:event_jButton12ActionPerformed
 
@@ -3126,6 +3198,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        limpiarCamposBuscarCliente();
         jTabbedPane1.setSelectedIndex(3);
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -3227,22 +3300,32 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_guardar_planActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    limpiarCamposBuscarCliente();
+    limpiarCamposBuscarActualizarCliente();
     jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    limpiarCamposBuscarCliente();
+    limpiarCamposBuscarActualizarCliente();
     jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+    limpiarCamposBuscarCliente();
+    limpiarCamposBuscarActualizarCliente();
     jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+    limpiarCamposBuscarCliente();
+    limpiarCamposBuscarActualizarCliente();
     jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+    limpiarCamposBuscarCliente();
+    limpiarCamposBuscarActualizarCliente();
     jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton16ActionPerformed
 
@@ -3263,7 +3346,8 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-     jTabbedPane1.setSelectedIndex(2);
+    limpiarCamposBuscarActualizarPlan();
+    jTabbedPane1.setSelectedIndex(2);
     }//GEN-LAST:event_jButton21ActionPerformed
 
     private void bt_listar_planActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_listar_planActionPerformed
@@ -3271,7 +3355,7 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_listar_planActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    crud_planes.actualizarPlan(tx_cod_plan_mostrar, tx_nombre_plan_mostrar, tx_velocidad_plan_mostrar,tx_precio_plan_mostrar, tx_descripcion_plan2, tx_cod_plan_act, 
+    crud_planes.actualizarPlan(tx_cod_plan_mostrar, tx_nombre_plan_mostrar, tx_velocidad_plan_mostrar,tx_precio_plan_mostrar, tx_descripcion_plan2, tx_cod_buscar_actualizar_plan, tx_cod_plan_act, 
     tx_nombre_plan_act,tx_velocidad_plan_act, tx_precio_plan_act, tx_descripcion_plan_act);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -3336,45 +3420,23 @@ public class admin_view extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton29ActionPerformed
 
     private void bt_buscar_asigPlanbt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_asigPlanbt_buscar_ClienteActionPerformed
-        if (clienteSeleccionadoAsignacion == null) {
-            String identificacion = tx_docu_busc_asigPlan.getText().trim();
-            clienteSeleccionadoAsignacion = buscarClientePorIdentificacion(identificacion);
-        }
+        String identificacion = tx_docu_busc_asigPlan.getText().trim();
+        String nombrePlan = (String) jComboBox_Planes.getSelectedItem();
 
-        if (clienteSeleccionadoAsignacion == null) {
-            JOptionPane.showMessageDialog(this, "Primero busque un cliente valido.");
+        ctrlAsignacionPlan.ResultadoAsignacion resultado = ctrlAsignacionPlan.asignarPlanACliente(identificacion, nombrePlan);
+
+        if (!resultado.exito) {
+            JOptionPane.showMessageDialog(this, resultado.mensaje);
             return;
         }
 
-        if (planSeleccionadoAsignacion == null) {
-            String nombreSeleccionado = (String) jComboBox_Planes.getSelectedItem();
-            planSeleccionadoAsignacion = crud_planes.buscarPlanPorNombre(nombreSeleccionado);
-        }
+        clienteSeleccionadoAsignacion = resultado.clienteAsignado;
+        planSeleccionadoAsignacion = resultado.planAsignado;
 
-        if (planSeleccionadoAsignacion == null) {
-            JOptionPane.showMessageDialog(this, "Primero elija un plan valido.");
-            return;
-        }
+        mostrarDetallePlanAsignado(resultado.planAsignado, resultado.fechaAsignacion);
+        mostrarClienteAsignacion(resultado.clienteAsignado);
 
-        clienteSeleccionadoAsignacion.setPlanActual(planSeleccionadoAsignacion);
-
-        LocalDate fechaAsignacion = LocalDate.now();
-        planSeleccionadoAsignacion.setFechaActivacion(fechaAsignacion.toString());
-        mostrarDetallePlanAsignado(planSeleccionadoAsignacion, fechaAsignacion);
-
-        String nombreCompleto = clienteSeleccionadoAsignacion.getNombre() + " " + clienteSeleccionadoAsignacion.getApellido();
-        String rutaPDF = ctrlFactura.rutaFacturaEsperada(nombreCompleto, fechaAsignacion.getMonthValue(), fechaAsignacion.getYear());
-        factura relacionCreada = ctrlFactura.crearFactura(nombreCompleto, planSeleccionadoAsignacion, rutaPDF);
-
-        String mensaje = "Plan asignado correctamente al cliente "
-                + clienteSeleccionadoAsignacion.getNombre()
-                + " (fecha: " + fechaAsignacion + ").";
-
-        if (relacionCreada == null) {
-            mensaje += "\nNo se pudo registrar la factura automatica por limite interno.";
-        }
-
-        JOptionPane.showMessageDialog(this, mensaje);
+        JOptionPane.showMessageDialog(this, resultado.mensaje);
         limpiarCamposAsignacionPlan();
     }//GEN-LAST:event_bt_buscar_asigPlanbt_buscar_ClienteActionPerformed
 
@@ -3419,14 +3481,10 @@ public class admin_view extends javax.swing.JFrame {
     private void bt_buscar_asigPlan3bt_buscar_ClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_buscar_asigPlan3bt_buscar_ClienteActionPerformed
         String identificacion = tx_docu_busc_asigPlan1.getText().trim();
 
-        if (identificacion.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese la identificacion del cliente.");
-            return;
-        }
-
-        clienteSeleccionadoAsignacion = buscarClientePorIdentificacion(identificacion);
+        // Usar el método del controlador para hacer la consulta detallada
+        clienteSeleccionadoAsignacion = crud_usuarios.consultaDetallada(identificacion);
+        
         if (clienteSeleccionadoAsignacion == null) {
-            JOptionPane.showMessageDialog(this, "No se encontro un cliente con esa identificacion.");
             limpiarCamposClienteAsignacion();
             limpiarCamposDetallePlan();
             return;
@@ -3447,6 +3505,22 @@ public class admin_view extends javax.swing.JFrame {
     private void tx_docu_busc_asigPlan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tx_docu_busc_asigPlan1ActionPerformed
         bt_buscar_asigPlan3bt_buscar_ClienteActionPerformed(evt);
     }//GEN-LAST:event_tx_docu_busc_asigPlan1ActionPerformed
+
+    private void jLabel113MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel113MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel113MouseClicked
+
+    private void jPanel63MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel63MouseClicked
+    jTabbedPane1.setSelectedIndex(13);
+    }//GEN-LAST:event_jPanel63MouseClicked
+
+    private void jPanel63MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel63MouseEntered
+        jPanel63.setBackground(new Color(204,204,204));
+    }//GEN-LAST:event_jPanel63MouseEntered
+
+    private void jPanel63MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel63MouseExited
+        jPanel63.setBackground(new Color(255,204,102));
+    }//GEN-LAST:event_jPanel63MouseExited
 
     private void cargarPlanesAsignacion() {
         DefaultComboBoxModel<String> modeloPlanes = new DefaultComboBoxModel<>();
@@ -3565,6 +3639,66 @@ public class admin_view extends javax.swing.JFrame {
         most_Asig_fechaActivacionDetalle.setText("");
     }
 
+    private void limpiarCamposBuscarCliente() {
+        tx_docu_buscar.setText("");
+        tx_nombre_buscar.setText("");
+        tx_apellido_buscar.setText("");
+        tx_tipo_buscar.setText("");
+        tx_documento_buscar.setText("");
+        tx_telefono_buc.setText("");
+        tx_correo_buscar.setText("");
+        tx_direccion_buscar.setText("");
+    }
+
+    private void limpiarCamposBuscarActualizarCliente() {
+        tx_docu_buscar_actualizar.setText("");
+        tx_nombreCambiar.setText("");
+        tx_apellidosCambiar.setText("");
+        tx_tipoDocuCambiar.setText("");
+        tx_identificacionCambiar.setText("");
+        tx_telefonoCambiar.setText("");
+        tx_correoCambiar.setText("");
+        tx_direccionCambiar.setText("");
+    }
+
+    private void limpiarCamposBuscarEliminarCliente() {
+        tx_docu_buscar_elim.setText("");
+        tx_nombre_eliminar.setText("");
+        tx_apellido_eliminar.setText("");
+        tx_tipo_eliminar.setText("");
+        tx_documento_eliminar.setText("");
+        tx_telefono_eliminar.setText("");
+        tx_correo_eliminar.setText("");
+        tx_direccion_eliminar.setText("");
+    }
+
+    private void limpiarCamposBuscarPlan() {
+        tx_idPlan_buscar.setText("");
+        tx_codigo_buscado.setText("");
+        tx_nombrePlan_buscado.setText("");
+        tx_vel_buscar.setText("");
+        tx_precio_buscar.setText("");
+        tx_descripcion_plan1.setText("");
+    }
+
+    private void limpiarCamposBuscarActualizarPlan() {
+        tx_cod_buscar_actualizar_plan.setText("");
+        tx_cod_plan_mostrar.setText("");
+        tx_nombre_plan_mostrar.setText("");
+        tx_velocidad_plan_mostrar.setText("");
+        tx_precio_plan_mostrar.setText("");
+        tx_descripcion_plan2.setText("");
+    }
+
+    private void limpiarCamposBuscarEliminarPlan() {
+        tx_idPlan_buscar1.setText("");
+        tx_cod_plan_mostrar1.setText("");
+        tx_nombre_plan_mostrar1.setText("");
+        tx_velocidad_plan_mostrar1.setText("");
+        tx_precio_plan_mostrar1.setText("");
+        tx_descripcion_plan3.setText("");
+    }
+
     /** 
      * @param args the command line arguments
      */
@@ -3671,6 +3805,8 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel110;
     private javax.swing.JLabel jLabel111;
     private javax.swing.JLabel jLabel112;
+    private javax.swing.JLabel jLabel113;
+    private javax.swing.JLabel jLabel114;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -3826,6 +3962,7 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel60;
     private javax.swing.JPanel jPanel61;
     private javax.swing.JPanel jPanel62;
+    private javax.swing.JPanel jPanel63;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -3864,18 +4001,18 @@ public class admin_view extends javax.swing.JFrame {
     private javax.swing.JLabel lb_tipo2;
     private javax.swing.JLabel lb_tipo4;
     private javax.swing.JTextField most_Asig_cliente2;
-    private javax.swing.JTextField most_Asig_fechaActivacionDetalle;
     private javax.swing.JTextField most_Asig_descripcionPlanDetalle;
-    private javax.swing.JTextField most_Asig_nombreClienteInfo;
     private javax.swing.JTextField most_Asig_direccionClienteInfo;
-    private javax.swing.JTextField most_Asig_velocidadPlanDetalle;
-    private javax.swing.JTextField most_Asig_nombrePlanDetalle;
-    private javax.swing.JTextField most_Asig_precioPlanDetalle;
-    private javax.swing.JTextField most_Asig_ident;
+    private javax.swing.JTextField most_Asig_fechaActivacionDetalle;
     private javax.swing.JTextField most_Asig_idPlanDetalle;
+    private javax.swing.JTextField most_Asig_ident;
     private javax.swing.JTextField most_Asig_identClienteInfo;
     private javax.swing.JTextField most_Asig_idplan;
+    private javax.swing.JTextField most_Asig_nombreClienteInfo;
+    private javax.swing.JTextField most_Asig_nombrePlanDetalle;
     private javax.swing.JTextField most_Asig_precioPlan;
+    private javax.swing.JTextField most_Asig_precioPlanDetalle;
+    private javax.swing.JTextField most_Asig_velocidadPlanDetalle;
     private javax.swing.JTextField most_Asig_veloplan;
     public static javax.swing.JTextField tx_apellido_buscar;
     private javax.swing.JTextField tx_apellido_eliminar;

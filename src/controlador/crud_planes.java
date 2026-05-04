@@ -166,6 +166,7 @@ public class crud_planes {
             JTextField tx_velocidad_plan_mostrar,
             JTextField tx_precio_plan_mostrar,
             JTextPane tx_descripcion_plan2,
+            JTextField tx_cod_buscar_actualizar_plan,
             JTextField tx_cod_plan_act,
             JTextField tx_nombre_plan_act,
             JTextField tx_velocidad_plan_act,
@@ -284,6 +285,9 @@ public class crud_planes {
         tx_velocidad_plan_mostrar1.setText(p.getVelocidadPlan());
         tx_precio_plan_mostrar1.setText(String.valueOf((int) p.getPrecio()));
         tx_descripcion_plan3.setText(p.getDescripcionPlan());
+        
+        // Limpiar el campo de búsqueda después de encontrar el plan
+        limpiarCampoBusqueda(tx_idPlan_buscar1);
     }
 
     public static void eliminarPlan(JTextField tx_cod_plan_mostrar1,

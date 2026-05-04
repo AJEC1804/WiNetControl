@@ -218,6 +218,9 @@ public class crud_usuarios {
             tx_telefono_eliminar.setText(c.getTelefono());
             tx_correo_eliminar.setText(c.getCorreo());
             tx_direccion_eliminar.setText(c.getDireccion());
+            
+            // Limpiar el campo de búsqueda después de encontrar el cliente
+            tx_docu_buscar_elim.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
             limpiarCamposClienteEliminar(tx_documento_eliminar, tx_nombre_eliminar, tx_apellido_eliminar,
@@ -290,6 +293,9 @@ public class crud_usuarios {
         tx_correoCambiar.setText(c.getCorreo());
         tx_direccionCambiar.setText(c.getDireccion());
 
+        // Limpiar el campo de búsqueda después de encontrar el cliente
+        tx_docu_buscar_actualizar.setText("");
+
         JOptionPane.showMessageDialog(null, "Cliente encontrado. Puede modificar los datos y presionar 'Actualizar'.");
     }
 
@@ -310,7 +316,11 @@ public class crud_usuarios {
         JTextField tx_direccionCambiar1,
         JPasswordField tx_passwordCambiar1
 ) {
-    String docBuscar = tx_docu_buscar_actualizar.getText().trim();
+    String docBuscar = tx_identificacionCambiar.getText().trim();
+
+    if (docBuscar.isEmpty()) {
+        docBuscar = tx_docu_buscar_actualizar.getText().trim();
+    }
 
     if (docBuscar.isEmpty()) {
         JOptionPane.showMessageDialog(null, "Por favor, busque un cliente antes de actualizar.");
@@ -540,6 +550,24 @@ public class crud_usuarios {
         tx_correo_buscar.setText("");
         tx_direccion_buscar.setText("");
         tx_docu_buscar.setText("");
+    }
+
+    public static cliente consultaDetallada(String identificacion) {
+        if (identificacion == null || identificacion.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese la identificación del cliente.");
+            return null;
+        }
+
+        String idBuscada = identificacion.trim();
+        for (int i = 0; i < contadorClientes; i++) {
+            cliente c = clientes[i];
+            if (c != null && c.getIdentificacion().equals(idBuscada)) {
+                return c;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "No se encontró un cliente con esa identificación.");
+        return null;
     }
 
 
