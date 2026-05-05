@@ -96,12 +96,10 @@ public class usuarioVista extends javax.swing.JFrame {
         cbTipoDocumento = new javax.swing.JComboBox<>();
         txtIdentificacion = new javax.swing.JTextField();
         txtTelefono = new javax.swing.JTextField();
-        txPassword = new javax.swing.JPasswordField();
         btnActualizarInfo = new javax.swing.JButton();
         jLabel44 = new javax.swing.JLabel();
         jLabel45 = new javax.swing.JLabel();
         jLabel46 = new javax.swing.JLabel();
-        jLabel47 = new javax.swing.JLabel();
         jLabel48 = new javax.swing.JLabel();
         jLabel49 = new javax.swing.JLabel();
         txtNombres = new javax.swing.JTextField();
@@ -411,7 +409,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel33.setText("Numero Telefono");
-        jPanel17.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, -1));
+        jPanel17.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 140, -1, -1));
 
         cbTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CC", " " }));
         jPanel17.add(cbTipoDocumento, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 140, -1, -1));
@@ -420,10 +418,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jPanel17.add(txtIdentificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 140, 120, -1));
 
         txtTelefono.setFocusable(false);
-        jPanel17.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 180, 130, -1));
-
-        txPassword.setFocusable(false);
-        jPanel17.add(txPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 100, 170, 20));
+        jPanel17.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 140, 130, -1));
 
         btnActualizarInfo.setText("Actualizar mis datos");
         btnActualizarInfo.addActionListener(new java.awt.event.ActionListener() {
@@ -445,13 +440,9 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel46.setText("Documento");
         jPanel17.add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
 
-        jLabel47.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel47.setText("Contraseña");
-        jPanel17.add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, -1, -1));
-
         jLabel48.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel48.setText("Correo Electronico");
-        jPanel17.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, -1, -1));
+        jPanel17.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, -1, -1));
 
         jLabel49.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel49.setText("Dirección");
@@ -464,7 +455,7 @@ public class usuarioVista extends javax.swing.JFrame {
         jPanel17.add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, 150, -1));
 
         txtCorreo.setFocusable(false);
-        jPanel17.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 130, -1));
+        jPanel17.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 100, 140, -1));
 
         btnvolver1.setText("Volver");
         btnvolver1.addActionListener(new java.awt.event.ActionListener() {
@@ -1159,7 +1150,6 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel46;
-    private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
@@ -1191,7 +1181,6 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel jpnSoporte;
-    private javax.swing.JPasswordField txPassword;
     private javax.swing.JTextField txtActApellidos;
     private javax.swing.JTextField txtActCorreo;
     private javax.swing.JTextField txtActDireccion;
