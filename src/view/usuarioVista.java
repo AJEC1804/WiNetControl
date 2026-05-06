@@ -30,6 +30,25 @@ public class usuarioVista extends javax.swing.JFrame {
 
     public void setUsuarioActual(cliente usuarioActual) {
         this.usuarioActual = usuarioActual;
+        if (this.usuarioActual != null) {
+            // Llenar campos de "Mis datos"
+            txtNombres.setText(this.usuarioActual.getNombre());
+            txtApellidos.setText(this.usuarioActual.getApellido());
+            txtIdentificacion.setText(this.usuarioActual.getIdentificacion());
+            txtDireccion.setText(this.usuarioActual.getDireccion());
+            txtCorreo.setText(this.usuarioActual.getCorreo());
+            txtTelefono.setText(this.usuarioActual.getTelefono());
+            if (this.usuarioActual.getTipo() != null) {
+                cbTipoDocumento.setSelectedItem(this.usuarioActual.getTipo());
+            }
+            
+            // Llenar campos de "Actualizar mis datos"
+            txtActualizarNombres.setText(this.usuarioActual.getNombre());
+            txtActApellidos.setText(this.usuarioActual.getApellido());
+            txtActDireccion.setText(this.usuarioActual.getDireccion());
+            txtActCorreo.setText(this.usuarioActual.getCorreo());
+            txtActTelefono.setText(this.usuarioActual.getTelefono());
+        }
     }
 
     private Planes obtenerPlanDelUsuario() {
@@ -121,7 +140,6 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         JpnDetalles = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel29 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
         jLabel32 = new javax.swing.JLabel();
@@ -129,7 +147,6 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel41 = new javax.swing.JLabel();
         jLabel42 = new javax.swing.JLabel();
         txtnombrePlan = new javax.swing.JTextField();
-        txtmetodoPago = new javax.swing.JTextField();
         txtvalorMensual = new javax.swing.JTextField();
         txtfechaVencimiento = new javax.swing.JTextField();
         txtfechaActivacion = new javax.swing.JTextField();
@@ -153,7 +170,6 @@ public class usuarioVista extends javax.swing.JFrame {
         btnvolver4 = new javax.swing.JButton();
         JpnActualizarDatos = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jLabel50 = new javax.swing.JLabel();
         jLabel51 = new javax.swing.JLabel();
         txtActualizarNombres = new javax.swing.JTextField();
         jLabel52 = new javax.swing.JLabel();
@@ -164,12 +180,9 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel56 = new javax.swing.JLabel();
         txtActTelefono = new javax.swing.JTextField();
-        jLabel57 = new javax.swing.JLabel();
         txtActCorreo = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        txtNuevaContraseña = new javax.swing.JPasswordField();
-        txtContraseñaActual = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -549,10 +562,6 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel7.setText("Detalles de mi plan");
         JpnDetalles.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 0, -1, -1));
 
-        jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel29.setText("Metodo de pago:");
-        JpnDetalles.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 150, -1, -1));
-
         jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel30.setText("ID del plan:");
         JpnDetalles.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
@@ -571,7 +580,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         jLabel41.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel41.setText("Estado del plan:");
-        JpnDetalles.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 190, -1, -1));
+        JpnDetalles.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 160, -1, -1));
 
         jLabel42.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel42.setText("Costo mensual:");
@@ -579,9 +588,6 @@ public class usuarioVista extends javax.swing.JFrame {
 
         txtnombrePlan.setFocusable(false);
         JpnDetalles.add(txtnombrePlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, 160, -1));
-
-        txtmetodoPago.setFocusable(false);
-        JpnDetalles.add(txtmetodoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 150, 160, -1));
 
         txtvalorMensual.setFocusable(false);
         JpnDetalles.add(txtvalorMensual, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, 160, -1));
@@ -593,7 +599,7 @@ public class usuarioVista extends javax.swing.JFrame {
         JpnDetalles.add(txtfechaActivacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 110, 160, -1));
 
         txtestado.setFocusable(false);
-        JpnDetalles.add(txtestado, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 190, 160, -1));
+        JpnDetalles.add(txtestado, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 160, 160, -1));
 
         txtDescripcionPlan.setFocusable(false);
         JpnDetalles.add(txtDescripcionPlan, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 190, 160, -1));
@@ -692,10 +698,6 @@ public class usuarioVista extends javax.swing.JFrame {
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel50.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel50.setText("Nueva contraseña");
-        jPanel6.add(jLabel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 180, 120, -1));
-
         jLabel51.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel51.setText("Nombres");
         jPanel6.add(jLabel51, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 70, -1));
@@ -729,10 +731,6 @@ public class usuarioVista extends javax.swing.JFrame {
         jLabel56.setText("Telefono");
         jPanel6.add(jLabel56, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 70, -1));
         jPanel6.add(txtActTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 180, -1));
-
-        jLabel57.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel57.setText("Contraseña actual");
-        jPanel6.add(jLabel57, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 140, 120, -1));
         jPanel6.add(txtActCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 170, -1));
 
         btnGuardar.setText("Guardar ");
@@ -750,8 +748,6 @@ public class usuarioVista extends javax.swing.JFrame {
             }
         });
         jPanel6.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 310, 90, -1));
-        jPanel6.add(txtNuevaContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 170, -1));
-        jPanel6.add(txtContraseñaActual, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 170, -1));
 
         JpnActualizarDatos.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 370));
 
@@ -832,11 +828,11 @@ public class usuarioVista extends javax.swing.JFrame {
         String telefono= txtActTelefono.getText().trim();
         String direccion= txtActDireccion.getText().trim();
         String correo= txtActCorreo.getText().trim();
-        String contrasenaactual= new String (txtContraseñaActual.getPassword());
-        String contrasenanueva = new String(txtNuevaContraseña.getPassword());
 
-        if (nombre.isEmpty()) {
-            
+        if (nombre.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || 
+            direccion.isEmpty() || correo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Rellene todos los campos por favor");
+            return;
         }
         
         if(!telefono.matches("\\d{10}")){
@@ -850,16 +846,6 @@ public class usuarioVista extends javax.swing.JFrame {
             return;
         }
 
-        if(contrasenaactual.equals(contrasenanueva)){
-            JOptionPane.showMessageDialog(this, "La nueva contraseña debe ser distinta");
-            return;
-        }
-
-        if(contrasenanueva.length() < 8){
-            JOptionPane.showMessageDialog(this, "La contrasena debe contener minimo 8 caracteres");
-            return;
-
-        }
 
         if(!nombre.isEmpty()) {
             usuarioActual.setNombre(nombre);
@@ -873,11 +859,12 @@ public class usuarioVista extends javax.swing.JFrame {
         if(!direccion.isEmpty()) {
             usuarioActual.setDireccion(direccion);
         }
-        if(!contrasenanueva.isEmpty()) {
-            usuarioActual.setContrasena(contrasenanueva);
-        }
+ 
 
         JOptionPane.showMessageDialog(this, "Datos actualizados correctamente");
+        
+        // Refrescar los campos de la vista con los datos actualizados
+        setUsuarioActual(usuarioActual);
 
 
 
@@ -942,7 +929,6 @@ public class usuarioVista extends javax.swing.JFrame {
         txtfechaVencimiento.setEditable(false);
         txtfechaActivacion.setEditable(false);
         txtestado.setEditable(false);
-        txtmetodoPago.setEditable(false);
     } else {
         JOptionPane.showMessageDialog(this, "El usuario no tiene un plan asignado.");
     }
@@ -1132,7 +1118,6 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
@@ -1153,14 +1138,12 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
     private javax.swing.JLabel jLabel55;
     private javax.swing.JLabel jLabel56;
-    private javax.swing.JLabel jLabel57;
     private javax.swing.JLabel jLabel58;
     private javax.swing.JLabel jLabel59;
     private javax.swing.JLabel jLabel6;
@@ -1188,7 +1171,6 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JTextField txtActualizarNombres;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtAsunto;
-    private javax.swing.JPasswordField txtContraseñaActual;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextArea txtDescripcion;
     private javax.swing.JTextField txtDescripcionPlan;
@@ -1196,12 +1178,10 @@ public class usuarioVista extends javax.swing.JFrame {
     private javax.swing.JTextField txtIdPlan;
     private javax.swing.JTextField txtIdentificacion;
     private javax.swing.JTextField txtNombres;
-    private javax.swing.JPasswordField txtNuevaContraseña;
     private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextField txtestado;
     private javax.swing.JTextField txtfechaActivacion;
     private javax.swing.JTextField txtfechaVencimiento;
-    private javax.swing.JTextField txtmetodoPago;
     private javax.swing.JTextField txtnombrePlan;
     private javax.swing.JTextField txtvalorMensual;
     // End of variables declaration//GEN-END:variables
