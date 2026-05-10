@@ -115,7 +115,7 @@
                 <Component class="javax.swing.JLabel" name="jLabel91">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/utils/lista-de-contactos.png"/>
+                      <Image iconType="3" name="/utils/asignar.png"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -410,7 +410,7 @@
                 <Component class="javax.swing.JLabel" name="jLabel114">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/utils/lista-de-contactos.png"/>
+                      <Image iconType="3" name="/utils/delegacion (3).png"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -1598,7 +1598,7 @@
                                               <Group type="102" attributes="0">
                                                   <EmptySpace min="-2" pref="250" max="-2" attributes="0"/>
                                                   <Component id="jLabel23" min="-2" max="-2" attributes="0"/>
-                                                  <EmptySpace max="32767" attributes="0"/>
+                                                  <EmptySpace pref="78" max="32767" attributes="0"/>
                                                   <Component id="jButton3" min="-2" pref="98" max="-2" attributes="0"/>
                                               </Group>
                                               <Group type="102" alignment="0" attributes="0">
@@ -1621,7 +1621,7 @@
                                               <Component id="jPanel46" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
-                                      <EmptySpace pref="163" max="32767" attributes="0"/>
+                                      <EmptySpace pref="165" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                             </DimensionLayout>

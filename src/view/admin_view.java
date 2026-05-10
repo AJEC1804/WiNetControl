@@ -466,7 +466,7 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
 
-        jLabel91.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/lista-de-contactos.png"))); // NOI18N
+        jLabel91.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/asignar.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -654,7 +654,7 @@ public class admin_view extends javax.swing.JFrame {
             }
         });
 
-        jLabel114.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/lista-de-contactos.png"))); // NOI18N
+        jLabel114.setIcon(new javax.swing.ImageIcon(getClass().getResource("/utils/delegacion (3).png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel63Layout = new javax.swing.GroupLayout(jPanel63);
         jPanel63.setLayout(jPanel63Layout);
@@ -1494,7 +1494,7 @@ public class admin_view extends javax.swing.JFrame {
                         .addGroup(jPanel37Layout.createSequentialGroup()
                             .addGap(250, 250, 250)
                             .addComponent(jLabel23)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                             .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel37Layout.createSequentialGroup()
                             .addContainerGap()
@@ -1509,7 +1509,7 @@ public class admin_view extends javax.swing.JFrame {
                                 .addComponent(bt_actualizarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(163, Short.MAX_VALUE))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         jPanel37Layout.setVerticalGroup(
             jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
