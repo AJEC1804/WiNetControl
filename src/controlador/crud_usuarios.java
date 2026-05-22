@@ -222,7 +222,7 @@ public class crud_usuarios {
             tx_correo_eliminar.setText(c.getCorreo());
             tx_direccion_eliminar.setText(c.getDireccion());
             
-            // Limpiar el campo de búsqueda después de encontrar el cliente
+            
             tx_docu_buscar_elim.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
@@ -296,7 +296,6 @@ public class crud_usuarios {
         tx_correoCambiar.setText(c.getCorreo());
         tx_direccionCambiar.setText(c.getDireccion());
 
-        // Limpiar el campo de búsqueda después de encontrar el cliente
         tx_docu_buscar_actualizar.setText("");
 
         JOptionPane.showMessageDialog(null, "Cliente encontrado. Puede modificar los datos y presionar 'Actualizar'.");
