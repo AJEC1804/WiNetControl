@@ -90,7 +90,7 @@ public class Usuario {
     }
 
     public final void setCorreo(String correo) {
-        if (correo != null && correo.trim().contains("@") && correo.trim().contains(".")) {
+        if (correo != null && correo.trim().contains("@") && correo.trim().contains(".com")) {
             this.correo = correo.trim();
         } else {
             this.correo = "sin-correo@correo.com";
