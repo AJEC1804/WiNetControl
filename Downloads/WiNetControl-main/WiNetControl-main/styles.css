@@ -1,0 +1,158 @@
+/* styles.css - Premium design with glassmorphism, dark mode */
+
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  /* Color palette – dark mode */
+  --primary-hue: 220; /* blue‑violet */
+  --primary-saturation: 60%;
+  --primary-lightness: 55%;
+  --bg-hue: 210;
+  --bg-saturation: 15%;
+  --bg-lightness: 12%;
+  --card-bg: hsla(var(--bg-hue), var(--bg-saturation), 20%, 0.6);
+  --text-color: hsl(0, 0%, 90%);
+  --accent-color: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, hsl(var(--bg-hue), var(--bg-saturation), 10%), hsl(var(--bg-hue), var(--bg-saturation), 18%));
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.container {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px) saturate(150%);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  animation: fadeIn 0.6s ease-out;
+}
+
+h1, h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+input::placeholder {
+  color: hsl(0,0%,70%);
+}
+
+input:focus {
+  outline: none;
+  background: rgba(255,255,255,0.12);
+}
+
+button {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.link {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.link a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.link a:hover {
+  text-decoration: underline;
+}
+
+/* Card style for plan selection */
+.plan-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.plan-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-color);
+}
+
+.plan-price {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* Invoice table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th, .table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  text-align: left;
+}
+
+.table th {
+  color: var(--accent-color);
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform: translateY(10px);} 
+  to {opacity:1; transform: translateY(0);}
+}
