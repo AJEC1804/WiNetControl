@@ -127,22 +127,26 @@ public class login extends javax.swing.JFrame {
     }
 
     for (int i = 0; i < contadorClientes; i++) {
-            if (clientes[i].getIdentificacion().equals(identificacion) && clientes[i].getContrasena().equals(contrasena)) {
+            if (clientes[i] != null
+                    && clientes[i].getIdentificacion().equals(identificacion)
+                    && clientes[i].getContrasena().equals(contrasena)) {
                 String usuario = clientes[i].getNombre();
-                JOptionPane.showMessageDialog(null, "Bienvenido "+usuario);
+                JOptionPane.showMessageDialog(null, "Bienvenido " + usuario);
                 usuarioVista usu = new usuarioVista();
                 usu.setUsuarioActual(clientes[i]);
                 usu.setVisible(true);
                 this.dispose();
-                break;
+                return;
             }
-        } 
+        }
     if (identificacion.equals("admin123") && contrasena.equals("123456")) {
                 admin_view admin = new admin_view();
                 admin.setVisible(true);
                 this.dispose();
                 return;   
 }
+
+    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

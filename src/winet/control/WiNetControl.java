@@ -16,8 +16,8 @@ public class WiNetControl {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        contratar cr = new contratar ();
-        cr.setVisible(true);
+        login lg = new login();
+        lg.setVisible(true);
         
     }
     
