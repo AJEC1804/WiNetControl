@@ -841,7 +841,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
         }
 
-        if(!correo.endsWith("@gmail.com")){
+        if(!controlador.crud_usuarios.validarCorreo(correo)){
             JOptionPane.showMessageDialog(this, "Correo invalido");
             return;
         }
@@ -919,7 +919,19 @@ public class usuarioVista extends javax.swing.JFrame {
         txtnombrePlan.setText(planActual.getNombrePlan());
         txtvalorMensual.setText(String.valueOf(planActual.getPrecio()));
         txtDescripcionPlan.setText(planActual.getDescripcionPlan());
-        txtfechaActivacion.setText(planActual.getFechaActivacion());
+        String fechaAct = planActual.getFechaActivacion();
+        if (fechaAct == null || fechaAct.isEmpty() || fechaAct.equals("Sin fecha")) {
+            fechaAct = java.time.LocalDate.now().toString();
+            planActual.setFechaActivacion(fechaAct);
+        }
+        txtfechaActivacion.setText(fechaAct);
+
+        try {
+            java.time.LocalDate dateAct = java.time.LocalDate.parse(fechaAct);
+            txtfechaVencimiento.setText(dateAct.plusDays(30).toString());
+        } catch (Exception e) {
+            txtfechaVencimiento.setText(java.time.LocalDate.now().plusDays(30).toString());
+        }
   
         
         txtIdPlan.setEditable(false);

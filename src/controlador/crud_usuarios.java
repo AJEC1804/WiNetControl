@@ -82,7 +82,7 @@ public class crud_usuarios {
     }
 
     public static boolean validarCorreo(String correo) {
-        return correo.contains("@") && correo.contains(".");
+        return correo.contains("@") && correo.contains(".com");
     }
 
     public static boolean validarTelefono(String telefono) {
@@ -175,6 +175,9 @@ public class crud_usuarios {
         }
 
         clientes[indiceCliente].setPlanActual(planSeleccionado);
+        if (planSeleccionado != null) {
+            planSeleccionado.setFechaActivacion(java.time.LocalDate.now().toString());
+        }
         JOptionPane.showMessageDialog(null, "Plan asignado correctamente al cliente.");
     }
 

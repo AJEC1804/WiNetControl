@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
+        <group>
+            <file>file:/C:/Juanes/PRO%20AULA%20III%20SEM/WiNetControl/src/view/usuarioVista.java</file>
+        </group>
+=======
 feature/usuario
        
 
@@ -9,5 +14,6 @@ feature/usuario
             <file>file:/C:/Users/giane/OneDrive/Escritorio/Proyectos/WiNetControl%20final/WiNetControl/src/view/admin_view.java</file>
         </group>
  main
+>>>>>>> f59a7b467ff26b24d171c34ecda3850714236628
     </open-files>
 </project-private>
