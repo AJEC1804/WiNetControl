@@ -879,7 +879,7 @@ public class usuarioVista extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No hay usuario logueado.");
             return;
         }
-     String usuario = usuarioActual.getNombre() + " " + usuarioActual.getApellido(); // tu objeto Usuario
+     String usuario = usuarioActual.getNombre() + " " + usuarioActual.getApellido(); 
     String asunto = txtAsunto.getText();
     String mensaje = txtDescripcion.getText();
 
@@ -890,7 +890,7 @@ public class usuarioVista extends javax.swing.JFrame {
 
     String mensajeCompleto = "Usuario: " + usuario + "\n\n" + mensaje;
 
-    boolean enviado = correoSoporte.enviarCorreo("mauriciomaldonadomercado@gmail.com", asunto, mensajeCompleto);
+    boolean enviado = correoSoporte.enviarCorreo("naviavasquezjuanesteban@gmail.com", asunto, mensajeCompleto);
 
     if(enviado) {
         JOptionPane.showMessageDialog(this, "Mensaje enviado correctamente");

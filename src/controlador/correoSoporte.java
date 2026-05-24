@@ -11,8 +11,8 @@ import java.util.Properties;
 public class correoSoporte {
 
     public static boolean enviarCorreo(String destinatario, String asunto, String mensaje) {
-        final String correoEnvia = "mauriciomaldonadomercado@gmail.com";
-        final String contrasena = "ryfq bhpb sonr ulqd";
+        final String correoEnvia = "naviavasquezjuanesteban@gmail.com";
+        final String contrasena = "lpsr dnxc pciq uydb";
 
         Properties propiedad = new Properties();
         propiedad.setProperty("mail.smtp.auth", "true");
