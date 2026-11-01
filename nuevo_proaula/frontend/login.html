@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - WiNet Control</title>
+    <!-- Enlazamos nuestra hoja de estilos CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Contenedor principal que centra la tarjeta en la pantalla -->
+    <div class="auth-container">
+        <div class="auth-card">
+            
+            <!-- Encabezado con el logo y bienvenida -->
+            <div class="auth-header">
+                <h1>WiNet Control</h1>
+                <p>Ingresa tus credenciales para acceder al sistema</p>
+            </div>
+
+            <!-- Caja para mostrar mensajes de error o éxito -->
+            <div id="loginAlert" class="alert"></div>
+
+            <!-- Formulario de Login -->
+            <form id="loginForm" onsubmit="procesarLogin(event)">
+                
+                <!-- Campo: Cédula / Identificación -->
+                <div class="form-group">
+                    <label for="loginIdentificacion">Identificación (Cédula):</label>
+                    <input 
+                        type="text" 
+                        id="loginIdentificacion" 
+                        placeholder="Ej: 1045678901" 
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <!-- Campo: Contraseña -->
+                <div class="form-group">
+                    <label for="loginContrasena">Contraseña:</label>
+                    <input 
+                        type="password" 
+                        id="loginContrasena" 
+                        placeholder="••••••••" 
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <!-- Pie de tarjeta con enlace a Registro -->
+            <div class="auth-footer">
+                ¿No tienes una cuenta aún? <br>
+                <a href="registro.html">Regístrate aquí como nuevo cliente</a>
+            </div>
+
+            <!-- Ayuda rápida para pruebas de Alejandro -->
+            <div style="margin-top: 25px; padding: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; font-size: 12px; color: #64748b;">
+                <strong>💡 Cuentas de prueba listas para probar:</strong><br>
+                • <strong>Activo:</strong> Cédula: <code>1045678901</code> | Clave: <code>Clave123</code><br>
+                • <strong>Inactivo:</strong> Cédula: <code>1098765432</code> | Clave: <code>Clave456</code> (Prueba el rechazo por estado)
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Enlazamos el archivo de lógica JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>

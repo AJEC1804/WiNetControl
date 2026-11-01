@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - WiNet Control</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body onload="cargarDashboard()">
+
+    <div class="dashboard-container">
+        
+        <!-- 1. BARRA LATERAL (SIDEBAR) -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span style="font-size: 24px;">🌐</span>
+                <h2>WiNet Control</h2>
+            </div>
+
+            <!-- Menú de Navegación -->
+            <nav class="sidebar-nav">
+                <a href="#inicio" class="nav-link active" onclick="mostrarSeccion('inicio', this)">
+                    <span>🏠</span> Inicio / Resumen
+                </a>
+                <a href="#clientes" class="nav-link" onclick="mostrarSeccion('clientes', this)">
+                    <span>👥</span> Clientes (Gyanela)
+                </a>
+                <a href="#planes" class="nav-link" onclick="mostrarSeccion('planes', this)">
+                    <span>📡</span> Planes (Yeini)
+                </a>
+                <a href="#facturas" class="nav-link" onclick="mostrarSeccion('facturas', this)">
+                    <span>📄</span> Facturación (Juan)
+                </a>
+                <a href="#soporte" class="nav-link" onclick="mostrarSeccion('soporte', this)">
+                    <span>🎧</span> Soporte (Juan)
+                </a>
+            </nav>
+
+            <!-- Botón Cerrar Sesión en el pie del Sidebar -->
+            <div class="sidebar-footer">
+                <button onclick="cerrarSesion()" class="btn btn-danger">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <!-- 2. CONTENEDOR PRINCIPAL -->
+        <div class="main-wrapper">
+            
+            <!-- BARRA SUPERIOR (TOPBAR) -->
+            <header class="topbar">
+                <div>
+                    <h3 style="font-size: 18px; color: #334155;">Sistema de Gestión de Telecomunicaciones</h3>
+                </div>
+                
+                <!-- Perfil del usuario activo -->
+                <div class="user-badge">
+                    <div id="dashAvatar" class="user-avatar">A</div>
+                    <div class="user-details">
+                        <h4 id="dashNombreHeader">Alejandro Escudero</h4>
+                        <span id="dashCorreoHeader">cargando...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ÁREA DE CONTENIDO DINÁMICO -->
+            <main class="content-area">
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 1: INICIO / RESUMEN (ALEJANDRO)   -->
+                <!-- ========================================== -->
+                <div id="seccion-inicio" class="seccion-modulo">
+                    
+                    <!-- Banner de bienvenida -->
+                    <div class="welcome-banner">
+                        <h2>¡Hola de nuevo, <span id="dashNombreBienvenida">Usuario</span>! 👋</h2>
+                        <p>Bienvenido al panel de control de servicios y telecomunicaciones de WiNet Control.</p>
+                    </div>
+
+                    <!-- Tarjetas de Resumen (KPIs) -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h5>Estado de la Cuenta</h5>
+                            <div style="margin-top: 10px;">
+                                <span id="dashEstadoBadge" class="badge badge-activo">ACTIVO</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h5>Plan Suscrito</h5>
+                            <div id="dashPlan" class="stat-value" style="font-size: 18px; color: #2563eb;">
+                                Cargando plan...
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h5>Velocidad Contratada</h5>
+                            <div class="stat-value">
+                                300 <span style="font-size: 14px; font-weight: 500; color: #64748b;">Mbps Fibra</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h5>Facturas Emitidas</h5>
+                            <div class="stat-value">
+                                1 <span style="font-size: 14px; font-weight: 500; color: #16a34a;">(Al día)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Integración de los compañeros -->
+                    <div style="background: #ffffff; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <h3 style="margin-bottom: 12px; color: #1e293b;">📌 Estado de la integración del equipo:</h3>
+                        <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
+                            Alejandro ha preparado este Dashboard central. Haz clic en las opciones del menú lateral izquierdo para ver dónde irá el trabajo de cada compañero.
+                        </p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <span class="badge badge-activo">✅ Login & Sesión: Alejandro</span>
+                            <span class="badge" style="background:#e0f2fe; color:#0369a1;">⏳ Clientes: Gyanela</span>
+                            <span class="badge" style="background:#fef3c7; color:#b45309;">⏳ Planes: Yeini</span>
+                            <span class="badge" style="background:#ede9fe; color:#6d28d9;">⏳ Facturación & Soporte: Juan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 2: CLIENTES (GYANELA MEZA)        -->
+                <!-- ========================================== -->
+                <div id="seccion-clientes" class="seccion-modulo" style="display: none;">
+                    <div class="module-placeholder">
+                        <span style="font-size: 40px;">👥</span>
+                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Módulo de Clientes</h3>
+                        <p>Espacio asignado a <strong>Gyanela Meza</strong> (Issue #8).</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará la tabla <code>JTable / HTML Table</code> con la lista de clientes, búsqueda por cédula y botón de Activar / Desactivar.</p>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 3: PLANES (YEINI ÁLVAREZ)         -->
+                <!-- ========================================== -->
+                <div id="seccion-planes" class="seccion-modulo" style="display: none;">
+                    <div class="module-placeholder">
+                        <span style="font-size: 40px;">📡</span>
+                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Catálogo de Planes y Contratación</h3>
+                        <p>Espacio asignado a <strong>Yeini Álvarez</strong> (Issue #9).</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará el catálogo de planes, botón para Activar / Desactivar planes y el selector para contratar servicios.</p>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 4: FACTURAS (JUAN ESTEBAN NAVIA)  -->
+                <!-- ========================================== -->
+                <div id="seccion-facturas" class="seccion-modulo" style="display: none;">
+                    <div class="module-placeholder">
+                        <span style="font-size: 40px;">📄</span>
+                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Módulo de Facturación (Pila LIFO)</h3>
+                        <p>Espacio asignado a <strong>Juan Esteban Navia</strong> (Issue #10).</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará el historial de facturas, la última factura apilada y el botón para abrir o descargar el PDF.</p>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 5: SOPORTE (JUAN ESTEBAN NAVIA)   -->
+                <!-- ========================================== -->
+                <div id="seccion-soporte" class="seccion-modulo" style="display: none;">
+                    <div class="module-placeholder">
+                        <span style="font-size: 40px;">🎧</span>
+                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Módulo de Soporte Técnico (Cola FIFO)</h3>
+                        <p>Espacio asignado a <strong>Juan Esteban Navia</strong> (Issue #10).</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará el formulario para radicar tickets y el panel de atención en orden de llegada (FIFO).</p>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Función sencilla para cambiar entre pestañas desde el menú lateral
+        function mostrarSeccion(nombreSeccion, enlaceClickeado) {
+            // Ocultamos todas las secciones
+            const secciones = document.querySelectorAll('.seccion-modulo');
+            secciones.forEach(sec => sec.style.display = 'none');
+
+            // Mostramos solo la sección seleccionada
+            const seccionAMostrar = document.getElementById('seccion-' + nombreSeccion);
+            if (seccionAMostrar) {
+                seccionAMostrar.style.display = 'block';
+            }
+
+            // Cambiamos el estilo activo en el menú lateral
+            const enlaces = document.querySelectorAll('.nav-link');
+            enlaces.forEach(link => link.classList.remove('active'));
+            if (enlaceClickeado) {
+                enlaceClickeado.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

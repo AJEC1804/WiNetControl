@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Nuevo Cliente - WiNet Control</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- Tarjeta amplia para formulario de registro -->
+        <div class="auth-card registro-card">
+            
+            <div class="auth-header">
+                <h1>Registro de Cliente</h1>
+                <p>Crea tu cuenta para contratar servicios de internet de alta velocidad</p>
+            </div>
+
+            <!-- Caja de mensajes de error o éxito -->
+            <div id="registroAlert" class="alert"></div>
+
+            <!-- Formulario de Registro -->
+            <form id="registroForm" onsubmit="procesarRegistro(event)">
+                
+                <!-- Fila 1: Nombres y Apellidos -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regNombres">Nombres:</label>
+                        <input type="text" id="regNombres" placeholder="Ej: Carlos Alberto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regApellidos">Apellidos:</label>
+                        <input type="text" id="regApellidos" placeholder="Ej: Mendoza Pérez" required>
+                    </div>
+                </div>
+
+                <!-- Fila 2: Tipo de Documento y Cédula -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regTipo">Tipo de Documento:</label>
+                        <select id="regTipo">
+                            <option value="CC">Cédula de Ciudadanía (CC)</option>
+                            <option value="TI">Tarjeta de Identidad (TI)</option>
+                            <option value="CE">Cédula de Extranjería (CE)</option>
+                            <option value="PAS">Pasaporte</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="regIdentificacion">Número de Identificación:</label>
+                        <input type="text" id="regIdentificacion" placeholder="Entre 8 y 10 dígitos" required>
+                    </div>
+                </div>
+
+                <!-- Fila 3: Teléfono y Correo -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regTelefono">Teléfono Celular:</label>
+                        <input type="tel" id="regTelefono" placeholder="Ej: 3001234567" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regCorreo">Correo Electrónico:</label>
+                        <input type="email" id="regCorreo" placeholder="correo@ejemplo.com" required>
+                    </div>
+                </div>
+
+                <!-- Fila 4: Dirección de Residencia -->
+                <div class="form-group">
+                    <label for="regDireccion">Dirección de Instalación:</label>
+                    <input type="text" id="regDireccion" placeholder="Calle / Carrera # No. - Barrio" required>
+                </div>
+
+                <!-- Fila 5: Contraseña y Confirmar Contraseña -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regContrasena">Contraseña (Mínimo 6 caracteres):</label>
+                        <input type="password" id="regContrasena" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfContrasena">Confirmar Contraseña:</label>
+                        <input type="password" id="regConfContrasena" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" class="btn btn-primary" style="margin-top: 15px;">
+                    Registrar Cuenta
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                ¿Ya tienes una cuenta registrada? <br>
+                <a href="login.html">Iniciar sesión aquí</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
