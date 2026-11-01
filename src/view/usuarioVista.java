@@ -7,7 +7,6 @@ import controlador.correoSoporte;
 import controlador.crud_planes;
 import controlador.ctrlFactura;
 import model.Planes;
-import static entidades.Arreglos.*;
 import java.time.LocalDate;
 import model.factura;
 
@@ -893,6 +892,7 @@ public class usuarioVista extends javax.swing.JFrame {
     boolean enviado = correoSoporte.enviarCorreo("mauriciomaldonadomercado@gmail.com", asunto, mensajeCompleto);
 
     if(enviado) {
+        controlador.ctrlSoporte.encolar(new model.soporte(usuario, asunto, mensaje));
         JOptionPane.showMessageDialog(this, "Mensaje enviado correctamente");
         txtAsunto.setText("");
         txtDescripcion.setText("");

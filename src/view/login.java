@@ -5,7 +5,7 @@
 package view;
 import javax.swing.*;
 
-import static entidades.Arreglos.*;
+import controlador.crud_usuarios;
 import model.cliente;
 /**
  *
@@ -126,19 +126,15 @@ public class login extends javax.swing.JFrame {
     return;
     }
 
-    for (int i = 0; i < contadorClientes; i++) {
-            if (clientes[i] != null
-                    && clientes[i].getIdentificacion().equals(identificacion)
-                    && clientes[i].getContrasena().equals(contrasena)) {
-                String usuario = clientes[i].getNombre();
-                JOptionPane.showMessageDialog(null, "Bienvenido " + usuario);
-                usuarioVista usu = new usuarioVista();
-                usu.setUsuarioActual(clientes[i]);
-                usu.setVisible(true);
-                this.dispose();
-                return;
-            }
-        }
+    cliente clienteLogueado = crud_usuarios.autenticarCliente(identificacion, contrasena);
+    if (clienteLogueado != null) {
+        JOptionPane.showMessageDialog(null, "Bienvenido " + clienteLogueado.getNombre());
+        usuarioVista usu = new usuarioVista();
+        usu.setUsuarioActual(clienteLogueado);
+        usu.setVisible(true);
+        this.dispose();
+        return;
+    }
     if (identificacion.equals("admin123") && contrasena.equals("123456")) {
                 admin_view admin = new admin_view();
                 admin.setVisible(true);

@@ -1,19 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controlador;
 
-import static entidades.Arreglos.*;
+import entidades.Nodos;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import model.*;
 
 /**
- *
  * @author Gyanela Meza
  */
 public class crud_usuarios {
+
+    public static Nodos.NodoCliente primero = null;
+    public static Nodos.NodoCliente ultimo = null;
+
+    public static Nodos.NodoCliente getPrimero() {
+        return primero;
+    }
 
     public static void agregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo, JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
             JPasswordField tx_contrasena, JPasswordField tx_confContrasena) {
@@ -64,17 +66,21 @@ public class crud_usuarios {
         String planInicial = obtenerPlanInicialCliente();
         cliente nuevo = new cliente(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, confContrasena, planInicial);
 
-        if (contadorClientes < ELEMENTOS) {
-            clientes[contadorClientes] = nuevo;
-            contadorClientes++;
-            JOptionPane.showMessageDialog(null, "Cliente agregado correctamente.");
+        Nodos.NodoCliente nuevoNodo = new Nodos.NodoCliente(nuevo);
 
-            limpiarCamposAgregarCliente(tx_nombres, tx_apellidos, cb_tipo, tx_identificacion,
-                    tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
-
+        if (primero == null) {
+            primero = nuevoNodo;
+            ultimo = nuevoNodo;
         } else {
-            JOptionPane.showMessageDialog(null, "Error: límite de clientes alcanzado.");
+            ultimo.setSiguiente(nuevoNodo);
+            nuevoNodo.setAnterior(ultimo);
+            ultimo = nuevoNodo;
         }
+
+        JOptionPane.showMessageDialog(null, "Cliente agregado correctamente.");
+
+        limpiarCamposAgregarCliente(tx_nombres, tx_apellidos, cb_tipo, tx_identificacion,
+                tx_telefono, tx_correo, tx_direccion, tx_contrasena, tx_confContrasena);
     }
 
     public static boolean validarIdentificacion(String identificacion) {
@@ -95,62 +101,76 @@ public class crud_usuarios {
                 && contrasena.matches(".*\\d.*");
     }
 
-    private static int buscarIndiceClientePorIdentificacion(String identificacion) {
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
+    public static Nodos.NodoCliente buscarNodoClientePorIdentificacion(String identificacion) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
             if (c != null && c.getIdentificacion().equals(identificacion)) {
-                return i;
+                return aux;
             }
+            aux = aux.getSiguiente();
         }
-        return -1;
+        return null;
     }
 
-    private static boolean identificacionExisteEnOtroCliente(String identificacion, int indiceActual) {
-        for (int i = 0; i < contadorClientes; i++) {
-            if (i == indiceActual) {
-                continue;
-            }
-            cliente c = clientes[i];
-            if (c != null && c.getIdentificacion().equals(identificacion)) {
+    private static boolean identificacionExisteEnOtroCliente(String identificacion, String idActual) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
+            if (c != null && !c.getIdentificacion().equals(idActual) && c.getIdentificacion().equals(identificacion)) {
                 return true;
             }
+            aux = aux.getSiguiente();
         }
         return false;
     }
 
-    private static boolean correoExisteEnOtroCliente(String correo, int indiceActual) {
-        for (int i = 0; i < contadorClientes; i++) {
-            if (i == indiceActual) {
-                continue;
-            }
-            cliente c = clientes[i];
-            if (c != null && c.getCorreo().equals(correo)) {
+    private static boolean correoExisteEnOtroCliente(String correo, String idActual) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
+            if (c != null && !c.getIdentificacion().equals(idActual) && c.getCorreo().equalsIgnoreCase(correo)) {
                 return true;
             }
+            aux = aux.getSiguiente();
         }
         return false;
     }
 
     public static boolean usuarioExiste(String correo, String identificacion) {
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
-            if (c != null && (c.getCorreo().equals(correo) || c.getIdentificacion().equals(identificacion))) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
+            if (c != null && (c.getCorreo().equalsIgnoreCase(correo) || c.getIdentificacion().equals(identificacion))) {
                 return true;
             }
+            aux = aux.getSiguiente();
         }
         return false;
-
     }
 
     public static boolean correoExiste(String correo) {
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
-            if (c != null && (c.getCorreo().equals(correo))) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
+            if (c != null && c.getCorreo().equalsIgnoreCase(correo)) {
                 return true;
             }
+            aux = aux.getSiguiente();
         }
         return false;
+    }
 
+    public static cliente autenticarCliente(String identificacion, String contrasena) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
+            if (c != null && c.getIdentificacion().equals(identificacion) && c.getContrasena().equals(contrasena)) {
+                return c;
+            }
+            aux = aux.getSiguiente();
+        }
+        return null;
     }
 
     public static void asignarPlanACliente(JTextField tx_identificacion_cliente, JTextField tx_nombre_plan) {
@@ -162,8 +182,8 @@ public class crud_usuarios {
             return;
         }
 
-        int indiceCliente = buscarIndiceClientePorIdentificacion(identificacion);
-        if (indiceCliente == -1) {
+        Nodos.NodoCliente nodoCliente = buscarNodoClientePorIdentificacion(identificacion);
+        if (nodoCliente == null) {
             JOptionPane.showMessageDialog(null, "No se encontro cliente con esa identificacion.");
             return;
         }
@@ -174,10 +194,8 @@ public class crud_usuarios {
             return;
         }
 
-        clientes[indiceCliente].setPlanActual(planSeleccionado);
-        if (planSeleccionado != null) {
-            planSeleccionado.setFechaActivacion(java.time.LocalDate.now().toString());
-        }
+        nodoCliente.getDato().setPlanActual(planSeleccionado);
+        planSeleccionado.setFechaActivacion(java.time.LocalDate.now().toString());
         JOptionPane.showMessageDialog(null, "Plan asignado correctamente al cliente.");
     }
 
@@ -185,8 +203,9 @@ public class crud_usuarios {
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
 
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
             if (c != null) {
                 Object[] fila = {
                     c.getTipo(),
@@ -196,6 +215,7 @@ public class crud_usuarios {
                 };
                 modelo.addRow(fila);
             }
+            aux = aux.getSiguiente();
         }
     }
 
@@ -210,10 +230,10 @@ public class crud_usuarios {
             JTextField tx_direccion_eliminar
     ) {
         String docBuscar = tx_docu_buscar_elim.getText().trim();
-        int indice = buscarIndiceClientePorIdentificacion(docBuscar);
+        Nodos.NodoCliente nodoEncontrado = buscarNodoClientePorIdentificacion(docBuscar);
 
-        if (indice != -1) {
-            cliente c = clientes[indice];
+        if (nodoEncontrado != null) {
+            cliente c = nodoEncontrado.getDato();
             tx_nombre_eliminar.setText(c.getNombre());
             tx_apellido_eliminar.setText(c.getApellido());
             tx_tipo_eliminar.setText(c.getTipo());
@@ -221,8 +241,6 @@ public class crud_usuarios {
             tx_telefono_eliminar.setText(c.getTelefono());
             tx_correo_eliminar.setText(c.getCorreo());
             tx_direccion_eliminar.setText(c.getDireccion());
-            
-            
             tx_docu_buscar_elim.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado");
@@ -245,14 +263,21 @@ public class crud_usuarios {
             return;
         }
 
-        int indiceEliminar = buscarIndiceClientePorIdentificacion(docEliminar);
+        Nodos.NodoCliente nodoEliminar = buscarNodoClientePorIdentificacion(docEliminar);
 
-        if (indiceEliminar != -1) {
-            for (int j = indiceEliminar; j < contadorClientes - 1; j++) {
-                clientes[j] = clientes[j + 1];
+        if (nodoEliminar != null) {
+            if (nodoEliminar.getAnterior() != null) {
+                nodoEliminar.getAnterior().setSiguiente(nodoEliminar.getSiguiente());
+            } else {
+                primero = nodoEliminar.getSiguiente();
             }
-            clientes[contadorClientes - 1] = null;
-            contadorClientes--;
+
+            if (nodoEliminar.getSiguiente() != null) {
+                nodoEliminar.getSiguiente().setAnterior(nodoEliminar.getAnterior());
+            } else {
+                ultimo = nodoEliminar.getAnterior();
+            }
+
             JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente");
         } else {
             JOptionPane.showMessageDialog(null, "No se encontró el cliente a eliminar");
@@ -279,15 +304,15 @@ public class crud_usuarios {
             return;
         }
 
-        int indice = buscarIndiceClientePorIdentificacion(docBuscar);
-        if (indice == -1) {
+        Nodos.NodoCliente nodoEncontrado = buscarNodoClientePorIdentificacion(docBuscar);
+        if (nodoEncontrado == null) {
             JOptionPane.showMessageDialog(null, "No se encontró ningún cliente con ese documento.");
             limpiarCamposClienteActualizar(tx_nombreCambiar, tx_apellidoCambiar, tx_tipo1,
                     tx_identificacionCambiar, tx_telefonoCambiar, tx_correoCambiar, tx_direccionCambiar, tx_docu_buscar_actualizar);
             return;
         }
 
-        cliente c = clientes[indice];
+        cliente c = nodoEncontrado.getDato();
         tx_nombreCambiar.setText(c.getNombre());
         tx_apellidoCambiar.setText(c.getApellido());
         tx_tipo1.setText(c.getTipo());
@@ -295,7 +320,6 @@ public class crud_usuarios {
         tx_telefonoCambiar.setText(c.getTelefono());
         tx_correoCambiar.setText(c.getCorreo());
         tx_direccionCambiar.setText(c.getDireccion());
-
         tx_docu_buscar_actualizar.setText("");
 
         JOptionPane.showMessageDialog(null, "Cliente encontrado. Puede modificar los datos y presionar 'Actualizar'.");
@@ -317,100 +341,99 @@ public class crud_usuarios {
         JTextField tx_correoCambiar1,
         JTextField tx_direccionCambiar1,
         JPasswordField tx_passwordCambiar1
-) {
-    String docBuscar = tx_identificacionCambiar.getText().trim();
+    ) {
+        String docBuscar = tx_identificacionCambiar.getText().trim();
 
-    if (docBuscar.isEmpty()) {
-        docBuscar = tx_docu_buscar_actualizar.getText().trim();
-    }
+        if (docBuscar.isEmpty()) {
+            docBuscar = tx_docu_buscar_actualizar.getText().trim();
+        }
 
-    if (docBuscar.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Por favor, busque un cliente antes de actualizar.");
-        return;
-    }
-
-    int indice = buscarIndiceClientePorIdentificacion(docBuscar);
-    if (indice == -1) {
-        JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
-        return;
-    }
-
-    cliente c = clientes[indice];
-
-    String nuevoNombre = tx_nombreCambiar1.getText().trim();
-    String nuevoApellido = tx_apellidosCambiar1.getText().trim();
-    String nuevoTipo = (jtipo_cambiar.getSelectedItem() != null)
-            ? jtipo_cambiar.getSelectedItem().toString().trim()
-            : "";
-    String nuevoIdentificacion = tx_identificacionCambiar1.getText().trim();
-    String nuevoTelefono = tx_telefonoCambiar1.getText().trim();
-    String nuevoCorreo = tx_correoCambiar1.getText().trim();
-    String nuevoDireccion = tx_direccionCambiar1.getText().trim();
-    String nuevoPassword = new String(tx_passwordCambiar1.getPassword()).trim();
-
-    if (!nuevoIdentificacion.isEmpty() && !nuevoIdentificacion.equals(c.getIdentificacion())) {
-        if (!validarIdentificacion(nuevoIdentificacion)) {
-            JOptionPane.showMessageDialog(null, "La nueva identificación no es válida.");
+        if (docBuscar.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, busque un cliente antes de actualizar.");
             return;
         }
-        if (identificacionExisteEnOtroCliente(nuevoIdentificacion, indice)) {
-            JOptionPane.showMessageDialog(null, "La identificación ya está registrada en otro cliente.");
-            return;
-        }
-        c.setIdentificacion(nuevoIdentificacion);
-    }
 
-    if (!nuevoNombre.isEmpty()) {
-        c.setNombre(nuevoNombre);
-    }
-    if (!nuevoApellido.isEmpty()) {
-        c.setApellido(nuevoApellido);
-    }
-    if (!nuevoTipo.isEmpty()) {
-        c.setTipo(nuevoTipo);
-    }
-    if (!nuevoTelefono.isEmpty()) {
-        if (!validarTelefono(nuevoTelefono)) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe ser numérico y tener 10 dígitos.");
+        Nodos.NodoCliente nodoEncontrado = buscarNodoClientePorIdentificacion(docBuscar);
+        if (nodoEncontrado == null) {
+            JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
             return;
         }
-        c.setTelefono(nuevoTelefono);
-    }
-    if (!nuevoCorreo.isEmpty()) {
-        if (!validarCorreo(nuevoCorreo)) {
-            JOptionPane.showMessageDialog(null, "El correo tiene un formato inválido.");
-            return;
-        }
-        if (correoExisteEnOtroCliente(nuevoCorreo, indice)) {
-            JOptionPane.showMessageDialog(null, "Ya existe otro cliente con este correo.");
-            return;
-        }
-        c.setCorreo(nuevoCorreo);
-    }
-    if (!nuevoDireccion.isEmpty()) {
-        c.setDireccion(nuevoDireccion);
-    }
-    if (!nuevoPassword.isEmpty()) {
-        if (!validarPassword(nuevoPassword)) {
-            JOptionPane.showMessageDialog(null, "La contraseña debe tener al menos 6 caracteres e incluir letra y numero.");
-            return;
-        }
-        c.setContrasena(nuevoPassword);
-    }
 
-    JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
+        cliente c = nodoEncontrado.getDato();
 
-    tx_nombreCambiar.setText(c.getNombre());
-    tx_apellidosCambiar.setText(c.getApellido());
-    jtipo_cambiar.setSelectedItem(c.getTipo());
-    tx_identificacionCambiar.setText(c.getIdentificacion());
-    tx_telefonoCambiar.setText(c.getTelefono());
-    tx_correoCambiar.setText(c.getCorreo());
-    tx_direccionCambiar.setText(c.getDireccion());
-    limpiarCamposEdicionActualizar(tx_nombreCambiar1, tx_apellidosCambiar1, jtipo_cambiar,
-            tx_identificacionCambiar1, tx_telefonoCambiar1, tx_correoCambiar1, tx_direccionCambiar1, tx_passwordCambiar1);
-}
-    
+        String nuevoNombre = tx_nombreCambiar1.getText().trim();
+        String nuevoApellido = tx_apellidosCambiar1.getText().trim();
+        String nuevoTipo = (jtipo_cambiar.getSelectedItem() != null)
+                ? jtipo_cambiar.getSelectedItem().toString().trim()
+                : "";
+        String nuevoIdentificacion = tx_identificacionCambiar1.getText().trim();
+        String nuevoTelefono = tx_telefonoCambiar1.getText().trim();
+        String nuevoCorreo = tx_correoCambiar1.getText().trim();
+        String nuevoDireccion = tx_direccionCambiar1.getText().trim();
+        String nuevoPassword = new String(tx_passwordCambiar1.getPassword()).trim();
+
+        if (!nuevoIdentificacion.isEmpty() && !nuevoIdentificacion.equals(c.getIdentificacion())) {
+            if (!validarIdentificacion(nuevoIdentificacion)) {
+                JOptionPane.showMessageDialog(null, "La nueva identificación no es válida.");
+                return;
+            }
+            if (identificacionExisteEnOtroCliente(nuevoIdentificacion, c.getIdentificacion())) {
+                JOptionPane.showMessageDialog(null, "La identificación ya está registrada en otro cliente.");
+                return;
+            }
+            c.setIdentificacion(nuevoIdentificacion);
+        }
+
+        if (!nuevoNombre.isEmpty()) {
+            c.setNombre(nuevoNombre);
+        }
+        if (!nuevoApellido.isEmpty()) {
+            c.setApellido(nuevoApellido);
+        }
+        if (!nuevoTipo.isEmpty()) {
+            c.setTipo(nuevoTipo);
+        }
+        if (!nuevoTelefono.isEmpty()) {
+            if (!validarTelefono(nuevoTelefono)) {
+                JOptionPane.showMessageDialog(null, "El teléfono debe ser numérico y tener 10 dígitos.");
+                return;
+            }
+            c.setTelefono(nuevoTelefono);
+        }
+        if (!nuevoCorreo.isEmpty()) {
+            if (!validarCorreo(nuevoCorreo)) {
+                JOptionPane.showMessageDialog(null, "El correo tiene un formato inválido.");
+                return;
+            }
+            if (correoExisteEnOtroCliente(nuevoCorreo, c.getIdentificacion())) {
+                JOptionPane.showMessageDialog(null, "Ya existe otro cliente con este correo.");
+                return;
+            }
+            c.setCorreo(nuevoCorreo);
+        }
+        if (!nuevoDireccion.isEmpty()) {
+            c.setDireccion(nuevoDireccion);
+        }
+        if (!nuevoPassword.isEmpty()) {
+            if (!validarPassword(nuevoPassword)) {
+                JOptionPane.showMessageDialog(null, "La contraseña debe tener al menos 6 caracteres e incluir letra y numero.");
+                return;
+            }
+            c.setContrasena(nuevoPassword);
+        }
+
+        JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
+
+        tx_nombreCambiar.setText(c.getNombre());
+        tx_apellidosCambiar.setText(c.getApellido());
+        jtipo_cambiar.setSelectedItem(c.getTipo());
+        tx_identificacionCambiar.setText(c.getIdentificacion());
+        tx_telefonoCambiar.setText(c.getTelefono());
+        tx_correoCambiar.setText(c.getCorreo());
+        tx_direccionCambiar.setText(c.getDireccion());
+        limpiarCamposEdicionActualizar(tx_nombreCambiar1, tx_apellidosCambiar1, jtipo_cambiar,
+                tx_identificacionCambiar1, tx_telefonoCambiar1, tx_correoCambiar1, tx_direccionCambiar1, tx_passwordCambiar1);
+    }
 
     public static void buscarCliente(JTextField tx_docu_buscar, JTextField tx_nombre_buscar, JTextField tx_apellido_buscar, JTextField tx_tipo_buscar,
             JTextField tx_documento_buscar, JTextField tx_telefono_buscar, JTextField tx_correo_buscar, JTextField tx_direccion_buscar) {
@@ -422,55 +445,46 @@ public class crud_usuarios {
             return;
         }
 
-        boolean encontrado = false;
+        Nodos.NodoCliente nodoEncontrado = buscarNodoClientePorIdentificacion(identificacion);
 
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
-            if (c != null && c.getIdentificacion().equalsIgnoreCase(identificacion)) {
-
-                tx_nombre_buscar.setText(c.getNombre());
-                tx_apellido_buscar.setText(c.getApellido());
-                tx_tipo_buscar.setText(c.getTipo());
-                tx_documento_buscar.setText(c.getIdentificacion());
-                tx_telefono_buscar.setText(c.getTelefono());
-                tx_correo_buscar.setText(c.getCorreo());
-                tx_direccion_buscar.setText(c.getDireccion());
-
-                encontrado = true;
-                break;
-            }
-        }
-
-        if (!encontrado) {
+        if (nodoEncontrado != null) {
+            cliente c = nodoEncontrado.getDato();
+            tx_nombre_buscar.setText(c.getNombre());
+            tx_apellido_buscar.setText(c.getApellido());
+            tx_tipo_buscar.setText(c.getTipo());
+            tx_documento_buscar.setText(c.getIdentificacion());
+            tx_telefono_buscar.setText(c.getTelefono());
+            tx_correo_buscar.setText(c.getCorreo());
+            tx_direccion_buscar.setText(c.getDireccion());
+            tx_docu_buscar.setText("");
+        } else {
             JOptionPane.showMessageDialog(null, "No se encontró ningún cliente con esa identificación.");
-
             limpiarCamposBuscarCliente(tx_nombre_buscar, tx_apellido_buscar, tx_tipo_buscar,
                     tx_documento_buscar, tx_telefono_buscar, tx_correo_buscar, tx_direccion_buscar, tx_docu_buscar);
-            return;
         }
-
-        tx_docu_buscar.setText("");
     }
 
     public static void listarCliente(JTable Tab_Client) {
         DefaultTableModel modelo = (DefaultTableModel) Tab_Client.getModel();
-        modelo.setRowCount(0); 
+        modelo.setRowCount(0);
 
         boolean hayClientes = false;
-
-        for (int i = 0; i < contadorClientes; i++) {
-            if (clientes[i] != null) {
+        Nodos.NodoCliente aux = primero;
+        while (aux != null) {
+            cliente c = aux.getDato();
+            if (c != null) {
                 modelo.addRow(new Object[]{
-                    clientes[i].getTipo(),
-                    clientes[i].getIdentificacion(),
-                    clientes[i].getNombre(),
-                    clientes[i].getApellido(),
-                    clientes[i].getTelefono(),
-                    clientes[i].getCorreo(),
-                    clientes[i].getDireccion()
+                    c.getTipo(),
+                    c.getIdentificacion(),
+                    c.getNombre(),
+                    c.getApellido(),
+                    c.getTelefono(),
+                    c.getCorreo(),
+                    c.getDireccion()
                 });
                 hayClientes = true;
             }
+            aux = aux.getSiguiente();
         }
 
         if (!hayClientes) {
@@ -486,6 +500,22 @@ public class crud_usuarios {
         return "Sin plan";
     }
 
+    public static cliente consultaDetallada(String identificacion) {
+        if (identificacion == null || identificacion.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese la identificación del cliente.");
+            return null;
+        }
+
+        Nodos.NodoCliente nodo = buscarNodoClientePorIdentificacion(identificacion.trim());
+        if (nodo != null) {
+            return nodo.getDato();
+        }
+
+        JOptionPane.showMessageDialog(null, "No se encontró un cliente con esa identificación.");
+        return null;
+    }
+
+    // --- MÉTODOS DE LIMPIEZA DE CAMPOS (100% ORIGINALES) ---
     private static void limpiarCamposAgregarCliente(JTextField tx_nombres, JTextField tx_apellidos, JComboBox<String> cb_tipo,
             JTextField tx_identificacion, JTextField tx_telefono, JTextField tx_correo, JTextField tx_direccion,
             JPasswordField tx_contrasena, JPasswordField tx_confContrasena) {
@@ -553,25 +583,4 @@ public class crud_usuarios {
         tx_direccion_buscar.setText("");
         tx_docu_buscar.setText("");
     }
-
-    public static cliente consultaDetallada(String identificacion) {
-        if (identificacion == null || identificacion.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Ingrese la identificación del cliente.");
-            return null;
-        }
-
-        String idBuscada = identificacion.trim();
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
-            if (c != null && c.getIdentificacion().equals(idBuscada)) {
-                return c;
-            }
-        }
-
-        JOptionPane.showMessageDialog(null, "No se encontró un cliente con esa identificación.");
-        return null;
-    }
-
-
-    ///////////////////////////
 }

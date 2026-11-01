@@ -1,6 +1,5 @@
 package controlador;
 
-import static entidades.Arreglos.*;
 import java.time.LocalDate;
 import javax.swing.JOptionPane;
 import model.*;

@@ -8,7 +8,7 @@ import controlador.ctrlFactura;
 import controlador.crud_planes;
 import controlador.crud_usuarios;
 import controlador.ctrlAsignacionPlan;
-import entidades.Arreglos;
+import entidades.Nodos;
 import java.awt.Color;
 import java.time.LocalDate;
 import javax.swing.*;
@@ -3525,11 +3525,13 @@ public class admin_view extends javax.swing.JFrame {
     private void cargarPlanesAsignacion() {
         DefaultComboBoxModel<String> modeloPlanes = new DefaultComboBoxModel<>();
 
-        for (int i = 0; i < Arreglos.contadorPlanes; i++) {
-            Planes planActual = Arreglos.plan[i];
+        Nodos.NodoPlan aux = crud_planes.getPrimero();
+        while (aux != null) {
+            Planes planActual = aux.getDato();
             if (planActual != null) {
                 modeloPlanes.addElement(planActual.getNombrePlan());
             }
+            aux = aux.getSiguiente();
         }
 
         if (modeloPlanes.getSize() == 0) {
@@ -3559,12 +3561,9 @@ public class admin_view extends javax.swing.JFrame {
             return null;
         }
 
-        String idBuscada = identificacion.trim();
-        for (int i = 0; i < Arreglos.contadorClientes; i++) {
-            cliente clienteActual = Arreglos.clientes[i];
-            if (clienteActual != null && clienteActual.getIdentificacion().equals(idBuscada)) {
-                return clienteActual;
-            }
+        Nodos.NodoCliente aux = crud_usuarios.buscarNodoClientePorIdentificacion(identificacion.trim());
+        if (aux != null) {
+            return aux.getDato();
         }
         return null;
     }

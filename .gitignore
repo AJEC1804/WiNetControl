@@ -1,4 +1,9 @@
 /build/
 /dist/
-".idea/" 
-echo "nbproject/private/" >> .gitignore
+.idea/
+.vscode/
+.classpath
+.project
+nbproject/private/
+bin/
+*.class

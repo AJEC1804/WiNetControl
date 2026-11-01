@@ -1,19 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controlador;
 
-import static entidades.Arreglos.*;
+import entidades.Nodos;
 import javax.swing.*;
-import javax.swing.table.*;
-import model.*;
+import javax.swing.table.DefaultTableModel;
+import model.Planes;
+import model.cliente;
 
 /**
  *
  * @author Gyanela Meza
  */
 public class crud_planes {
+
+    // Punteros de la lista
+    public static Nodos.NodoPlan primero = null;
+    public static Nodos.NodoPlan ultimo = null;
+
+    public static Nodos.NodoPlan getPrimero() {
+        return primero;
+    }
+
+    // Metodo para agregar un nuevo plan
     public static void agregarPlan(JTextField tx_cod_plan, JTextField tx_nombre_plan,
             JTextField tx_velocidad_plan, JTextField tx_precio_plan,
             JTextPane tx_descripcion_plan) {
@@ -41,7 +48,7 @@ public class crud_planes {
             return;
         }
 
-        if (buscarIndicePlanPorCodigo(codigo) != -1) {
+        if (buscarNodoPlanPorCodigo(codigo) != null) {
             JOptionPane.showMessageDialog(null, "Ya existe un plan con este codigo.");
             return;
         }
@@ -57,40 +64,45 @@ public class crud_planes {
             return;
         }
 
-        if (contadorPlanes >= ELEMENTOS) {
-            JOptionPane.showMessageDialog(null, "Limite de planes alcanzado.");
-            return;
-        }
-
         Planes nuevo = new Planes(codigo, nombre, velocidad, precio, descripcion);
-        plan[contadorPlanes] = nuevo;
-        contadorPlanes++;
+        Nodos.NodoPlan nuevoNodo = new Nodos.NodoPlan(nuevo);
+
+        if (primero == null) {
+            primero = nuevoNodo;
+            ultimo = nuevoNodo;
+        } else {
+            ultimo.setSiguiente(nuevoNodo);
+            nuevoNodo.setAnterior(ultimo);
+            ultimo = nuevoNodo;
+        }
 
         JOptionPane.showMessageDialog(null, "Plan agregado correctamente.");
         limpiarCamposAgregar(tx_cod_plan, tx_nombre_plan, tx_velocidad_plan, tx_precio_plan, tx_descripcion_plan);
     }
 
+    // Metodo para listar los planes en la tabla
     public static void listarPlanes(JTable Tab_Plan) {
-
         DefaultTableModel modelo = (DefaultTableModel) Tab_Plan.getModel();
         modelo.setRowCount(0);
 
-        for (int i = 0; i < contadorPlanes; i++) {
-            Planes p = plan[i];
-
+        Nodos.NodoPlan aux = primero;
+        while (aux != null) {
+            Planes p = aux.getDato();
             if (p != null) {
                 Object[] fila = {
-                        p.getIdPlan(),
-                        p.getNombrePlan(),
-                        p.getVelocidadPlan(),
-                        p.getPrecio(),
-                        p.getDescripcionPlan()
+                    p.getIdPlan(),
+                    p.getNombrePlan(),
+                    p.getVelocidadPlan(),
+                    p.getPrecio(),
+                    p.getDescripcionPlan()
                 };
                 modelo.addRow(fila);
             }
+            aux = aux.getSiguiente();
         }
     }
 
+    // Metodo para buscar un plan
     public static void buscarPlan(JTextField tx_idPlan_buscar, JTextField tx_codigo_buscado,
             JTextField tx_nombrePlan_buscado, JTextField tx_vel_buscar,
             JTextField tx_precio_buscar, JTextPane tx_descripcion_plan1) {
@@ -107,14 +119,14 @@ public class crud_planes {
             return;
         }
 
-        int indice = buscarIndicePlanPorCodigo(codigo);
-        if (indice == -1) {
+        Nodos.NodoPlan nodoEncontrado = buscarNodoPlanPorCodigo(codigo);
+        if (nodoEncontrado == null) {
             JOptionPane.showMessageDialog(null, "No se encontro ningun plan con ese codigo.");
             limpiarCamposBuscar(tx_codigo_buscado, tx_nombrePlan_buscado, tx_vel_buscar, tx_precio_buscar, tx_descripcion_plan1);
             return;
         }
 
-        Planes p = plan[indice];
+        Planes p = nodoEncontrado.getDato();
         tx_codigo_buscado.setText(String.valueOf(p.getIdPlan()));
         tx_nombrePlan_buscado.setText(p.getNombrePlan());
         tx_vel_buscar.setText(p.getVelocidadPlan());
@@ -124,6 +136,7 @@ public class crud_planes {
         limpiarCampoBusqueda(tx_idPlan_buscar);
     }
 
+    // Metodo para buscar el plan que se va a actualizar
     public static void buscarPlanActualizar(JTextField tx_cod_buscar_actualizar_plan,
             JTextField tx_cod_plan_mostrar,
             JTextField tx_nombre_plan_mostrar,
@@ -143,14 +156,14 @@ public class crud_planes {
             return;
         }
 
-        int indice = buscarIndicePlanPorCodigo(codigo);
-        if (indice == -1) {
+        Nodos.NodoPlan nodoEncontrado = buscarNodoPlanPorCodigo(codigo);
+        if (nodoEncontrado == null) {
             JOptionPane.showMessageDialog(null, "No se encontro ningun plan con ese codigo.");
             limpiarCamposBuscar(tx_cod_plan_mostrar, tx_nombre_plan_mostrar, tx_velocidad_plan_mostrar, tx_precio_plan_mostrar, tx_descripcion_plan2);
             return;
         }
 
-        Planes p = plan[indice];
+        Planes p = nodoEncontrado.getDato();
         tx_cod_plan_mostrar.setText(String.valueOf(p.getIdPlan()));
         tx_nombre_plan_mostrar.setText(p.getNombrePlan());
         tx_velocidad_plan_mostrar.setText(p.getVelocidadPlan());
@@ -161,6 +174,7 @@ public class crud_planes {
         limpiarCampoBusqueda(tx_cod_buscar_actualizar_plan);
     }
 
+    // Metodo para actualizar el plan
     public static void actualizarPlan(JTextField tx_cod_plan_mostrar,
             JTextField tx_nombre_plan_mostrar,
             JTextField tx_velocidad_plan_mostrar,
@@ -172,6 +186,7 @@ public class crud_planes {
             JTextField tx_velocidad_plan_act,
             JTextField tx_precio_plan_act,
             JTextPane tx_descripcion_plan_act) {
+
         String docBuscar = tx_cod_plan_mostrar.getText().trim();
 
         if (docBuscar.isEmpty()) {
@@ -185,13 +200,13 @@ public class crud_planes {
             return;
         }
 
-        int indice = buscarIndicePlanPorCodigo(codigoBuscar);
-        if (indice == -1) {
+        Nodos.NodoPlan nodoEncontrado = buscarNodoPlanPorCodigo(codigoBuscar);
+        if (nodoEncontrado == null) {
             JOptionPane.showMessageDialog(null, "Plan no encontrado.");
             return;
         }
 
-        Planes p = plan[indice];
+        Planes p = nodoEncontrado.getDato();
 
         String nuevoCodigoStr = tx_cod_plan_act.getText().trim();
         String nuevoNombre = tx_nombre_plan_act.getText().trim();
@@ -213,7 +228,7 @@ public class crud_planes {
                 return;
             }
 
-            if (codigoPlanExisteActualizar(nuevoCodigo, indice)) {
+            if (codigoPlanExisteActualizar(nuevoCodigo, p.getIdPlan())) {
                 JOptionPane.showMessageDialog(null, "Ya existe un plan con este codigo.");
                 return;
             }
@@ -254,12 +269,14 @@ public class crud_planes {
         limpiarCamposActualizar(tx_cod_plan_act, tx_nombre_plan_act, tx_velocidad_plan_act, tx_precio_plan_act, tx_descripcion_plan_act);
     }
 
+    // Metodo para buscar el plan que se va a eliminar
     public static void buscarPlanEliminar(JTextField tx_idPlan_buscar1,
             JTextField tx_cod_plan_mostrar1,
             JTextField tx_nombre_plan_mostrar1,
             JTextField tx_velocidad_plan_mostrar1,
             JTextField tx_precio_plan_mostrar1,
             JTextPane tx_descripcion_plan3) {
+
         String docBuscar = tx_idPlan_buscar1.getText().trim();
         if (docBuscar.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese el codigo del plan.");
@@ -272,30 +289,31 @@ public class crud_planes {
             return;
         }
 
-        int indice = buscarIndicePlanPorCodigo(codigo);
-        if (indice == -1) {
+        Nodos.NodoPlan nodoEncontrado = buscarNodoPlanPorCodigo(codigo);
+        if (nodoEncontrado == null) {
             JOptionPane.showMessageDialog(null, "Plan no encontrado.");
             limpiarCamposEliminar(tx_cod_plan_mostrar1, tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
             return;
         }
 
-        Planes p = plan[indice];
+        Planes p = nodoEncontrado.getDato();
         tx_cod_plan_mostrar1.setText(String.valueOf(p.getIdPlan()));
         tx_nombre_plan_mostrar1.setText(p.getNombrePlan());
         tx_velocidad_plan_mostrar1.setText(p.getVelocidadPlan());
         tx_precio_plan_mostrar1.setText(String.valueOf((int) p.getPrecio()));
         tx_descripcion_plan3.setText(p.getDescripcionPlan());
-        
-        // Limpiar el campo de búsqueda después de encontrar el plan
+
         limpiarCampoBusqueda(tx_idPlan_buscar1);
     }
 
+    // Metodo para eliminar plan
     public static void eliminarPlan(JTextField tx_cod_plan_mostrar1,
             JTextField tx_nombre_plan_mostrar1,
             JTextField tx_velocidad_plan_mostrar1,
             JTextField tx_precio_plan_mostrar1,
             JTextPane tx_descripcion_plan3,
             JTextField tx_idPlan_buscar1) {
+
         String codigoEliminar = tx_cod_plan_mostrar1.getText().trim();
         if (codigoEliminar.isEmpty()) {
             codigoEliminar = tx_idPlan_buscar1.getText().trim();
@@ -312,19 +330,25 @@ public class crud_planes {
             return;
         }
 
-        int indiceEliminar = buscarIndicePlanPorCodigo(codigo);
-        if (indiceEliminar == -1) {
+        Nodos.NodoPlan nodoEliminar = buscarNodoPlanPorCodigo(codigo);
+        if (nodoEliminar == null) {
             JOptionPane.showMessageDialog(null, "No se encontro el plan a eliminar.");
             return;
         }
 
-        String nombrePlanEliminado = plan[indiceEliminar].getNombrePlan();
+        String nombrePlanEliminado = nodoEliminar.getDato().getNombrePlan();
 
-        for (int j = indiceEliminar; j < contadorPlanes - 1; j++) {
-            plan[j] = plan[j + 1];
+        if (nodoEliminar.getAnterior() != null) {
+            nodoEliminar.getAnterior().setSiguiente(nodoEliminar.getSiguiente());
+        } else {
+            primero = nodoEliminar.getSiguiente();
         }
-        plan[contadorPlanes - 1] = null;
-        contadorPlanes--;
+
+        if (nodoEliminar.getSiguiente() != null) {
+            nodoEliminar.getSiguiente().setAnterior(nodoEliminar.getAnterior());
+        } else {
+            ultimo = nodoEliminar.getAnterior();
+        }
 
         actualizarPlanClientesTrasEliminar(nombrePlanEliminado);
 
@@ -332,11 +356,14 @@ public class crud_planes {
         limpiarCamposEliminar(tx_cod_plan_mostrar1, tx_nombre_plan_mostrar1, tx_velocidad_plan_mostrar1, tx_precio_plan_mostrar1, tx_descripcion_plan3, tx_idPlan_buscar1);
     }
 
-    public static boolean codigoPlanExisteActualizar(int codigoNuevo, int indiceActual) {
-        for (int i = 0; i < contadorPlanes; i++) {
-            if (plan[i] != null && plan[i].getIdPlan() == codigoNuevo && i != indiceActual) {
+    // Metodos auxiliares
+    public static boolean codigoPlanExisteActualizar(int codigoNuevo, int codigoActual) {
+        Nodos.NodoPlan aux = primero;
+        while (aux != null) {
+            if (aux.getDato().getIdPlan() == codigoNuevo && aux.getDato().getIdPlan() != codigoActual) {
                 return true;
             }
+            aux = aux.getSiguiente();
         }
         return false;
     }
@@ -347,20 +374,30 @@ public class crud_planes {
         }
 
         String nombreBuscado = nombrePlan.trim();
-        for (int i = 0; i < contadorPlanes; i++) {
-            Planes p = plan[i];
-            if (p != null && p.getNombrePlan().equalsIgnoreCase(nombreBuscado)) {
-                return p;
+        Nodos.NodoPlan aux = primero;
+        while (aux != null) {
+            if (aux.getDato().getNombrePlan().equalsIgnoreCase(nombreBuscado)) {
+                return aux.getDato();
             }
+            aux = aux.getSiguiente();
         }
         return null;
     }
 
     public static Planes obtenerPrimerPlanDisponible() {
-        for (int i = 0; i < contadorPlanes; i++) {
-            if (plan[i] != null) {
-                return plan[i];
+        if (primero != null) {
+            return primero.getDato();
+        }
+        return null;
+    }
+
+    public static Nodos.NodoPlan buscarNodoPlanPorCodigo(int codigo) {
+        Nodos.NodoPlan aux = primero;
+        while (aux != null) {
+            if (aux.getDato().getIdPlan() == codigo) {
+                return aux;
             }
+            aux = aux.getSiguiente();
         }
         return null;
     }
@@ -373,16 +410,6 @@ public class crud_planes {
         }
     }
 
-    private static int buscarIndicePlanPorCodigo(int codigo) {
-        for (int i = 0; i < contadorPlanes; i++) {
-            Planes p = plan[i];
-            if (p != null && p.getIdPlan() == codigo) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private static void actualizarPlanClientesTrasEliminar(String nombrePlanEliminado) {
         if (nombrePlanEliminado == null || nombrePlanEliminado.trim().isEmpty()) {
             return;
@@ -391,15 +418,18 @@ public class crud_planes {
         Planes planReemplazo = obtenerPrimerPlanDisponible();
         String nombreReemplazo = (planReemplazo != null) ? planReemplazo.getNombrePlan() : "Sin plan";
 
-        for (int i = 0; i < contadorClientes; i++) {
-            cliente c = clientes[i];
+        Nodos.NodoCliente auxCliente = crud_usuarios.primero;
+        while (auxCliente != null) {
+            cliente c = auxCliente.getDato();
             if (c != null && c.getPlanActual() != null
                     && c.getPlanActual().equalsIgnoreCase(nombrePlanEliminado)) {
                 c.setPlanActual(nombreReemplazo);
             }
+            auxCliente = auxCliente.getSiguiente();
         }
     }
 
+    // Limpiar campos
     private static void limpiarCamposAgregar(JTextField tx_cod_plan, JTextField tx_nombre_plan,
             JTextField tx_velocidad_plan, JTextField tx_precio_plan, JTextPane tx_descripcion_plan) {
         tx_cod_plan.setText("");
@@ -441,5 +471,4 @@ public class crud_planes {
     private static void limpiarCampoBusqueda(JTextField campoBusqueda) {
         campoBusqueda.setText("");
     }
-
 }
