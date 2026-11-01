@@ -17,26 +17,30 @@
                 <h2>WiNet Control</h2>
             </div>
 
-            <!-- Menú de Navegación -->
+            <!-- Menú de Navegación Principal -->
             <nav class="sidebar-nav">
                 <a href="#inicio" class="nav-link active" onclick="mostrarSeccion('inicio', this)">
                     <span>🏠</span> Inicio / Resumen
                 </a>
                 <a href="#clientes" class="nav-link" onclick="mostrarSeccion('clientes', this)">
-                    <span>👥</span> Clientes (Gyanela)
+                    <span>👥</span> Gestión de Clientes
                 </a>
                 <a href="#planes" class="nav-link" onclick="mostrarSeccion('planes', this)">
-                    <span>📡</span> Planes (Yeini)
+                    <span>📡</span> Catálogo de Planes
                 </a>
                 <a href="#facturas" class="nav-link" onclick="mostrarSeccion('facturas', this)">
-                    <span>📄</span> Facturación (Juan)
+                    <span>📄</span> Facturación y Cobros
                 </a>
                 <a href="#soporte" class="nav-link" onclick="mostrarSeccion('soporte', this)">
-                    <span>🎧</span> Soporte (Juan)
+                    <span>🎧</span> Mesa de Ayuda / Soporte
+                </a>
+                <!-- Visible exclusivamente para Superusuario -->
+                <a href="#configuracion" id="navLinkConfiguracion" class="nav-link" style="display: none;" onclick="mostrarSeccion('configuracion', this)">
+                    <span>⚙️</span> Configuración Global
                 </a>
             </nav>
 
-            <!-- Botón Cerrar Sesión en el pie del Sidebar -->
+            <!-- Pie del Sidebar con botón Cerrar Sesión -->
             <div class="sidebar-footer">
                 <button onclick="cerrarSesion()" class="btn btn-danger">
                     Cerrar Sesión
@@ -49,16 +53,20 @@
             
             <!-- BARRA SUPERIOR (TOPBAR) -->
             <header class="topbar">
-                <div>
-                    <h3 style="font-size: 18px; color: #334155;">Sistema de Gestión de Telecomunicaciones</h3>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3 style="font-size: 17px; color: #334155;">Plataforma de Gestión de Telecomunicaciones</h3>
+                    <span id="dashSucursalBadge" class="badge-scope">Sede Principal</span>
                 </div>
                 
-                <!-- Perfil del usuario activo -->
+                <!-- Perfil del usuario activo y badge de rol -->
                 <div class="user-badge">
-                    <div id="dashAvatar" class="user-avatar">A</div>
+                    <div id="dashAvatar" class="user-avatar">U</div>
                     <div class="user-details">
-                        <h4 id="dashNombreHeader">Alejandro Escudero</h4>
-                        <span id="dashCorreoHeader">cargando...</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h4 id="dashNombreHeader">Usuario Conectado</h4>
+                            <span id="dashRolBadge" class="badge badge-cliente">CLIENTE</span>
+                        </div>
+                        <span id="dashCorreoHeader">cargando correo...</span>
                     </div>
                 </div>
             </header>
@@ -67,107 +75,355 @@
             <main class="content-area">
 
                 <!-- ========================================== -->
-                <!-- SECCIÓN 1: INICIO / RESUMEN (ALEJANDRO)   -->
+                <!-- SECCIÓN 1: INICIO / RESUMEN GENERAL        -->
                 <!-- ========================================== -->
                 <div id="seccion-inicio" class="seccion-modulo">
                     
                     <!-- Banner de bienvenida -->
                     <div class="welcome-banner">
                         <h2>¡Hola de nuevo, <span id="dashNombreBienvenida">Usuario</span>! 👋</h2>
-                        <p>Bienvenido al panel de control de servicios y telecomunicaciones de WiNet Control.</p>
+                        <p id="dashDescBienvenida">Bienvenido al panel de control de servicios y telecomunicaciones de WiNet Control.</p>
                     </div>
 
-                    <!-- Tarjetas de Resumen (KPIs) -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h5>Estado de la Cuenta</h5>
-                            <div style="margin-top: 10px;">
-                                <span id="dashEstadoBadge" class="badge badge-activo">ACTIVO</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <h5>Plan Suscrito</h5>
-                            <div id="dashPlan" class="stat-value" style="font-size: 18px; color: #2563eb;">
-                                Cargando plan...
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <h5>Velocidad Contratada</h5>
-                            <div class="stat-value">
-                                300 <span style="font-size: 14px; font-weight: 500; color: #64748b;">Mbps Fibra</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <h5>Facturas Emitidas</h5>
-                            <div class="stat-value">
-                                1 <span style="font-size: 14px; font-weight: 500; color: #16a34a;">(Al día)</span>
-                            </div>
-                        </div>
+                    <!-- Tarjetas de Resumen (KPIs dinámicas según el Rol) -->
+                    <div id="dashStatsGrid" class="stats-grid">
+                        <!-- Generadas dinámicamente por app.js -->
                     </div>
 
-                    <!-- Información de Integración de los compañeros -->
-                    <div style="background: #ffffff; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0;">
-                        <h3 style="margin-bottom: 12px; color: #1e293b;">📌 Estado de la integración del equipo:</h3>
-                        <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
-                            Alejandro ha preparado este Dashboard central. Haz clic en las opciones del menú lateral izquierdo para ver dónde irá el trabajo de cada compañero.
+                    <!-- Atajos Rápidos a los Módulos -->
+                    <div style="background: #ffffff; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px;">
+                        <h3 style="margin-bottom: 6px; color: #1e293b;">🚀 Atajos Rápidos a los Módulos:</h3>
+                        <p style="color: #64748b; font-size: 13px; margin-bottom: 18px;">
+                            Selecciona una de las tarjetas para acceder directamente a la sección correspondiente del sistema:
                         </p>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <span class="badge badge-activo">✅ Login & Sesión: Alejandro</span>
-                            <span class="badge" style="background:#e0f2fe; color:#0369a1;">⏳ Clientes: Gyanela</span>
-                            <span class="badge" style="background:#fef3c7; color:#b45309;">⏳ Planes: Yeini</span>
-                            <span class="badge" style="background:#ede9fe; color:#6d28d9;">⏳ Facturación & Soporte: Juan</span>
+                        
+                        <div class="quick-actions-grid">
+                            <div class="action-card" onclick="mostrarSeccionPorNombre('clientes')">
+                                <span class="icon">👥</span>
+                                <h4>Gestión de Clientes</h4>
+                                <p>Consulta de suscriptores, altas y activación o desactivación de líneas.</p>
+                            </div>
+
+                            <div class="action-card" onclick="mostrarSeccionPorNombre('planes')">
+                                <span class="icon">📡</span>
+                                <h4>Catálogo de Planes</h4>
+                                <p>Planes de fibra óptica residencial, gamer y corporativo vigentes.</p>
+                            </div>
+
+                            <div class="action-card" onclick="mostrarSeccionPorNombre('facturas')">
+                                <span class="icon">📄</span>
+                                <h4>Facturación (LIFO)</h4>
+                                <p>Historial de facturas, última factura emitida y comprobantes de pago.</p>
+                            </div>
+
+                            <div class="action-card" onclick="mostrarSeccionPorNombre('soporte')">
+                                <span class="icon">🎧</span>
+                                <h4>Mesa de Ayuda (FIFO)</h4>
+                                <p>Radicación de tickets y seguimiento de solicitudes en cola de atención.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ========================================== -->
-                <!-- SECCIÓN 2: CLIENTES (GYANELA MEZA)        -->
+                <!-- SECCIÓN 2: GESTIÓN DE CLIENTES            -->
                 <!-- ========================================== -->
                 <div id="seccion-clientes" class="seccion-modulo" style="display: none;">
-                    <div class="module-placeholder">
-                        <span style="font-size: 40px;">👥</span>
-                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Módulo de Clientes</h3>
-                        <p>Espacio asignado a <strong>Gyanela Meza</strong> (Issue #8).</p>
-                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará la tabla <code>JTable / HTML Table</code> con la lista de clientes, búsqueda por cédula y botón de Activar / Desactivar.</p>
+                    
+                    <!-- Aviso cuando un Cliente Suscriptor ingresa a este módulo -->
+                    <div id="clienteNoticeClientes" class="access-denied-box" style="display: none;">
+                        <span style="font-size: 28px; display: block; margin-bottom: 6px;">🔒</span>
+                        <h4 style="font-size: 16px; margin-bottom: 4px;">Acceso Restringido a Administradores</h4>
+                        <p style="font-size: 13px;">
+                            Este módulo de gestión general de suscriptores está reservado para cuentas de <strong>Superusuario</strong> y <strong>Administrador Local</strong>.
+                            Como cliente suscriptor, puedes consultar tus servicios contratados en <strong>Catálogo de Planes</strong> o solicitar asistencia en <strong>Mesa de Ayuda</strong>.
+                        </p>
+                    </div>
+
+                    <!-- Contenido administrativo de clientes -->
+                    <div id="adminContenidoClientes">
+                        <div style="background: white; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+                                <div>
+                                    <h3 style="color: #1e293b; font-size: 20px;">👥 Gestión y Registro de Clientes</h3>
+                                    <p style="color: #64748b; font-size: 13px;">Búsqueda por cédula, edición de datos personales y control de estado (Activo / Inactivo).</p>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-primary" onclick="alert('Funcionalidad de exportación de suscriptores lista.')">
+                                        📥 Exportar Clientes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Barra de búsqueda rápida -->
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <input type="text" id="busqClienteId" placeholder="Buscar suscriptor por número de cédula o nombre..." style="flex: 1; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;">
+                                <button class="btn btn-primary" style="width: auto; padding: 10px 20px;">Buscar</button>
+                            </div>
+
+                            <!-- Tabla de Clientes -->
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                                    <thead>
+                                        <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569;">
+                                            <th style="padding: 12px;">Identificación</th>
+                                            <th style="padding: 12px;">Nombre Completo</th>
+                                            <th style="padding: 12px;">Plan Contratado</th>
+                                            <th style="padding: 12px;">Teléfono</th>
+                                            <th style="padding: 12px;">Estado</th>
+                                            <th style="padding: 12px; text-align: center;">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 12px; font-weight: 600;">1045678901</td>
+                                            <td style="padding: 12px;">Alejandro Escudero</td>
+                                            <td style="padding: 12px; color: #2563eb;">Plan Fibra Gamer 300M</td>
+                                            <td style="padding: 12px;">3001234567</td>
+                                            <td style="padding: 12px;"><span class="badge badge-activo">ACTIVO</span></td>
+                                            <td style="padding: 12px; text-align: center;">
+                                                <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;">Editar</button>
+                                                <button class="btn btn-danger" style="padding: 4px 10px; font-size: 11px; margin-left: 4px;">Desactivar</button>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #e2e8f0; background: #fafafa;">
+                                            <td style="padding: 12px; font-weight: 600;">1098765432</td>
+                                            <td style="padding: 12px;">María Gómez</td>
+                                            <td style="padding: 12px; color: #2563eb;">Plan Básico 50M</td>
+                                            <td style="padding: 12px;">3109876543</td>
+                                            <td style="padding: 12px;"><span class="badge badge-inactivo">INACTIVO</span></td>
+                                            <td style="padding: 12px; text-align: center;">
+                                                <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;">Editar</button>
+                                                <button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px; margin-left: 4px; background: #16a34a;">Activar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- ========================================== -->
-                <!-- SECCIÓN 3: PLANES (YEINI ÁLVAREZ)         -->
+                <!-- SECCIÓN 3: CATÁLOGO DE PLANES             -->
                 <!-- ========================================== -->
                 <div id="seccion-planes" class="seccion-modulo" style="display: none;">
-                    <div class="module-placeholder">
-                        <span style="font-size: 40px;">📡</span>
-                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Catálogo de Planes y Contratación</h3>
-                        <p>Espacio asignado a <strong>Yeini Álvarez</strong> (Issue #9).</p>
-                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará el catálogo de planes, botón para Activar / Desactivar planes y el selector para contratar servicios.</p>
+                    <div style="background: white; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #1e293b; font-size: 20px;">📡 Catálogo de Planes de Telecomunicaciones</h3>
+                            <p style="color: #64748b; font-size: 13px;">Tarifas comerciales de fibra óptica simétrica disponibles para contratación residencial y corporativa.</p>
+                        </div>
+
+                        <!-- Grid de Planes -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                            <!-- Plan 1 -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fafafa;">
+                                <span class="badge badge-activo" style="margin-bottom: 8px;">ACTIVO</span>
+                                <h4 style="font-size: 18px; color: #1e293b; margin-top: 4px;">Plan Básico 50M</h4>
+                                <div style="font-size: 24px; font-weight: 700; color: #2563eb; margin: 10px 0;">
+                                    $45.000 <span style="font-size: 12px; color: #64748b;">/mes</span>
+                                </div>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Velocidad: 50 Mbps. Ideal para navegación web y redes sociales.</p>
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px;">Contratar Plan</button>
+                            </div>
+
+                            <!-- Plan 2 -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fafafa;">
+                                <span class="badge badge-activo" style="margin-bottom: 8px;">ACTIVO</span>
+                                <h4 style="font-size: 18px; color: #1e293b; margin-top: 4px;">Plan Fibra 100M</h4>
+                                <div style="font-size: 24px; font-weight: 700; color: #2563eb; margin: 10px 0;">
+                                    $65.000 <span style="font-size: 12px; color: #64748b;">/mes</span>
+                                </div>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Velocidad: 100 Mbps simétricos. Para streaming en Full HD y teletrabajo.</p>
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px;">Contratar Plan</button>
+                            </div>
+
+                            <!-- Plan 3 (Destacado) -->
+                            <div style="border: 2px solid #2563eb; border-radius: 8px; padding: 20px; background: #ffffff; position: relative;">
+                                <span class="badge badge-activo" style="background: #2563eb; color: white; margin-bottom: 8px;">MÁS POPULAR</span>
+                                <h4 style="font-size: 18px; color: #1e293b; margin-top: 4px;">Plan Fibra Gamer 300M</h4>
+                                <div style="font-size: 24px; font-weight: 700; color: #2563eb; margin: 10px 0;">
+                                    $95.000 <span style="font-size: 12px; color: #64748b;">/mes</span>
+                                </div>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Velocidad: 300 Mbps simétricos. Ultra baja latencia para gaming competitivo y 4K.</p>
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px;">Contratar Plan</button>
+                            </div>
+
+                            <!-- Plan 4 -->
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fafafa;">
+                                <span class="badge badge-activo" style="margin-bottom: 8px;">ACTIVO</span>
+                                <h4 style="font-size: 18px; color: #1e293b; margin-top: 4px;">Plan Corporativo 500M</h4>
+                                <div style="font-size: 24px; font-weight: 700; color: #2563eb; margin: 10px 0;">
+                                    $145.000 <span style="font-size: 12px; color: #64748b;">/mes</span>
+                                </div>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Velocidad: 500 Mbps con IP pública fija y soporte empresarial prioritario 24/7.</p>
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px;">Contratar Plan</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- ========================================== -->
-                <!-- SECCIÓN 4: FACTURAS (JUAN ESTEBAN NAVIA)  -->
+                <!-- SECCIÓN 4: FACTURACIÓN Y COBROS (PILA LIFO) -->
                 <!-- ========================================== -->
                 <div id="seccion-facturas" class="seccion-modulo" style="display: none;">
-                    <div class="module-placeholder">
-                        <span style="font-size: 40px;">📄</span>
-                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Módulo de Facturación (Pila LIFO)</h3>
-                        <p>Espacio asignado a <strong>Juan Esteban Navia</strong> (Issue #10).</p>
-                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará el historial de facturas, la última factura apilada y el botón para abrir o descargar el PDF.</p>
+                    <div style="background: white; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #1e293b; font-size: 20px;">📄 Facturación de Servicios (Estructura LIFO)</h3>
+                            <p style="color: #64748b; font-size: 13px;">Historial de facturas apiladas (Último en entrar, primero en salir), verificación de pagos y descarga de comprobantes.</p>
+                        </div>
+
+                        <!-- Cima de la Pila (Última Factura Emitida) -->
+                        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 18px; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <span style="font-size: 11px; font-weight: 700; color: #15803d; text-transform: uppercase;">Top de la Pila (Última Factura Registrada):</span>
+                                    <h4 style="font-size: 16px; color: #1e293b; margin-top: 2px;">Factura #FACT-2026-003 — Periodo Noviembre 2026</h4>
+                                    <span style="font-size: 13px; color: #475569;">Valor a pagar: $95.000 COP | Estado: <strong>PAGADA</strong></span>
+                                </div>
+                                <button class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size: 13px;" onclick="alert('Descargando comprobante PDF oficial de la factura...')">
+                                    📥 Descargar Factura PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Historial de Facturas -->
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                                <thead>
+                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569;">
+                                        <th style="padding: 12px;">Nº Factura</th>
+                                        <th style="padding: 12px;">Fecha Emisión</th>
+                                        <th style="padding: 12px;">Concepto</th>
+                                        <th style="padding: 12px;">Total</th>
+                                        <th style="padding: 12px;">Estado</th>
+                                        <th style="padding: 12px; text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 12px; font-weight: 600;">#003</td>
+                                        <td style="padding: 12px;">01/11/2026</td>
+                                        <td style="padding: 12px;">Mensualidad Fibra Gamer 300M</td>
+                                        <td style="padding: 12px; font-weight: 600;">$95.000</td>
+                                        <td style="padding: 12px;"><span class="badge badge-activo">PAGADO</span></td>
+                                        <td style="padding: 12px; text-align: center;"><a href="#" onclick="alert('Abriendo comprobante digital...'); return false;">Ver PDF</a></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 12px; font-weight: 600;">#002</td>
+                                        <td style="padding: 12px;">01/10/2026</td>
+                                        <td style="padding: 12px;">Mensualidad Fibra Gamer 300M</td>
+                                        <td style="padding: 12px; font-weight: 600;">$95.000</td>
+                                        <td style="padding: 12px;"><span class="badge badge-activo">PAGADO</span></td>
+                                        <td style="padding: 12px; text-align: center;"><a href="#" onclick="alert('Abriendo comprobante digital...'); return false;">Ver PDF</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- ========================================== -->
-                <!-- SECCIÓN 5: SOPORTE (JUAN ESTEBAN NAVIA)   -->
+                <!-- SECCIÓN 5: SOPORTE TÉCNICO (COLA FIFO)    -->
                 <!-- ========================================== -->
                 <div id="seccion-soporte" class="seccion-modulo" style="display: none;">
-                    <div class="module-placeholder">
-                        <span style="font-size: 40px;">🎧</span>
-                        <h3 style="margin: 15px 0 8px; color: #1e293b;">Módulo de Soporte Técnico (Cola FIFO)</h3>
-                        <p>Espacio asignado a <strong>Juan Esteban Navia</strong> (Issue #10).</p>
-                        <p style="font-size: 13px; margin-top: 8px;">Aquí se insertará el formulario para radicar tickets y el panel de atención en orden de llegada (FIFO).</p>
+                    <div style="background: white; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #1e293b; font-size: 20px;">🎧 Mesa de Ayuda y Soporte Técnico (Cola FIFO)</h3>
+                            <p style="color: #64748b; font-size: 13px;">Atención en estricto orden de llegada (Primero en entrar, primero en salir) para radicación de incidencias técnicas.</p>
+                        </div>
+
+                        <!-- Formulario para radicar nuevo ticket -->
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                            <h4 style="font-size: 15px; color: #1e293b; margin-bottom: 12px;">📝 Radicar Nueva Solicitud de Soporte:</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Asunto o Motivo:</label>
+                                    <input type="text" id="ticketAsunto" placeholder="Ej: Lentitud intermitente en horario nocturno">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Prioridad:</label>
+                                    <select id="ticketPrioridad">
+                                        <option value="NORMAL">Normal</option>
+                                        <option value="ALTA">Alta (Sin servicio)</option>
+                                        <option value="BAJA">Baja (Consulta comercial)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción detallada de la novedad:</label>
+                                <textarea id="ticketDescripcion" rows="3" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;" placeholder="Describe detalladamente el problema presentado..."></textarea>
+                            </div>
+                            <button class="btn btn-primary" style="width: auto; padding: 10px 20px;" onclick="alert('Ticket radicado exitosamente y encolado en la posición #3 de la mesa de ayuda.');">
+                                🚀 Enviar a la Cola de Soporte
+                            </button>
+                        </div>
+
+                        <!-- Vista de la cola de espera -->
+                        <h4 style="font-size: 15px; color: #1e293b; margin-bottom: 12px;">📋 Estado de Tickets en Cola:</h4>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                                <thead>
+                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569;">
+                                        <th style="padding: 12px;">Turno (FIFO)</th>
+                                        <th style="padding: 12px;">Cédula Solicitante</th>
+                                        <th style="padding: 12px;">Asunto</th>
+                                        <th style="padding: 12px;">Fecha Radicación</th>
+                                        <th style="padding: 12px;">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #e2e8f0; background: #f0fdf4;">
+                                        <td style="padding: 12px; font-weight: 700; color: #15803d;">#1 (En Atención)</td>
+                                        <td style="padding: 12px;">1045678901</td>
+                                        <td style="padding: 12px;">Configuración de puerto router Wi-Fi 6</td>
+                                        <td style="padding: 12px;">01/11/2026 10:15 AM</td>
+                                        <td style="padding: 12px;"><span class="badge" style="background: #fef3c7; color: #b45309;">EN PROCESO</span></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 12px; font-weight: 700; color: #475569;">#2 (Siguiente)</td>
+                                        <td style="padding: 12px;">1098765432</td>
+                                        <td style="padding: 12px;">Actualización de clave de red inalámbrica</td>
+                                        <td style="padding: 12px;">01/11/2026 11:30 AM</td>
+                                        <td style="padding: 12px;"><span class="badge badge-activo">EN COLA</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 6: CONFIGURACIÓN (SUPERUSUARIO)   -->
+                <!-- ========================================== -->
+                <div id="seccion-configuracion" class="seccion-modulo" style="display: none;">
+                    <div style="background: white; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div style="margin-bottom: 20px;">
+                            <span class="badge badge-superadmin" style="margin-bottom: 8px;">MÓDULO EXCLUSIVO SUPERUSUARIO</span>
+                            <h3 style="color: #1e293b; font-size: 20px; margin-top: 4px;">⚙️ Configuración Global y Auditoría</h3>
+                            <p style="color: #64748b; font-size: 13px;">Gestión corporativa de todas las sedes locales, altas de administradores y logs de auditoría de la plataforma.</p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fafafa;">
+                                <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 8px;">🏢 Sedes y Sucursales Locales</h4>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Supervisa las diferentes sucursales activas en el sistema:</p>
+                                <ul style="font-size: 13px; color: #334155; margin-left: 18px; line-height: 1.8;">
+                                    <li><strong>Sede Central Corporativa:</strong> Bogotá D.C.</li>
+                                    <li><strong>Sucursal Local Norte:</strong> Barranquilla - Atlántico</li>
+                                    <li><strong>Sucursal Occidente:</strong> Medellín - Antioquia</li>
+                                </ul>
+                            </div>
+
+                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fafafa;">
+                                <h4 style="font-size: 16px; color: #1e293b; margin-bottom: 8px;">🛡️ Cuentas de Administradores</h4>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Gestión de credenciales de los administradores locales:</p>
+                                <ul style="font-size: 13px; color: #334155; margin-left: 18px; line-height: 1.8;">
+                                    <li><code>superadmin</code>: Rol Superusuario (Acceso Total)</li>
+                                    <li><code>admin123</code>: Rol Admin Local (Sucursal Norte)</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -177,24 +433,27 @@
 
     <script src="js/app.js"></script>
     <script>
-        // Función sencilla para cambiar entre pestañas desde el menú lateral
+        // Función para cambiar de sección en el panel lateral
         function mostrarSeccion(nombreSeccion, enlaceClickeado) {
-            // Ocultamos todas las secciones
             const secciones = document.querySelectorAll('.seccion-modulo');
             secciones.forEach(sec => sec.style.display = 'none');
 
-            // Mostramos solo la sección seleccionada
             const seccionAMostrar = document.getElementById('seccion-' + nombreSeccion);
             if (seccionAMostrar) {
                 seccionAMostrar.style.display = 'block';
             }
 
-            // Cambiamos el estilo activo en el menú lateral
             const enlaces = document.querySelectorAll('.nav-link');
             enlaces.forEach(link => link.classList.remove('active'));
             if (enlaceClickeado) {
                 enlaceClickeado.classList.add('active');
             }
+        }
+
+        // Atajo para abrir secciones desde las tarjetas de acción rápida
+        function mostrarSeccionPorNombre(nombreSeccion) {
+            const enlace = document.querySelector(`.sidebar-nav a[href="#${nombreSeccion}"]`);
+            mostrarSeccion(nombreSeccion, enlace);
         }
     </script>
 </body>

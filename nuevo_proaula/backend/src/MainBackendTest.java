@@ -180,6 +180,17 @@ public class MainBackendTest {
         Respuesta<Cliente> loginResp = usuarioCtrl.login("1045678901", "ClaveSegura123");
         System.out.println("Login Carlos: " + loginResp.getMensaje() + " | Autenticado: " + loginResp.getDatos().getNombreCompleto());
 
+        // Verificación de los 3 Roles del Sistema (Superusuario, Admin Local y Cliente)
+        System.out.println("\n--- VERIFICACIÓN DE ROLES Y CONTROL DE ACCESO ---");
+        Respuesta<Usuario> loginSuper = usuarioCtrl.autenticarUsuario("superadmin", "Super123!");
+        System.out.println("Login Superusuario: " + loginSuper.getMensaje() + " | Rol: " + loginSuper.getDatos().getRol() + " | Global: " + loginSuper.getDatos().esSuperAdmin());
+
+        Respuesta<Usuario> loginAdmin = usuarioCtrl.autenticarUsuario("admin123", "Admin123!");
+        System.out.println("Login Admin Local: " + loginAdmin.getMensaje() + " | Rol: " + loginAdmin.getDatos().getRol() + " | Tipo: " + loginAdmin.getDatos().getTipoUsuario());
+
+        Respuesta<Usuario> loginClienteRol = usuarioCtrl.autenticarUsuario("1045678901", "ClaveSegura123");
+        System.out.println("Login Cliente: " + loginClienteRol.getMensaje() + " | Rol: " + loginClienteRol.getDatos().getRol() + " | EsCliente: " + loginClienteRol.getDatos().esCliente());
+
         // Actualizar datos del cliente
         usuarioCtrl.actualizarCliente(
                 "1045678901", "Carlos Alberto", "Mendoza Perez", "CC",

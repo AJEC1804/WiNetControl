@@ -4,24 +4,44 @@ import utils.ValidadorTexto;
 
 /**
  * Entidad base para todos los usuarios del sistema WiNet Control.
- * Representa los datos personales y credenciales de acceso.
+ * Representa los datos personales, credenciales de acceso, estado y rol del usuario.
+ * Roles soportados:
+ * - SUPERADMIN: Acceso total al sistema y administración global.
+ * - ADMIN: Administrador local de sucursal.
+ * - CLIENTE: Suscriptor de servicios de telecomunicaciones.
  */
 public class Usuario {
 
     protected String nombre;
     protected String apellido;
-    protected String tipo; // Tipo de documento (CC, TI, CE, etc.)
+    protected String tipo; // Tipo de documento (CC, TI, CE, NIT, etc.)
     protected String identificacion;
     protected String telefono;
     protected String correo;
     protected String direccion;
     protected String contrasena;
+    protected String rol; // SUPERADMIN, ADMIN, CLIENTE
+    protected boolean activo;
 
     public Usuario() {
+        this.tipo = "CC";
+        this.rol = "CLIENTE";
+        this.activo = true;
     }
 
     public Usuario(String nombre, String apellido, String tipo, String identificacion,
                    String telefono, String correo, String direccion, String contrasena) {
+        this(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, "CLIENTE", true);
+    }
+
+    public Usuario(String nombre, String apellido, String tipo, String identificacion,
+                   String telefono, String correo, String direccion, String contrasena, String rol) {
+        this(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, rol, true);
+    }
+
+    public Usuario(String nombre, String apellido, String tipo, String identificacion,
+                   String telefono, String correo, String direccion, String contrasena,
+                   String rol, boolean activo) {
         this.nombre = nombre != null ? nombre.trim() : "";
         this.apellido = apellido != null ? apellido.trim() : "";
         this.tipo = tipo != null ? tipo.trim() : "CC";
@@ -30,6 +50,8 @@ public class Usuario {
         this.correo = correo != null ? correo.trim().toLowerCase() : "";
         this.direccion = direccion != null ? direccion.trim() : "";
         this.contrasena = contrasena != null ? contrasena.trim() : "";
+        this.rol = (rol != null && !rol.trim().isEmpty()) ? rol.trim().toUpperCase() : "CLIENTE";
+        this.activo = activo;
     }
 
     public String getNombre() {
@@ -100,12 +122,52 @@ public class Usuario {
         this.contrasena = contrasena != null ? contrasena.trim() : "";
     }
 
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = (rol != null && !rol.trim().isEmpty()) ? rol.trim().toUpperCase() : "CLIENTE";
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public String getEstado() {
+        return activo ? "ACTIVO" : "INACTIVO";
+    }
+
+    public void setEstado(String estado) {
+        if (estado != null) {
+            this.activo = estado.equalsIgnoreCase("ACTIVO") || estado.equalsIgnoreCase("TRUE");
+        }
+    }
+
+    public boolean esSuperAdmin() {
+        return "SUPERADMIN".equalsIgnoreCase(rol);
+    }
+
+    public boolean esAdmin() {
+        return "ADMIN".equalsIgnoreCase(rol) || esSuperAdmin();
+    }
+
+    public boolean esCliente() {
+        return "CLIENTE".equalsIgnoreCase(rol);
+    }
+
     public String getTipoUsuario() {
-        return "Usuario";
+        if (esSuperAdmin()) return "Superusuario";
+        if ("ADMIN".equalsIgnoreCase(rol)) return "Administrador Local";
+        return "Cliente";
     }
 
     @Override
     public String toString() {
-        return getNombreCompleto() + " (" + tipo + ": " + identificacion + ") - " + correo;
+        return getNombreCompleto() + " (" + tipo + ": " + identificacion + ") - " + correo + " [Rol: " + rol + " | Estado: " + getEstado() + "]";
     }
 }

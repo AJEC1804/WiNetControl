@@ -1,14 +1,46 @@
 /* ==========================================================================
-   LÓGICA JAVASCRIPT - WINET CONTROL (NIVEL PRINCIPIANTE)
+   LÓGICA JAVASCRIPT - WINET CONTROL (HTML & CSS PARA PRINCIPIANTES)
    Autor: Alejandro Escudero
-   Explicación: Este archivo maneja las acciones del usuario (hacer clic en
-   iniciar sesión, registrarse, verificar datos y cerrar sesión).
+   Explicación: Este archivo maneja la autenticación por roles (Superusuario,
+   Administrador Local y Cliente), registro de clientes, permisos en el 
+   dashboard y cierre de sesión.
    ========================================================================== */
 
-// 1. USUARIOS INICIALES DE PRUEBA (Para que puedas probar el Login de inmediato)
+// 1. CUENTAS INICIALES POR ROLES DEL SISTEMA
 const usuariosIniciales = [
     {
+        identificacion: "9999999999",
+        usuario: "superadmin",
+        contrasena: "Super123!",
+        nombre: "Super Administrador",
+        apellido: "Global",
+        tipo: "CC",
+        telefono: "3009999999",
+        correo: "superadmin@winetcontrol.com",
+        direccion: "Sede Central Corporativa WiNet",
+        rol: "SUPERADMIN",
+        sucursal: "Sede Central (Acceso Global)",
+        planActual: "Acceso Corporativo Total",
+        activo: true // ACTIVO
+    },
+    {
+        identificacion: "1000000001",
+        usuario: "admin123",
+        contrasena: "Admin123!",
+        nombre: "Administrador",
+        apellido: "Local",
+        tipo: "CC",
+        telefono: "3008888888",
+        correo: "admin.local@winetcontrol.com",
+        direccion: "Sucursal Local Norte # 45-20",
+        rol: "ADMIN",
+        sucursal: "Sucursal Local Norte",
+        planActual: "Administración Local",
+        activo: true // ACTIVO
+    },
+    {
         identificacion: "1045678901",
+        usuario: "1045678901",
         contrasena: "Clave123",
         nombre: "Alejandro",
         apellido: "Escudero",
@@ -16,11 +48,14 @@ const usuariosIniciales = [
         telefono: "3001234567",
         correo: "alejandrocastellar04@gmail.com",
         direccion: "Calle 10 # 20-30",
+        rol: "CLIENTE",
+        sucursal: "Residencial Norte",
         planActual: "Plan Fibra Gamer 300M",
-        activo: true // Estado: ACTIVO
+        activo: true // ACTIVO
     },
     {
         identificacion: "1098765432",
+        usuario: "1098765432",
         contrasena: "Clave456",
         nombre: "María",
         apellido: "Gómez",
@@ -28,73 +63,92 @@ const usuariosIniciales = [
         telefono: "3109876543",
         correo: "maria.gomez@email.com",
         direccion: "Carrera 15 # 45-10",
+        rol: "CLIENTE",
+        sucursal: "Residencial Centro",
         planActual: "Plan Básico 50M",
-        activo: false // Estado: INACTIVO (Para probar que el login la rechace)
+        activo: false // INACTIVO: Para probar que el login bloquea clientes inactivos
     }
 ];
 
-// Si el navegador no tiene usuarios guardados aún, guardamos los iniciales
-if (!localStorage.getItem("usuariosWiNet")) {
-    localStorage.setItem("usuariosWiNet", JSON.stringify(usuariosIniciales));
-}
+// Inicializar / actualizar usuarios en localStorage asegurando que los roles existan
+(function inicializarAlmacenamiento() {
+    const guardados = localStorage.getItem("usuariosWiNet");
+    if (!guardados) {
+        localStorage.setItem("usuariosWiNet", JSON.stringify(usuariosIniciales));
+    } else {
+        // Aseguramos que superadmin y admin123 siempre estén presentes
+        const lista = JSON.parse(guardados);
+        let huboCambios = false;
+        usuariosIniciales.forEach(defecto => {
+            const existe = lista.some(u => 
+                u.identificacion === defecto.identificacion || 
+                (u.usuario && defecto.usuario && u.usuario.toLowerCase() === defecto.usuario.toLowerCase())
+            );
+            if (!existe) {
+                lista.push(defecto);
+                huboCambios = true;
+            }
+        });
+        if (huboCambios) {
+            localStorage.setItem("usuariosWiNet", JSON.stringify(lista));
+        }
+    }
+})();
 
 // ==========================================================================
-// 2. FUNCIÓN DE INICIO DE SESIÓN (LOGIN)
+// 2. FUNCIÓN DE INICIO DE SESIÓN (LOGIN UNIVERSAL CON ROLES)
 // ==========================================================================
 function procesarLogin(evento) {
-    evento.preventDefault(); // Evita que la página se recargue
+    evento.preventDefault();
 
-    // Obtenemos los valores que el usuario escribió en las cajas de texto
     const idInput = document.getElementById("loginIdentificacion").value.trim();
     const claveInput = document.getElementById("loginContrasena").value.trim();
     const alertBox = document.getElementById("loginAlert");
 
-    // Limpiamos alertas anteriores
+    // Limpiar alertas previas
     alertBox.style.display = "none";
     alertBox.className = "alert";
 
-    // Validación básica: campos vacíos
     if (idInput === "" || claveInput === "") {
-        mostrarAlerta(alertBox, "Por favor complete todos los campos.", "error");
+        mostrarAlerta(alertBox, "Por favor complete todos los campos requeridos.", "error");
         return;
     }
 
-    // Validación: identificación numérica
-    if (!/^\d{8,10}$/.test(idInput)) {
-        mostrarAlerta(alertBox, "La identificación debe tener entre 8 y 10 dígitos numéricos.", "error");
-        return;
-    }
+    const listaUsuarios = JSON.parse(localStorage.getItem("usuariosWiNet")) || usuariosIniciales;
 
-    // Buscamos los usuarios guardados
-    const listaUsuarios = JSON.parse(localStorage.getItem("usuariosWiNet")) || [];
-
-    // Buscamos si existe un usuario con esa cédula y esa contraseña
-    const usuarioEncontrado = listaUsuarios.find(u => u.identificacion === idInput && u.contrasena === claveInput);
+    // Buscar si existe un usuario que coincida por cédula o por alias de usuario
+    const usuarioEncontrado = listaUsuarios.find(u => {
+        const coincideId = u.identificacion === idInput;
+        const coincideUsuario = u.usuario && (u.usuario.toLowerCase() === idInput.toLowerCase());
+        return (coincideId || coincideUsuario) && u.contrasena === claveInput;
+    });
 
     if (!usuarioEncontrado) {
-        mostrarAlerta(alertBox, "Identificación o contraseña incorrectas.", "error");
+        mostrarAlerta(alertBox, "Usuario/identificación o contraseña incorrectos.", "error");
         return;
     }
 
-    // REGLA DE NEGOCIO: Validar si el usuario está ACTIVO o INACTIVO
+    // Regla de negocio: Validar estado ACTIVO / INACTIVO
     if (!usuarioEncontrado.activo) {
-        mostrarAlerta(alertBox, "El cliente se encuentra INACTIVO. Comuníquese con la administración.", "error");
+        mostrarAlerta(alertBox, "La cuenta se encuentra INACTIVA. Comuníquese con la administración para reactivarla.", "error");
         return;
     }
 
-    // Si todo está bien: Guardamos la sesión en el navegador
+    // Guardar sesión activa con rol en el almacenamiento del navegador
     localStorage.setItem("sesionActiva", JSON.stringify(usuarioEncontrado));
 
-    mostrarAlerta(alertBox, "¡Bienvenido, " + usuarioEncontrado.nombre + "! Redirigiendo...", "success");
+    const textoRol = usuarioEncontrado.rol === "SUPERADMIN" ? "Superusuario" :
+                     usuarioEncontrado.rol === "ADMIN" ? "Administrador Local" : "Cliente";
 
-    // Esperamos 1 segundo y enviamos al usuario al Dashboard
+    mostrarAlerta(alertBox, "¡Bienvenido, " + usuarioEncontrado.nombre + " (" + textoRol + ")! Redirigiendo...", "success");
+
     setTimeout(() => {
         window.location.href = "dashboard.html";
-    }, 1000);
+    }, 900);
 }
 
 // ==========================================================================
-// 3. FUNCIÓN DE REGISTRO DE NUEVO CLIENTE
+// 3. REGISTRO DE NUEVOS CLIENTES
 // ==========================================================================
 function procesarRegistro(evento) {
     evento.preventDefault();
@@ -102,7 +156,6 @@ function procesarRegistro(evento) {
     const alertBox = document.getElementById("registroAlert");
     alertBox.style.display = "none";
 
-    // Captura de valores del formulario
     const nombres = document.getElementById("regNombres").value.trim();
     const apellidos = document.getElementById("regApellidos").value.trim();
     const tipo = document.getElementById("regTipo").value;
@@ -119,49 +172,50 @@ function procesarRegistro(evento) {
         return;
     }
 
-    // 2. Validar formato de cédula (8-10 dígitos)
+    // 2. Validación de identificación numérica (8 a 10 dígitos)
     if (!/^\d{8,10}$/.test(identificacion)) {
         mostrarAlerta(alertBox, "La identificación debe tener entre 8 y 10 dígitos numéricos.", "error");
         return;
     }
 
-    // 3. Validar teléfono (10 dígitos)
+    // 3. Validación de celular
     if (!/^\d{10}$/.test(telefono)) {
-        mostrarAlerta(alertBox, "El teléfono debe contener exactamente 10 dígitos.", "error");
+        mostrarAlerta(alertBox, "El teléfono celular debe contener exactamente 10 dígitos.", "error");
         return;
     }
 
-    // 4. Validar contraseña mínima
+    // 4. Mínimo 6 caracteres
     if (contrasena.length < 6) {
         mostrarAlerta(alertBox, "La contraseña debe tener mínimo 6 caracteres.", "error");
         return;
     }
 
-    // 5. Validar que coincidan las contraseñas
     if (contrasena !== confContrasena) {
         mostrarAlerta(alertBox, "Las contraseñas no coinciden.", "error");
         return;
     }
 
-    // 6. Verificar si la cédula o correo ya existen
     const listaUsuarios = JSON.parse(localStorage.getItem("usuariosWiNet")) || [];
 
     const yaExiste = listaUsuarios.some(u => u.identificacion === identificacion || u.correo === correo);
     if (yaExiste) {
-        mostrarAlerta(alertBox, "Ya existe un cliente registrado con esa identificación o correo.", "error");
+        mostrarAlerta(alertBox, "Ya existe un usuario registrado con esa identificación o correo electrónico.", "error");
         return;
     }
 
-    // Creamos el nuevo cliente (inicia en estado ACTIVO y con Plan Básico)
+    // Nuevo cliente registrado con rol CLIENTE y estado ACTIVO
     const nuevoCliente = {
-        nombres,
-        apellidos,
-        tipo,
-        identificacion,
-        telefono,
-        correo,
-        direccion,
-        contrasena,
+        identificacion: identificacion,
+        usuario: identificacion,
+        contrasena: contrasena,
+        nombre: nombres,
+        apellido: apellidos,
+        tipo: tipo,
+        telefono: telefono,
+        correo: correo,
+        direccion: direccion,
+        rol: "CLIENTE",
+        sucursal: "Sucursal Local Norte",
         planActual: "Plan Básico 50M",
         activo: true
     };
@@ -169,32 +223,28 @@ function procesarRegistro(evento) {
     listaUsuarios.push(nuevoCliente);
     localStorage.setItem("usuariosWiNet", JSON.stringify(listaUsuarios));
 
-    mostrarAlerta(alertBox, "¡Cuenta creada exitosamente! Redirigiendo al login...", "success");
+    mostrarAlerta(alertBox, "¡Cuenta creada exitosamente! Redirigiendo al inicio de sesión...", "success");
 
     setTimeout(() => {
         window.location.href = "login.html";
-    }, 1500);
+    }, 1400);
 }
 
 // ==========================================================================
-// 4. FUNCIÓN PARA CARGAR LOS DATOS EN EL DASHBOARD
+// 4. CARGAR DASHBOARD Y ADAPTAR SEGÚN EL ROL
 // ==========================================================================
 function cargarDashboard() {
-    // Verificamos si hay una sesión iniciada
     const sesion = localStorage.getItem("sesionActiva");
 
     if (!sesion) {
-        // Si no ha iniciado sesión, lo devolvemos al login
         window.location.href = "login.html";
         return;
     }
 
     const usuario = JSON.parse(sesion);
-
-    // Pintamos los datos en la pantalla
     const nombreCompleto = (usuario.nombre || usuario.nombres) + " " + (usuario.apellido || usuario.apellidos);
-    
-    // Elementos del Topbar y Bienvenida
+
+    // 1. Datos del Encabezado
     if (document.getElementById("dashNombreHeader")) {
         document.getElementById("dashNombreHeader").textContent = nombreCompleto;
     }
@@ -208,24 +258,150 @@ function cargarDashboard() {
         document.getElementById("dashAvatar").textContent = (usuario.nombre || usuario.nombres || "U").charAt(0).toUpperCase();
     }
 
-    // Tarjetas resumen
-    if (document.getElementById("dashPlan")) {
-        document.getElementById("dashPlan").textContent = usuario.planActual || "Sin plan asignado";
-    }
-    if (document.getElementById("dashEstadoBadge")) {
-        const badge = document.getElementById("dashEstadoBadge");
-        if (usuario.activo) {
-            badge.textContent = "ACTIVO";
-            badge.className = "badge badge-activo";
+    // 2. Badge de Rol
+    const badgeRol = document.getElementById("dashRolBadge");
+    if (badgeRol) {
+        if (usuario.rol === "SUPERADMIN") {
+            badgeRol.textContent = "👑 SUPERUSUARIO";
+            badgeRol.className = "badge badge-superadmin";
+        } else if (usuario.rol === "ADMIN") {
+            badgeRol.textContent = "🏢 ADMINISTRADOR LOCAL";
+            badgeRol.className = "badge badge-admin";
         } else {
-            badge.textContent = "INACTIVO";
-            badge.className = "badge badge-inactivo";
+            badgeRol.textContent = "👤 CLIENTE SUSCRIPTOR";
+            badgeRol.className = "badge badge-cliente";
         }
+    }
+
+    // Badge de Sucursal / Ámbito
+    const badgeSucursal = document.getElementById("dashSucursalBadge");
+    if (badgeSucursal) {
+        badgeSucursal.textContent = usuario.sucursal || "Sede WiNet";
+    }
+
+    // 3. Descripción del Banner según Rol
+    const descBienvenida = document.getElementById("dashDescBienvenida");
+    if (descBienvenida) {
+        if (usuario.rol === "SUPERADMIN") {
+            descBienvenida.textContent = "Panel Central con control total sobre todas las sedes, clientes, planes comerciales, facturación y auditoría global.";
+        } else if (usuario.rol === "ADMIN") {
+            descBienvenida.textContent = "Panel de Gestión Local: Administra los clientes, activación de servicios, facturación y tickets de soporte de tu sucursal.";
+        } else {
+            descBienvenida.textContent = "Bienvenido a tu portal de suscriptor. Consulta el estado de tu servicio de fibra óptica, tus facturas y solicita soporte técnico.";
+        }
+    }
+
+    // 4. Adaptar Tarjetas KPI (Stats) según Rol
+    renderizarEstadisticasPorRol(usuario);
+
+    // 5. Control de Permisos en la Navegación y Secciones
+    adaptarVistasPorRol(usuario);
+}
+
+// Renderizar tarjetas de estadísticas según el rol
+function renderizarEstadisticasPorRol(usuario) {
+    const statsContainer = document.getElementById("dashStatsGrid");
+    if (!statsContainer) return;
+
+    if (usuario.rol === "SUPERADMIN") {
+        statsContainer.innerHTML = `
+            <div class="stat-card">
+                <h5>Ámbito de Acceso</h5>
+                <div class="stat-value" style="font-size: 18px; color: #6d28d9;">👑 Acceso Global</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Todas las sedes y módulos</div>
+            </div>
+            <div class="stat-card">
+                <h5>Suscriptores Totales</h5>
+                <div class="stat-value">1,420 <span style="font-size: 13px; color: #16a34a; font-weight: normal;">(Red WiNet)</span></div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Clientes en toda la plataforma</div>
+            </div>
+            <div class="stat-card">
+                <h5>Planes Comerciales</h5>
+                <div class="stat-value" style="color: #2563eb;">4 Activos</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Catálogo comercial vigente</div>
+            </div>
+            <div class="stat-card">
+                <h5>Recaudación Mensual</h5>
+                <div class="stat-value" style="color: #059669;">$84.5M COP</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Facturación consolidada</div>
+            </div>
+        `;
+    } else if (usuario.rol === "ADMIN") {
+        statsContainer.innerHTML = `
+            <div class="stat-card">
+                <h5>Sucursal Asignada</h5>
+                <div class="stat-value" style="font-size: 18px; color: #0369a1;">🏢 Norte Local</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Gestión de sede local</div>
+            </div>
+            <div class="stat-card">
+                <h5>Clientes de la Sede</h5>
+                <div class="stat-value">328 <span style="font-size: 13px; color: #16a34a; font-weight: normal;">(Activos)</span></div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">4 pendientes por reconexión</div>
+            </div>
+            <div class="stat-card">
+                <h5>Facturas de la Sede</h5>
+                <div class="stat-value" style="color: #2563eb;">324 Emitidas</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">98% al día en pago</div>
+            </div>
+            <div class="stat-card">
+                <h5>Tickets en Cola (FIFO)</h5>
+                <div class="stat-value" style="color: #d97706;">2 en Espera</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Atención en orden de llegada</div>
+            </div>
+        `;
+    } else {
+        // CLIENTE
+        statsContainer.innerHTML = `
+            <div class="stat-card">
+                <h5>Estado del Servicio</h5>
+                <div style="margin-top: 8px;">
+                    <span class="badge ${usuario.activo ? 'badge-activo' : 'badge-inactivo'}">
+                        ${usuario.activo ? 'ACTIVO' : 'INACTIVO'}
+                    </span>
+                </div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 6px;">Línea de fibra en línea</div>
+            </div>
+            <div class="stat-card">
+                <h5>Plan Contratado</h5>
+                <div class="stat-value" style="font-size: 18px; color: #2563eb;">${usuario.planActual || 'Plan Básico 50M'}</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Internet de alta velocidad</div>
+            </div>
+            <div class="stat-card">
+                <h5>Velocidad de Conexión</h5>
+                <div class="stat-value">300 <span style="font-size: 14px; font-weight: 500; color: #64748b;">Mbps Simétrico</span></div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Fibra óptica directa al hogar</div>
+            </div>
+            <div class="stat-card">
+                <h5>Última Factura (LIFO)</h5>
+                <div class="stat-value" style="color: #16a34a; font-size: 18px;">Al Día ✅</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Próximo corte: 15/11/2026</div>
+            </div>
+        `;
+    }
+}
+
+// Adaptar la visibilidad de enlaces y secciones según rol
+function adaptarVistasPorRol(usuario) {
+    const enlaceConfig = document.getElementById("navLinkConfiguracion");
+    if (enlaceConfig) {
+        // La sección de configuración global solo es visible para SUPERADMIN
+        enlaceConfig.style.display = (usuario.rol === "SUPERADMIN") ? "flex" : "none";
+    }
+
+    const bannerAdminNotice = document.getElementById("clienteNoticeClientes");
+    if (bannerAdminNotice) {
+        // En la sección clientes, si es un cliente normal mostramos aviso
+        bannerAdminNotice.style.display = (usuario.rol === "CLIENTE") ? "block" : "none";
+    }
+
+    const contenidoClientesAdmin = document.getElementById("adminContenidoClientes");
+    if (contenidoClientesAdmin) {
+        contenidoClientesAdmin.style.display = (usuario.rol === "CLIENTE") ? "none" : "block";
     }
 }
 
 // ==========================================================================
-// 5. FUNCIÓN PARA CERRAR SESIÓN
+// 5. CERRAR SESIÓN
 // ==========================================================================
 function cerrarSesion() {
     localStorage.removeItem("sesionActiva");
@@ -233,7 +409,7 @@ function cerrarSesion() {
 }
 
 // ==========================================================================
-// 6. FUNCIÓN AUXILIAR PARA MOSTRAR ALERTAS EN PANTALLA
+// 6. UTILIDAD PARA MOSTRAR ALERTAS
 // ==========================================================================
 function mostrarAlerta(elementoAlerta, mensaje, tipo) {
     elementoAlerta.textContent = mensaje;

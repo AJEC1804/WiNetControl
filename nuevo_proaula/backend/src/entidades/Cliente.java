@@ -4,16 +4,17 @@ import utils.FormateadorFecha;
 
 /**
  * Entidad que representa a un cliente suscriptor del servicio de telecomunicaciones.
- * Incluye estado (activo/inactivo) para habilitar o deshabilitar el acceso y los servicios.
+ * Hereda de Usuario (rol = "CLIENTE") e incluye estado (activo/inactivo),
+ * plan suscrito y fecha de registro.
  */
 public class Cliente extends Usuario {
 
     private String planActual;
     private String fechaRegistro;
-    private boolean activo;
 
     public Cliente() {
         super();
+        this.rol = "CLIENTE";
         this.planActual = "Sin plan";
         this.fechaRegistro = FormateadorFecha.fechaActualTexto();
         this.activo = true;
@@ -22,19 +23,17 @@ public class Cliente extends Usuario {
     public Cliente(String nombre, String apellido, String tipo, String identificacion,
                    String telefono, String correo, String direccion, String contrasena,
                    String planActual) {
-        super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena);
+        super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, "CLIENTE", true);
         this.planActual = (planActual != null && !planActual.trim().isEmpty()) ? planActual.trim() : "Sin plan";
         this.fechaRegistro = FormateadorFecha.fechaActualTexto();
-        this.activo = true;
     }
 
     public Cliente(String nombre, String apellido, String tipo, String identificacion,
                    String telefono, String correo, String direccion, String contrasena,
                    String planActual, String fechaRegistro, boolean activo) {
-        super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena);
+        super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, "CLIENTE", activo);
         this.planActual = (planActual != null && !planActual.trim().isEmpty()) ? planActual.trim() : "Sin plan";
         this.fechaRegistro = (fechaRegistro != null && !fechaRegistro.trim().isEmpty()) ? fechaRegistro : FormateadorFecha.fechaActualTexto();
-        this.activo = activo;
     }
 
     public String getPlanActual() {
@@ -53,24 +52,6 @@ public class Cliente extends Usuario {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public String getEstado() {
-        return activo ? "ACTIVO" : "INACTIVO";
-    }
-
-    public void setEstado(String estado) {
-        if (estado != null) {
-            this.activo = estado.equalsIgnoreCase("ACTIVO") || estado.equalsIgnoreCase("TRUE");
-        }
-    }
-
     @Override
     public String getTipoUsuario() {
         return "Cliente";
@@ -78,6 +59,6 @@ public class Cliente extends Usuario {
 
     @Override
     public String toString() {
-        return super.toString() + " | Plan: " + planActual + " | Estado: " + getEstado() + " | Registrado: " + fechaRegistro;
+        return super.toString() + " | Plan: " + planActual + " | Registrado: " + fechaRegistro;
     }
 }
