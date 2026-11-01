@@ -69,7 +69,7 @@ java -cp "bin;nuevo_proaula/backend/lib/*" MainBackendTest
 
 ## 👥 Equipo de Trabajo y Asignación de Tareas
 
-* **Alejandro Escudero (Lead / Auth / Dashboard):** Módulo de Login universal, registro de suscriptores, sesión y arquitectura de roles.
-* **Gyanela Meza:** Módulo de Gestión de Clientes (búsqueda, edición y control de estado activo/inactivo).
-* **Yeini Álvarez:** Catálogo de Planes de Telecomunicaciones (tarifas, velocidades y contratación).
-* **Juan Esteban Navia:** Módulos de Facturación (Pila LIFO) y Mesa de Ayuda / Soporte Técnico (Cola FIFO).
+* **Alejandro Escudero (Lead / Auth / Dashboard):** Módulo de Login universal, registro de suscriptores, sesión, arquitectura de 3 roles y despliegue en línea (Issue [#7](https://github.com/AJEC1804/WiNetControl/issues/7)).
+* **Gyanela Meza:** Módulo de Gestión de Clientes (búsqueda, edición y control de estado activo/inactivo) (Issue [#8](https://github.com/AJEC1804/WiNetControl/issues/8)).
+* **Yeini Álvarez:** Catálogo de Planes de Telecomunicaciones (Issue [#9](https://github.com/AJEC1804/WiNetControl/issues/9)) + 📝 **Elaboración del Trabajo Escrito Oficial del Proaula** (Issue [#11](https://github.com/AJEC1804/WiNetControl/issues/11)).
+* **Juan Esteban Navia:** Módulos de Facturación y Soporte (Issue [#10](https://github.com/AJEC1804/WiNetControl/issues/10)) + 📊 **Diseño de Diapositivas para la Sustentación** (Issue [#12](https://github.com/AJEC1804/WiNetControl/issues/12)).
