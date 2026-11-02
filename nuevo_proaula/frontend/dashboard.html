@@ -211,12 +211,15 @@
                     <div class="modulo-planes">
 
                         <div class="modulo-cabecera">
-                            <div>
-                                <h3>📡 Catálogo de Planes y Servicios</h3>
-                                <p>
-                                    Planes comerciales de fibra óptica. Un plan <strong>activo</strong> puede
-                                    contratarse; uno <strong>inactivo</strong> queda fuera del catálogo de contratación.
-                                </p>
+                            <div class="modulo-titulo">
+                                <span class="modulo-icono">📡</span>
+                                <div class="modulo-titulo-texto">
+                                    <h3 class="titulo-panel">Catálogo de Planes y Servicios</h3>
+                                    <p id="descripcionPlanes">
+                                        Planes comerciales de fibra óptica. Un plan <strong>activo</strong> puede
+                                        contratarse; uno <strong>inactivo</strong> queda fuera del catálogo de contratación.
+                                    </p>
+                                </div>
                             </div>
                             <div class="plan-resumen" id="resumenPlanes"></div>
                         </div>
@@ -265,7 +268,7 @@
                             </div>
                         </form>
 
-                        <div class="tabla-planes-wrapper">
+                        <div class="tabla-planes-wrapper" id="tablaPlanesWrapper">
                             <table class="tabla-planes">
                                 <thead>
                                     <tr>
@@ -298,10 +301,8 @@
                         </div>
 
                         <!-- Cliente que ya tiene plan contratado o asignado por un administrador -->
-                        <div id="panelPlanActual" class="plan-contratacion" style="display: none;">
-                            <h4>✅ Tu plan actual</h4>
-                            <p class="plan-plan-actual"><strong id="txtPlanActual">—</strong></p>
-                            <p class="plan-nota">Para cambiarlo, contacta a la administración de tu sucursal.</p>
+                        <div id="panelPlanActual" class="plan-tarjeta-contenedor" style="display: none;">
+                            <div id="detallePlanActual" class="plan-tarjeta"></div>
                         </div>
 
                     </div>

@@ -291,6 +291,14 @@ function aplicarPermisos(sesion) {
     const formulario = document.getElementById("panelFormularioPlan");
     if (formulario && !admin) formulario.style.display = "none";
 
+    // El catálogo completo (contadores + tabla) es solo para administradores.
+    // El cliente no debe ver el catálogo: ve su plan o, si no tiene, la contratación.
+    const resumen = document.getElementById("resumenPlanes");
+    if (resumen) resumen.style.display = admin ? "flex" : "none";
+
+    const tabla = document.getElementById("tablaPlanesWrapper");
+    if (tabla) tabla.style.display = admin ? "block" : "none";
+
     // Panel de contratación: solo clientes sin plan
     const panelContratar = document.getElementById("panelContratacion");
     if (panelContratar) {
@@ -302,8 +310,125 @@ function aplicarPermisos(sesion) {
     const panelPlanActual = document.getElementById("panelPlanActual");
     if (panelPlanActual) {
         panelPlanActual.style.display = conPlan ? "block" : "none";
-        const texto = document.getElementById("txtPlanActual");
-        if (texto) texto.textContent = sesion.planActual || "—";
+        if (conPlan) renderizarPlanActual(sesion);
+    }
+
+    // Descripción de la sección según quién la esté viendo
+    const descripcion = document.getElementById("descripcionPlanes");
+    if (descripcion) {
+        if (admin) {
+            descripcion.innerHTML = 'Planes comerciales de fibra óptica. Un plan <strong>activo</strong> puede ' +
+                                    'contratarse; uno <strong>inactivo</strong> queda fuera del catálogo de contratación.';
+        } else if (conPlan) {
+            descripcion.innerHTML = 'Aquí puedes consultar las condiciones del plan que tienes contratado. ' +
+                                    'Si necesitas cambiarlo, escríbenos y lo gestionamos contigo.';
+        } else {
+            descripcion.innerHTML = 'Bienvenido a WiNet Control. Elige el plan que mejor se ajuste a tu hogar ' +
+                                    'y actívalo al instante, sin trámites.';
+        }
+    }
+}
+
+// 8.b TARJETA DEL PLAN DEL CLIENTE (mismo diseño que la ficha de detalle)
+//      El estado de pago del cliente llega en sesion.pagoAlDia.
+//      Si el dato no existe todavía (módulo de Facturación pendiente) se
+//      asume "al día", porque no hay deuda registrada.
+function clienteAlDia(sesion) {
+    return !sesion || sesion.pagoAlDia !== false;
+}
+
+function renderizarPlanActual(sesion) {
+    const contenedor = document.getElementById("detallePlanActual");
+    if (!contenedor) return;
+
+    const nombrePlan = sesion.planActual;
+    const alDia = clienteAlDia(sesion);
+
+    const plan = obtenerPlanes().find(p =>
+        (p.nombre || "").toLowerCase() === (nombrePlan || "").toLowerCase()
+    );
+
+    const bloquePago = alDia
+        ? '<span class="badge badge-activo">Al día</span>'
+        : '<span class="badge" style="background:#fef3c7; color:#b45309;">Pendiente</span>';
+
+    // El plan asignado puede no existir en el catálogo (datos de ejemplo del login)
+    if (!plan) {
+        contenedor.innerHTML = `
+            <div class="detalle-cabecera">
+                <span class="detalle-codigo">Plan contratado</span>
+                <h4 id="txtPlanActual">${nombrePlan || "—"}</h4>
+                <p class="detalle-velocidad">Consultando datos del plan…</p>
+            </div>
+            <div class="detalle-cuerpo">
+                <div class="detalle-fila">
+                    <span class="detalle-etiqueta">Pago</span>
+                    <span class="detalle-valor">${bloquePago}</span>
+                </div>
+                <p class="plan-mi-plan-aviso">
+                    Este plan no figura en el catálogo vigente. Consulta con la administración de tu sucursal.
+                </p>
+            </div>
+            ${pieContacto()}`;
+        return;
+    }
+
+    contenedor.innerHTML = `
+        <div class="detalle-cabecera">
+            <span class="detalle-codigo">Código ${plan.codigo}</span>
+            <h4 id="txtPlanActual">${plan.nombre}</h4>
+            <p class="detalle-velocidad">${plan.velocidad} de velocidad contratada</p>
+        </div>
+
+        <div class="detalle-cuerpo">
+            <div class="detalle-fila">
+                <span class="detalle-etiqueta">Velocidad</span>
+                <span class="detalle-valor">${plan.velocidad}</span>
+            </div>
+            <div class="detalle-fila">
+                <span class="detalle-etiqueta">Precio mensual</span>
+                <span class="detalle-valor">
+                    <span class="plan-precio-valor">${formatearPrecio(plan.precio)}</span>
+                </span>
+            </div>
+            <div class="detalle-fila">
+                <span class="detalle-etiqueta">Pago</span>
+                <span class="detalle-valor">${bloquePago}</span>
+            </div>
+            <div class="detalle-fila">
+                <span class="detalle-etiqueta">Servicio</span>
+                <span class="detalle-valor">${plan.activo ? "Habilitado" : "Suspendido"}</span>
+            </div>
+        </div>
+
+        <p class="detalle-descripcion">${plan.descripcion || "Sin descripción registrada."}</p>
+
+        ${pieContacto()}`;
+}
+
+// Bloque final con el aviso resaltado y el botón de contacto
+function pieContacto() {
+    return `
+        <div class="plan-contacto">
+            <div class="plan-contacto-texto">
+                <strong>¿Quieres cambiar de plan?</strong>
+                <span>Escríbenos y la administración de tu sucursal lo gestiona contigo.</span>
+            </div>
+            <button type="button" class="btn btn-primary plan-btn-contacto" onclick="irASoportePlanes()">
+                Contactar a mi sucursal
+            </button>
+        </div>`;
+}
+
+// Lleva al cliente al módulo de soporte del sistema
+function irASoportePlanes() {
+    const enlaceSoporte = document.querySelector('a[href="#soporte"]');
+    if (enlaceSoporte) {
+        enlaceSoporte.click();
+        const seccion = document.getElementById("seccion-soporte");
+        if (seccion && seccion.scrollIntoView) {
+            seccion.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
     }
 }
 
@@ -714,9 +839,48 @@ async function contratarPlan() {
     renderizarTablaPlanes();
 }
 
+// 12.b USUARIO DE PRUEBA (rol CLIENTE con un plan del catálogo)
+//      Sirve para demostrar cómo ve un cliente su plan.
+//      Credenciales: 1045678902 / Demo123!
+const CLAVE_DEMO = "demoClienteCreado";
+const CLIENTE_DEMO = {
+    identificacion: "1045678902",
+    usuario: "1045678902",
+    contrasena: "Demo123!",
+    nombre: "Camila",
+    apellido: "Restrepo",
+    tipo: "CC",
+    telefono: "3001234567",
+    correo: "camila.restrepo@winetcontrol.com",
+    direccion: "Calle 45 # 12-30",
+    rol: "CLIENTE",
+    sucursal: "Residencial Norte",
+    activo: true
+};
+
+function asegurarClienteDemo() {
+    if (localStorage.getItem(CLAVE_DEMO) === "1") return;
+
+    const usuarios = JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || [];
+    const yaExiste = usuarios.some(u => u.identificacion === CLIENTE_DEMO.identificacion);
+
+    if (!yaExiste) {
+        // Se le asigna el primer plan activo del catálogo, así siempre es un plan real
+        const activos = obtenerPlanes().filter(p => p.activo);
+        usuarios.push(Object.assign({}, CLIENTE_DEMO, {
+            planActual: activos.length > 0 ? activos[0].nombre : "",
+            pagoAlDia: true
+        }));
+        localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
+    }
+
+    localStorage.setItem(CLAVE_DEMO, "1");
+}
+
 // 13. ARRANQUE
 document.addEventListener("DOMContentLoaded", () => {
     inicializarPlanes();
+    asegurarClienteDemo();
     renderizarTablaPlanes();
 });
 
