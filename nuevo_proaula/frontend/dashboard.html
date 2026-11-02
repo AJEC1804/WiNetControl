@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Principal - WiNet Control</title>
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Estilos propios del módulo de Planes (Issue #9 - Yeini Álvarez) -->
+    <link rel="stylesheet" href="css/planes.css">
 </head>
 <body onload="cargarDashboard()">
 
@@ -201,26 +203,107 @@
                 <!-- SECCIÓN 3: CATÁLOGO DE PLANES (YEINI ÁLVAREZ - #9)       -->
                 <!-- ======================================================= -->
                 <div id="seccion-planes" class="seccion-modulo" style="display: none;">
-                    <div class="integration-card">
-                        <span class="icon">📡</span>
-                        <h3>Catálogo de Planes y Servicios</h3>
-                        <p>
-                            Espacio de integración preparado para las vistas <code>PlanesView</code> y <code>ContratarPlanView</code> correspondiente a la tarea de <strong>Yeini Álvarez</strong>.
-                        </p>
-                        <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 13px; padding: 6px 14px;">
-                            ⏳ Issue #9 — Asignado a: Yeini Álvarez
-                        </span>
 
-                        <div class="integration-task-list">
-                            <strong>📌 Checklist de tareas a conectar en este espacio por Yeini:</strong>
-                            <ul>
-                                <li>Maquetar el catálogo visual o tabla de planes de telecomunicaciones (código, nombre, velocidad, tarifa).</li>
-                                <li>Conectar la creación y edición de planes con <code>PlanController.crearPlan(...)</code> y <code>actualizarPlan(...)</code>.</li>
-                                <li>Implementar botón para <strong>Activar / Desactivar</strong> planes comerciales con <code>PlanController.cambiarEstadoPlan(...)</code>.</li>
-                                <li>Eliminación de planes con reasignación automática usando <code>PlanController.eliminarPlan(codigo)</code>.</li>
-                                <li>Vista de contratación de servicios: cargar planes activos y asignar a cliente con <code>UsuarioController.asignarPlan(...)</code>.</li>
-                            </ul>
+                    <!-- =================================================== -->
+                    <!-- MÓDULO DE PLANES - YEINI ÁLVAREZ (Issue #9)          -->
+                    <!-- Tabla del catálogo comercial de planes de internet. -->
+                    <!-- =================================================== -->
+                    <div class="modulo-planes">
+
+                        <div class="modulo-cabecera">
+                            <div>
+                                <h3>📡 Catálogo de Planes y Servicios</h3>
+                                <p>
+                                    Planes comerciales de fibra óptica. Un plan <strong>activo</strong> puede
+                                    contratarse; uno <strong>inactivo</strong> queda fuera del catálogo de contratación.
+                                </p>
+                            </div>
+                            <div class="plan-resumen" id="resumenPlanes"></div>
                         </div>
+
+                        <!-- Barra de administración (solo ADMIN / SUPERADMIN) -->
+                        <div id="barraAdminPlanes" class="plan-barra-admin" style="display: none;">
+                            <button type="button" class="btn btn-primary" onclick="abrirFormularioNuevo()">＋ Nuevo plan</button>
+                        </div>
+
+                        <!-- Formulario de creación / edición (solo administradores) -->
+                        <form id="panelFormularioPlan" class="plan-form-panel" style="display: none;"
+                              onsubmit="guardarFormularioPlan(event)">
+                            <h4 id="tituloFormularioPlan">Nuevo plan</h4>
+                            <input type="hidden" id="formCodigoOriginal">
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="formCodigo">Código</label>
+                                    <input type="number" id="formCodigo" min="1" required placeholder="105">
+                                </div>
+                                <div class="form-group">
+                                    <label for="formNombre">Nombre del plan</label>
+                                    <input type="text" id="formNombre" required placeholder="Plan Fibra 400M">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="formVelocidad">Velocidad</label>
+                                    <input type="text" id="formVelocidad" required placeholder="400 Mbps">
+                                </div>
+                                <div class="form-group">
+                                    <label for="formPrecio">Precio mensual (COP)</label>
+                                    <input type="number" id="formPrecio" min="0" step="100" required placeholder="149900">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="formDescripcion">Descripción (opcional)</label>
+                                <input type="text" id="formDescripcion" placeholder="Ideal para hogares con varios dispositivos">
+                            </div>
+
+                            <div class="plan-form-botones">
+                                <button type="submit" class="btn btn-primary">Guardar plan</button>
+                                <button type="button" class="btn btn-secondary" onclick="cerrarFormularioPlan()">Cancelar</button>
+                            </div>
+                        </form>
+
+                        <div class="tabla-planes-wrapper">
+                            <table class="tabla-planes">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Plan</th>
+                                        <th>Velocidad</th>
+                                        <th>Precio</th>
+                                        <th>Estado</th>
+                                        <th id="thAccionesPlanes">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaPlanesBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center; padding: 28px; color: #64748b;">
+                                            Cargando planes...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Contratación: solo para CLIENTE sin plan asignado -->
+                        <div id="panelContratacion" class="plan-contratacion" style="display: none;">
+                            <h4>🎯 Contrata tu plan</h4>
+                            <p>Todavía no tienes un plan asignado. Elige uno de los planes activos y actívalo al instante.</p>
+                            <div class="plan-contratacion-fila">
+                                <select id="selectPlanContratar"></select>
+                                <button type="button" class="btn btn-primary" onclick="contratarPlan()">Contratar plan</button>
+                            </div>
+                        </div>
+
+                        <!-- Cliente que ya tiene plan contratado o asignado por un administrador -->
+                        <div id="panelPlanActual" class="plan-contratacion" style="display: none;">
+                            <h4>✅ Tu plan actual</h4>
+                            <p class="plan-plan-actual"><strong id="txtPlanActual">—</strong></p>
+                            <p class="plan-nota">Para cambiarlo, contacta a la administración de tu sucursal.</p>
+                        </div>
+
                     </div>
                 </div>
 
@@ -281,6 +364,8 @@
 
     <!-- Script de lógica JavaScript -->
     <script src="js/app.js"></script>
+    <!-- Lógica del módulo de Planes (Issue #9 - Yeini Álvarez) -->
+    <script src="js/planes.js"></script>
     <script>
         // Función sencilla para cambiar entre pestañas desde el menú lateral
         function mostrarSeccion(nombreSeccion, enlaceClickeado) {
