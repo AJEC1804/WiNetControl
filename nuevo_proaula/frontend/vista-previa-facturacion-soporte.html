@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiNet Control - Módulos de Juan Esteban Navia</title>
+    <!-- Hoja de estilos oficial del proyecto y estilos BEM de Juanes -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/facturacion-soporte.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <!-- 1. BARRA LATERAL (SIDEBAR EXCLUSIVO DE LOS MÓDULOS DE JUANES) -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span style="font-size: 24px;">🌐</span>
+                <div>
+                    <h2 style="font-size: 16px;">WiNet Control</h2>
+                    <span style="font-size: 11px; color: #64748b; font-weight: 600;">Módulos de Juan Navia</span>
+                </div>
+            </div>
+
+            <!-- Menú de Navegación Exclusivo: Facturación y Soporte -->
+            <nav class="sidebar-nav">
+                <a href="#facturas" id="nav-facturas" class="nav-link active" onclick="mostrarModuloJuanes('facturas', this)">
+                    <span>📄</span> Facturación (LIFO)
+                </a>
+                <a href="#soporte" id="nav-soporte" class="nav-link" onclick="mostrarModuloJuanes('soporte', this)">
+                    <span>🎧</span> Mesa de Ayuda (FIFO)
+                </a>
+            </nav>
+
+            <!-- Selector de Rol para pruebas en el pie del Sidebar -->
+            <div class="sidebar-footer" style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 15px;">
+                <label for="selectorRolDemo" style="display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase;">
+                    🎭 Probar como:
+                </label>
+                <select id="selectorRolDemo" onchange="alternarRolDemo(this.value)" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; font-weight: 600; background: #ffffff;">
+                    <option value="ADMIN" selected>🏢 Administrador Local</option>
+                    <option value="CLIENTE">👤 Cliente Suscriptor</option>
+                    <option value="SUPERADMIN">👑 Superusuario</option>
+                </select>
+                <div style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center;">
+                    Issue #10 — Juan Esteban Navia
+                </div>
+            </div>
+        </aside>
+
+        <!-- 2. CONTENEDOR PRINCIPAL CON TOPBAR Y ÁREA DE CONTENIDO -->
+        <div class="main-wrapper">
+            
+            <!-- BARRA SUPERIOR (TOPBAR CON DATOS DE SESIÓN) -->
+            <header class="topbar">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3 style="font-size: 16px; color: #334155; font-weight: 600;">Sistema de Gestión de Telecomunicaciones</h3>
+                    <span id="demoSucursalBadge" class="badge-scope">Sede Principal</span>
+                </div>
+                
+                <!-- Perfil del usuario activo y badge de rol -->
+                <div class="user-badge">
+                    <div id="demoAvatar" class="user-avatar">J</div>
+                    <div class="user-details">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h4 id="demoNombreHeader">Juan Esteban Navia</h4>
+                            <span id="demoRolBadge" class="badge badge-admin">🏢 ADMINISTRADOR LOCAL</span>
+                        </div>
+                        <span id="demoCorreoHeader">juanes@winetcontrol.com</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ÁREA DE CONTENIDO EXCLUSIVA PARA FACTURACIÓN Y SOPORTE -->
+            <main class="content-area">
+
+                <!-- 1. SECCIÓN FACTURACIÓN (PILA LIFO) -->
+                <div id="seccion-facturas" class="seccion-modulo" style="display: block;">
+                    <!-- Se renderiza dinámicamente mediante cargarModuloFacturas() -->
+                </div>
+
+                <!-- 2. SECCIÓN SOPORTE TÉCNICO (COLA FIFO) -->
+                <div id="seccion-soporte" class="seccion-modulo" style="display: none;">
+                    <!-- Se renderiza dinámicamente mediante cargarModuloSoporte() -->
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal de Comprobante Imprimible -->
+    <div id="comprobanteModal" class="comprobante-modal"></div>
+
+    <!-- Script de lógica de Juanes -->
+    <script src="js/facturacion-soporte.js"></script>
+    <script>
+        // Configurar sesión inicial
+        function inicializarSesionDemo() {
+            let sesion = localStorage.getItem("sesionActiva");
+            if (!sesion) {
+                const sesionDefecto = {
+                    identificacion: "1000000001",
+                    usuario: "admin123",
+                    nombre: "Juan Esteban",
+                    apellido: "Navia",
+                    rol: "ADMIN",
+                    correo: "juanes@winetcontrol.com",
+                    sucursal: "Sucursal Local Norte",
+                    activo: true
+                };
+                localStorage.setItem("sesionActiva", JSON.stringify(sesionDefecto));
+            }
+            actualizarTopbarConSesion();
+        }
+
+        // Actualizar barra superior con datos de sesión
+        function actualizarTopbarConSesion() {
+            const sesion = JSON.parse(localStorage.getItem("sesionActiva")) || {};
+            const nombre = `${sesion.nombre || 'Usuario'} ${sesion.apellido || ''}`;
+            
+            document.getElementById("demoNombreHeader").textContent = nombre;
+            document.getElementById("demoCorreoHeader").textContent = sesion.correo || "usuario@winet.com";
+            document.getElementById("demoAvatar").textContent = (sesion.nombre || 'U').charAt(0).toUpperCase();
+
+            const badgeRol = document.getElementById("demoRolBadge");
+            if (sesion.rol === "SUPERADMIN") {
+                badgeRol.textContent = "👑 SUPERUSUARIO";
+                badgeRol.className = "badge badge-superadmin";
+            } else if (sesion.rol === "ADMIN") {
+                badgeRol.textContent = "🏢 ADMINISTRADOR LOCAL";
+                badgeRol.className = "badge badge-admin";
+            } else {
+                badgeRol.textContent = "👤 CLIENTE SUSCRIPTOR";
+                badgeRol.className = "badge badge-cliente";
+            }
+        }
+
+        // Alternar únicamente entre tus dos módulos
+        function mostrarModuloJuanes(nombreModulo, enlace) {
+            const secFacturas = document.getElementById('seccion-facturas');
+            const secSoporte = document.getElementById('seccion-soporte');
+
+            if (nombreModulo === 'facturas') {
+                secFacturas.style.display = 'block';
+                secSoporte.style.display = 'none';
+                cargarModuloFacturas();
+            } else {
+                secFacturas.style.display = 'none';
+                secSoporte.style.display = 'block';
+                cargarModuloSoporte();
+            }
+
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(l => l.classList.remove('active'));
+            if (enlace) {
+                enlace.classList.add('active');
+            }
+        }
+
+        // Alternar rol en vivo (Cliente vs Administrador)
+        function alternarRolDemo(rol) {
+            let sesion = JSON.parse(localStorage.getItem("sesionActiva")) || {};
+            sesion.rol = rol;
+
+            if (rol === "CLIENTE") {
+                sesion.identificacion = "1045678901";
+                sesion.nombre = "Alejandro";
+                sesion.apellido = "Escudero";
+                sesion.correo = "alejandrocastellar04@gmail.com";
+                sesion.planActual = "Plan Fibra Gamer 300M";
+            } else if (rol === "SUPERADMIN") {
+                sesion.identificacion = "9999999999";
+                sesion.nombre = "Super";
+                sesion.apellido = "Administrador";
+                sesion.correo = "superadmin@winetcontrol.com";
+            } else {
+                sesion.identificacion = "1000000001";
+                sesion.nombre = "Juan Esteban";
+                sesion.apellido = "Navia";
+                sesion.correo = "juanes@winetcontrol.com";
+            }
+
+            localStorage.setItem("sesionActiva", JSON.stringify(sesion));
+            actualizarTopbarConSesion();
+
+            // Refrescar la vista activa
+            const secFacturas = document.getElementById("seccion-facturas");
+            if (secFacturas && secFacturas.style.display !== 'none') {
+                cargarModuloFacturas();
+            } else {
+                cargarModuloSoporte();
+            }
+        }
+
+        // Inicializar al cargar
+        window.addEventListener("DOMContentLoaded", () => {
+            inicializarSesionDemo();
+            cargarModuloFacturas();
+        });
+    </script>
+</body>
+</html>
