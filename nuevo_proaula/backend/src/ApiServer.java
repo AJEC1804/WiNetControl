@@ -2,20 +2,27 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
 import controladores.EmpleadoController;
+import controladores.FacturaController;
 import controladores.PlanController;
+import controladores.SoporteController;
 import controladores.UsuarioController;
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Empleado;
+import entidades.Factura;
+import entidades.Soporte;
 import entidades.Usuario;
 import entidades.Plan;
 import utils.Respuesta;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +62,16 @@ public class ApiServer {
     private static final String RUTA_PLANES = "/api/planes";
     private static final String RUTA_EMPLEADOS = "/api/empleados";
     private static final String RUTA_LOGIN = "/api/login";
+    private static final String RUTA_FACTURAS = "/api/facturas";
+    private static final String RUTA_SOPORTE = "/api/soporte";
 
     // Los controladores del equipo. Aquí NO hay lógica nueva: solo se les llama.
     private static final UsuarioController usuarioCtrl = new UsuarioController();
     private static final PlanController planCtrl = new PlanController();
     private static final EmpleadoController empleadoCtrl = new EmpleadoController();
+    private static final FacturaController facturaCtrl = new FacturaController();
+    private static final SoporteController soporteCtrl = new SoporteController();
+    private static final List<Soporte> ticketsAtendidos = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         sembrarClientesDeEjemplo();
@@ -69,6 +81,8 @@ public class ApiServer {
         servidor.createContext(RUTA_PLANES, ApiServer::manejarPlanes);
         servidor.createContext(RUTA_EMPLEADOS, ApiServer::manejarEmpleados);
         servidor.createContext(RUTA_LOGIN, ApiServer::manejarLogin);
+        servidor.createContext(RUTA_FACTURAS, ApiServer::manejarFacturas);
+        servidor.createContext(RUTA_SOPORTE, ApiServer::manejarSoporte);
         servidor.setExecutor(null);
         servidor.start();
 
@@ -756,6 +770,261 @@ public class ApiServer {
     }
 
     // ==================================================================
+    // 2E. FACTURACIÓN (PilaFacturas - Issue #10)
+    // ==================================================================
+    private static void manejarFacturas(HttpExchange ex) throws IOException {
+        String metodo = ex.getRequestMethod();
+        String ruta = ex.getRequestURI().getPath();
+        String query = ex.getRequestURI().getQuery();
+
+        if (metodo.equalsIgnoreCase("OPTIONS")) {
+            responder(ex, 204, "");
+            return;
+        }
+
+        try {
+            // GET /api/facturas/pdf?id=1  -> devuelve el archivo PDF real en disco
+            if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_FACTURAS + "/pdf")) {
+                servirPdfFactura(ex, valorDeQuery(query, "id"));
+                return;
+            }
+
+            // GET /api/facturas  o  GET /api/facturas?usuario=1045678901
+            if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_FACTURAS)) {
+                String usuario = valorDeQuery(query, "usuario");
+                Respuesta<List<Factura>> resp;
+                if (usuario != null && !usuario.trim().isEmpty()) {
+                    resp = facturaCtrl.obtenerFacturasUsuario(usuario.trim());
+                } else {
+                    resp = facturaCtrl.listarTodasFacturas();
+                }
+                List<Factura> lista = resp.getDatos() != null ? resp.getDatos() : new ArrayList<>();
+                Respuesta<Factura> respCima = facturaCtrl.consultarCima();
+                Factura cima = respCima.isExito() ? respCima.getDatos() : null;
+
+                StringBuilder json = new StringBuilder();
+                json.append("{\"exito\":true,\"mensaje\":\"").append(escapar(resp.getMensaje())).append("\",");
+                json.append("\"cima\":").append(jsonDeFactura(cima)).append(",");
+                json.append("\"datos\":[");
+                for (int i = 0; i < lista.size(); i++) {
+                    if (i > 0) json.append(",");
+                    json.append(jsonDeFactura(lista.get(i)));
+                }
+                json.append("]}");
+                responder(ex, 200, json.toString());
+                return;
+            }
+
+            // POST /api/facturas  -> emitir factura a un cliente
+            if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_FACTURAS)) {
+                Map<String, String> datos = leerJson(leerCuerpo(ex));
+                String cedula = datos.getOrDefault("identificacion", "");
+                String plan = datos.getOrDefault("plan", "");
+                Respuesta<Factura> resp = facturaCtrl.generarFactura(cedula, plan);
+                int codigo = resp.isExito() ? 201 : resp.getCodigo();
+                responder(ex, codigo, "{\"exito\":" + resp.isExito()
+                        + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
+                        + ",\"datos\":" + jsonDeFactura(resp.getDatos()) + "}");
+                return;
+            }
+
+            // PUT /api/facturas/pagar -> marcar una factura como PAGADA en la pila
+            if (metodo.equalsIgnoreCase("PUT") && ruta.equals(RUTA_FACTURAS + "/pagar")) {
+                Map<String, String> datos = leerJson(leerCuerpo(ex));
+                int idBuscado = 0;
+                try {
+                    idBuscado = Integer.parseInt(datos.getOrDefault("idFactura", "0").trim());
+                } catch (NumberFormatException ignored) {
+                }
+                List<Factura> todas = facturaCtrl.listarTodasFacturas().getDatos();
+                Factura encontrada = null;
+                if (todas != null) {
+                    for (Factura f : todas) {
+                        if (f != null && f.getIdFactura() == idBuscado) {
+                            encontrada = f;
+                            break;
+                        }
+                    }
+                }
+                if (encontrada == null) {
+                    responderError(ex, 404, "No se encontró la factura #" + idBuscado);
+                    return;
+                }
+                encontrada.setEstado("PAGADA");
+                responder(ex, 200, "{\"exito\":true,\"mensaje\":\"Pago registrado correctamente para la factura #00"
+                        + encontrada.getIdFactura() + ".\",\"datos\":" + jsonDeFactura(encontrada) + "}");
+                return;
+            }
+
+            // DELETE /api/facturas/cima  -> desapilar última factura (Pop LIFO)
+            if (metodo.equalsIgnoreCase("DELETE") && ruta.equals(RUTA_FACTURAS + "/cima")) {
+                Respuesta<Factura> resp = facturaCtrl.desapilarUltimaFactura();
+                int codigo = resp.isExito() ? 200 : resp.getCodigo();
+                responder(ex, codigo, "{\"exito\":" + resp.isExito()
+                        + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
+                        + ",\"datos\":" + jsonDeFactura(resp.getDatos()) + "}");
+                return;
+            }
+
+            responderError(ex, 404, "Ruta de facturas no encontrada: " + metodo + " " + ruta);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responderError(ex, 500, "Error interno en facturas: " + e.getMessage());
+        }
+    }
+
+    private static void servirPdfFactura(HttpExchange ex, String idTexto) throws IOException {
+        int id = 0;
+        try {
+            id = Integer.parseInt(idTexto != null ? idTexto.trim() : "0");
+        } catch (NumberFormatException ignored) {
+        }
+
+        List<Factura> todas = facturaCtrl.listarTodasFacturas().getDatos();
+        Factura encontrada = null;
+        if (todas != null) {
+            for (Factura f : todas) {
+                if (f != null && f.getIdFactura() == id) {
+                    encontrada = f;
+                    break;
+                }
+            }
+        }
+
+        if (encontrada == null || encontrada.getArchivoPDF() == null || encontrada.getArchivoPDF().isEmpty()) {
+            responderError(ex, 404, "No se encontró el PDF de la factura #" + id);
+            return;
+        }
+
+        File archivo = new File(encontrada.getArchivoPDF());
+        if (!archivo.exists()) {
+            responderError(ex, 404, "El archivo PDF no existe en disco: " + encontrada.getArchivoPDF());
+            return;
+        }
+
+        byte[] bytes = Files.readAllBytes(archivo.toPath());
+        ex.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+        ex.getResponseHeaders().add("Content-Type", "application/pdf");
+        ex.getResponseHeaders().add("Content-Disposition", "inline; filename=\"" + archivo.getName() + "\"");
+        ex.sendResponseHeaders(200, bytes.length);
+        try (OutputStream salida = ex.getResponseBody()) {
+            salida.write(bytes);
+        }
+        ex.close();
+    }
+
+    private static String jsonDeFactura(Factura f) {
+        if (f == null) {
+            return "null";
+        }
+        return "{"
+                + "\"idFactura\":" + f.getIdFactura() + ","
+                + "\"identificacionCliente\":\"" + escapar(f.getIdentificacionCliente()) + "\","
+                + "\"nombreCliente\":\"" + escapar(f.getUsuario()) + "\","
+                + "\"idPlan\":" + f.getIdPlan() + ","
+                + "\"nombrePlan\":\"" + escapar(f.getNombrePlan()) + "\","
+                + "\"fecha\":\"" + escapar(f.getFecha()) + "\","
+                + "\"monto\":" + Math.round(f.getTotal()) + ","
+                + "\"archivoPdf\":\"" + escapar(f.getArchivoPDF()) + "\","
+                + "\"estado\":\"" + escapar(f.getEstado()) + "\""
+                + "}";
+    }
+
+    // ==================================================================
+    // 2F. SOPORTE TÉCNICO (ColaSoporte - Issue #10)
+    // ==================================================================
+    private static void manejarSoporte(HttpExchange ex) throws IOException {
+        String metodo = ex.getRequestMethod();
+        String ruta = ex.getRequestURI().getPath();
+
+        if (metodo.equalsIgnoreCase("OPTIONS")) {
+            responder(ex, 204, "");
+            return;
+        }
+
+        try {
+            // GET /api/soporte -> devuelve cola de pendientes, frente y atendidos
+            if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_SOPORTE)) {
+                List<Soporte> pendientes = soporteCtrl.listarTicketsPendientes().getDatos();
+                if (pendientes == null) pendientes = new ArrayList<>();
+                Respuesta<Soporte> respFrente = soporteCtrl.consultarSiguienteTicket();
+                Soporte frente = respFrente.isExito() ? respFrente.getDatos() : null;
+
+                StringBuilder json = new StringBuilder();
+                json.append("{\"exito\":true,");
+                json.append("\"frente\":").append(jsonDeSoporte(frente)).append(",");
+                json.append("\"pendientes\":[");
+                for (int i = 0; i < pendientes.size(); i++) {
+                    if (i > 0) json.append(",");
+                    json.append(jsonDeSoporte(pendientes.get(i)));
+                }
+                json.append("],\"atendidos\":[");
+                for (int i = 0; i < ticketsAtendidos.size(); i++) {
+                    if (i > 0) json.append(",");
+                    json.append(jsonDeSoporte(ticketsAtendidos.get(i)));
+                }
+                json.append("]}");
+                responder(ex, 200, json.toString());
+                return;
+            }
+
+            // POST /api/soporte -> radicar nuevo ticket (encolar al final)
+            if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_SOPORTE)) {
+                Map<String, String> datos = leerJson(leerCuerpo(ex));
+                String usuario = datos.getOrDefault("usuario", "");
+                String correo = datos.getOrDefault("correo", "");
+                String categoria = datos.getOrDefault("categoria", "");
+                String asunto = datos.getOrDefault("asunto", "");
+                String mensaje = datos.getOrDefault("mensaje", "");
+
+                String asuntoFinal = (!categoria.isEmpty() && !asunto.startsWith("["))
+                        ? "[" + categoria + "] " + asunto
+                        : asunto;
+
+                Respuesta<Soporte> resp = soporteCtrl.radicarTicket(usuario, correo, asuntoFinal, mensaje, false);
+                int codigo = resp.isExito() ? 201 : resp.getCodigo();
+                responder(ex, codigo, "{\"exito\":" + resp.isExito()
+                        + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
+                        + ",\"datos\":" + jsonDeSoporte(resp.getDatos()) + "}");
+                return;
+            }
+
+            // POST /api/soporte/atender -> atender y desencolar el frente (FIFO)
+            if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_SOPORTE + "/atender")) {
+                Respuesta<Soporte> resp = soporteCtrl.atenderSiguienteTicket();
+                if (resp.isExito() && resp.getDatos() != null) {
+                    ticketsAtendidos.add(0, resp.getDatos());
+                }
+                int codigo = resp.isExito() ? 200 : resp.getCodigo();
+                responder(ex, codigo, "{\"exito\":" + resp.isExito()
+                        + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
+                        + ",\"datos\":" + jsonDeSoporte(resp.getDatos()) + "}");
+                return;
+            }
+
+            responderError(ex, 404, "Ruta de soporte no encontrada: " + metodo + " " + ruta);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responderError(ex, 500, "Error interno en soporte: " + e.getMessage());
+        }
+    }
+
+    private static String jsonDeSoporte(Soporte s) {
+        if (s == null) {
+            return "null";
+        }
+        return "{"
+                + "\"idTicket\":" + s.getIdTicket() + ","
+                + "\"usuario\":\"" + escapar(s.getUsuario()) + "\","
+                + "\"correo\":\"" + escapar(s.getCorreo()) + "\","
+                + "\"asunto\":\"" + escapar(s.getAsunto()) + "\","
+                + "\"mensaje\":\"" + escapar(s.getMensaje()) + "\","
+                + "\"fecha\":\"" + escapar(s.getFecha()) + "\","
+                + "\"estado\":\"" + escapar(s.getEstado()) + "\""
+                + "}";
+    }
+
+    // ==================================================================
     // 3. CONVERSIÓN A JSON
     // ==================================================================
     private static String jsonDeRespuestaCliente(Respuesta<Cliente> respuesta) {
@@ -944,6 +1213,15 @@ public class ApiServer {
 
         empleadoCtrl.cambiarEstadoEmpleado("1040506070", false);
 
-        System.out.println("[seed] 4 planes, 4 clientes y 3 empleados creados con los metodos del controlador.");
+        // 6. Tickets de soporte de ejemplo (Issue #10)
+        soporteCtrl.radicarTicket("Alejandro Escudero", "alejandrocastellar04@gmail.com",
+                "[Lentitud o Intermitencia] Lentitud en horario nocturno",
+                "Presento caídas de velocidad entre las 8:00 p.m. y 10:00 p.m. en el sector norte.", false);
+
+        soporteCtrl.radicarTicket("Maria Gomez", "maria.gomez@email.com",
+                "[Configuración de Router / WiFi] Solicitud de cambio de clave WiFi",
+                "Deseo actualizar la contraseña de mi router de fibra óptica por seguridad.", false);
+
+        System.out.println("[seed] 4 planes, 4 clientes, 3 empleados y 2 tickets creados con los metodos del controlador.");
     }
 }

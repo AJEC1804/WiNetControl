@@ -69,6 +69,7 @@
     </script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/planes.css">
+    <link rel="stylesheet" href="css/facturacion-soporte.css?v=45">
 </head>
 <body onload="cargarDashboard()">
 
@@ -735,9 +736,13 @@
         </div>
     </div>
 
+    <!-- Modal de Comprobante Imprimible (Facturación) -->
+    <div id="comprobanteModal" class="comprobante-modal"></div>
+
     <!-- Script de lógica JavaScript -->
     <script src="js/app.js?v=39"></script>
     <script src="js/planes.js?v=39"></script>
+    <script src="js/facturacion-soporte.js?v=45"></script>
     <script>
         // Función sencilla para cambiar entre pestañas desde el menú lateral
         function mostrarSeccion(nombreSeccion, enlaceClickeado) {
@@ -778,6 +783,14 @@
             // Igual que Clientes: cada vez que se abre la sección se piden los datos
             if (nombreSeccion === "planes" && typeof cargarPlanes === "function") {
                 cargarPlanes();
+            }
+
+            if (nombreSeccion === "facturas" && typeof cargarModuloFacturas === "function") {
+                cargarModuloFacturas();
+            }
+
+            if (nombreSeccion === "soporte" && typeof cargarModuloSoporte === "function") {
+                cargarModuloSoporte();
             }
 
             const enlaces = document.querySelectorAll('.nav-link');
