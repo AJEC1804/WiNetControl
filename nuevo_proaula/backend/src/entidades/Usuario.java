@@ -156,6 +156,10 @@ public class Usuario {
         return "ADMIN".equalsIgnoreCase(rol) || esSuperAdmin();
     }
 
+    public boolean esEmpleado() {
+        return "EMPLEADO".equalsIgnoreCase(this.rol);
+    }
+
     public boolean esCliente() {
         return "CLIENTE".equalsIgnoreCase(rol);
     }

@@ -2,10 +2,11 @@
    MÓDULO: CATÁLOGO DE PLANES Y CONTRATACIÓN (Issue #9)
    Autora: Yeini Álvarez
    Archivo: js/planes.js
-   Explicación: replica en JavaScript las reglas que el equipo escribió en Java
-   (backend/src/modelos/PlanModel.java y ClienteModel.asignarPlan). El sitio es
-   estático (GitHub Pages), así que el "backend" del navegador es localStorage,
-   igual que hace app.js con los usuarios (clave "usuariosWiNet").
+   Explicación: esta pantalla NO guarda nada por su cuenta. Pide el catálogo al
+   servidor Java (ApiServer -> PlanController -> PlanModel -> ListaPlanes) y
+   contrata planes con UsuarioController.asignarPlan(). Toda la lógica de
+   negocio vive en el backend del equipo; aquí solo se dibuja y se valida el
+   formulario.
 
    Permisos:
    - ADMIN / SUPERADMIN -> administran el catálogo (crear, editar, activar,
@@ -15,8 +16,6 @@
    ========================================================================== */
 
 // 1. CLAVES DEL ALMACENAMIENTO
-const CLAVE_PLANES = "planesWiNet";
-const CLAVE_USUARIOS = "usuariosWiNet";
 const CLAVE_SESION = "sesionActiva";
 
 // 2. CATÁLOGO INICIAL (solo se carga la primera vez)
@@ -56,27 +55,58 @@ const planesIniciales = [
 ];
 
 // 3. LECTURA Y ESCRITURA DEL CATÁLOGO
-function inicializarPlanes() {
-    const guardados = localStorage.getItem(CLAVE_PLANES);
-    if (!guardados) {
-        localStorage.setItem(CLAVE_PLANES, JSON.stringify(planesIniciales));
-        return;
-    }
+// ------------------------------------------------------------------
+// Los planes ya NO se guardan en el navegador: se piden al servidor Java
+// (ApiServer -> PlanController -> ListaPlanes). Aquí solo se guarda una
+// copia en memoria (cachePlanes) para que la pantalla pueda dibujar rápido.
+// ------------------------------------------------------------------
+const API_PLANES = "http://localhost:8080/api/planes";
+const API_CLIENTES_PLAN = "http://localhost:8080/api/clientes";
+
+let cachePlanes = [];
+
+// Pide el catálogo al servidor y lo deja en la copia en memoria
+async function inicializarPlanes() {
     try {
-        JSON.parse(guardados);
+        // Si el servidor no responde en 5 segundos, se cancela la petición
+        const control = new AbortController();
+        const limite = setTimeout(() => control.abort(), 5000);
+
+        const respuesta = await fetch(API_PLANES, { signal: control.signal });
+        clearTimeout(limite);
+
+        const json = await respuesta.json();
+        cachePlanes = json.datos || [];
     } catch (error) {
-        // Si el contenido está dañado, se restaura el catálogo base
-        localStorage.setItem(CLAVE_PLANES, JSON.stringify(planesIniciales));
+        cachePlanes = [];
+        notificarPlanes("No se pudo conectar con el servidor Java (ApiServer).", "error");
     }
 }
 
+// Devuelve la copia en memoria (la pantalla la usa de forma inmediata)
 function obtenerPlanes() {
-    inicializarPlanes();
-    return JSON.parse(localStorage.getItem(CLAVE_PLANES)) || [];
+    return cachePlanes;
 }
 
-function guardarPlanes(listaPlanes) {
-    localStorage.setItem(CLAVE_PLANES, JSON.stringify(listaPlanes));
+// Manda el catálogo completo al servidor y refresca la copia
+async function guardarPlanes(listaPlanes) {
+    cachePlanes = listaPlanes;
+    if (typeof planesActivosCacheHora !== "undefined") {
+        planesActivosCacheHora = 0;
+    }
+
+    try {
+        await fetch(API_PLANES + "/lote", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ planes: listaPlanes })
+        });
+
+        // Se vuelve a leer del servidor para quedar sincronizados
+        await inicializarPlanes();
+    } catch (error) {
+        notificarPlanes("No se pudo guardar en el servidor Java.", "error");
+    }
 }
 
 function formatearPrecio(valor) {
@@ -94,6 +124,12 @@ function obtenerSesion() {
     } catch (error) {
         return null;
     }
+}
+
+// El empleado puede consultar el catálogo y activar/desactivar planes,
+// pero NO crearlos, editarlos ni eliminarlos (eso es de ADMIN/SUPERADMIN).
+function puedeOperarPlanes(sesion) {
+    return !!sesion && (sesion.rol === "ADMIN" || sesion.rol === "SUPERADMIN" || sesion.rol === "EMPLEADO");
 }
 
 function esAdministrador(sesion) {
@@ -203,6 +239,7 @@ function renderizarTablaPlanes() {
 
     const sesion = obtenerSesion();
     const admin = esAdministrador(sesion);
+    const opera = puedeOperarPlanes(sesion);   // admin o empleado
     const planes = obtenerPlanes();
 
     // Contador del encabezado
@@ -224,9 +261,11 @@ function renderizarTablaPlanes() {
     }
 
     // La columna "Acciones" solo existe para administradores
+    // La columna "Acciones" se muestra a quien tenga algún botón:
+    // admin y superadmin (editar, estado, eliminar) y empleado (solo estado).
     const encabezadoAcciones = document.getElementById("thAccionesPlanes");
     if (encabezadoAcciones) {
-        encabezadoAcciones.style.display = admin ? "" : "none";
+        encabezadoAcciones.style.display = opera ? "" : "none";
     }
 
     if (planes.length === 0) {
@@ -242,7 +281,11 @@ function renderizarTablaPlanes() {
 
     cuerpo.innerHTML = planes.map(plan => {
         // Columna de acciones: botones solo para ADMIN / SUPERADMIN
-        const acciones = admin ? `
+        let acciones = "";
+
+        if (admin) {
+            // ADMIN y SUPERADMIN: editar, activar/desactivar y eliminar
+            acciones = `
             <td class="plan-acciones">
                 <button class="btn-accion btn-editar" title="Editar plan"
                         onclick="event.stopPropagation(); editarPlan(${plan.codigo})">✏️</button>
@@ -253,7 +296,21 @@ function renderizarTablaPlanes() {
                 </button>
                 <button class="btn-accion btn-eliminar" title="Eliminar plan"
                         onclick="event.stopPropagation(); eliminarPlanCatalogo(${plan.codigo})">🗑️</button>
-            </td>` : "";
+            </td>`;
+        } else if (opera) {
+            // EMPLEADO: puede editar la información y activar/desactivar,
+            // pero NO crear planes nuevos ni eliminarlos.
+            acciones = `
+            <td class="plan-acciones">
+                <button class="btn-accion btn-editar" title="Editar plan"
+                        onclick="event.stopPropagation(); editarPlan(${plan.codigo})">✏️</button>
+                <button class="btn-accion ${plan.activo ? "btn-desactivar" : "btn-activar"}"
+                        title="${plan.activo ? "Desactivar" : "Activar"} plan"
+                        onclick="event.stopPropagation(); alternarEstadoPlan(${plan.codigo})">
+                    ${plan.activo ? "⏸️" : "▶️"}
+                </button>
+            </td>`;
+        }
 
         return `
         <tr class="fila-plan ${plan.activo ? "fila-activo" : "fila-inactivo"}"
@@ -281,6 +338,7 @@ function renderizarTablaPlanes() {
 // 8. APLICAR PERMISOS A LA INTERFAZ
 function aplicarPermisos(sesion) {
     const admin = esAdministrador(sesion);
+    const opera = puedeOperarPlanes(sesion);
     const sinPlan = clienteSinPlan(sesion);
     const conPlan = !!sesion && sesion.rol === "CLIENTE" && !sinPlan;
 
@@ -289,15 +347,15 @@ function aplicarPermisos(sesion) {
     if (barraAdmin) barraAdmin.style.display = admin ? "flex" : "none";
 
     const formulario = document.getElementById("panelFormularioPlan");
-    if (formulario && !admin) formulario.style.display = "none";
+    if (formulario && !opera) formulario.style.display = "none";
 
     // El catálogo completo (contadores + tabla) es solo para administradores.
     // El cliente no debe ver el catálogo: ve su plan o, si no tiene, la contratación.
     const resumen = document.getElementById("resumenPlanes");
-    if (resumen) resumen.style.display = admin ? "flex" : "none";
+    if (resumen) resumen.style.display = opera ? "flex" : "none";
 
     const tabla = document.getElementById("tablaPlanesWrapper");
-    if (tabla) tabla.style.display = admin ? "block" : "none";
+    if (tabla) tabla.style.display = opera ? "block" : "none";
 
     // Panel de contratación: solo clientes sin plan
     const panelContratar = document.getElementById("panelContratacion");
@@ -316,7 +374,7 @@ function aplicarPermisos(sesion) {
     // Descripción de la sección según quién la esté viendo
     const descripcion = document.getElementById("descripcionPlanes");
     if (descripcion) {
-        if (admin) {
+        if (opera) {
             descripcion.innerHTML = 'Planes comerciales de fibra óptica. Un plan <strong>activo</strong> puede ' +
                                     'contratarse; uno <strong>inactivo</strong> queda fuera del catálogo de contratación.';
         } else if (conPlan) {
@@ -448,7 +506,8 @@ function abrirFormularioNuevo() {
 }
 
 function editarPlan(codigo) {
-    if (!esAdministrador(obtenerSesion())) return;
+    // Admin y empleado pueden editar; crear y eliminar siguen siendo de admin
+    if (!puedeOperarPlanes(obtenerSesion())) return;
 
     const plan = obtenerPlanes().find(p => p.codigo === Number(codigo));
     if (!plan) return;
@@ -470,9 +529,12 @@ function cerrarFormularioPlan() {
 
 function guardarFormularioPlan(evento) {
     evento.preventDefault();
-    if (!esAdministrador(obtenerSesion())) return;
+
+    const sesion = obtenerSesion();
+    if (!puedeOperarPlanes(sesion)) return;
 
     const codigoOriginal = document.getElementById("formCodigoOriginal").value;
+    if (codigoOriginal === "" && !esAdministrador(sesion)) return;
     const datos = {
         codigo: Number(document.getElementById("formCodigo").value.trim()),
         nombre: document.getElementById("formNombre").value.trim(),
@@ -582,7 +644,7 @@ function abrirDetallePlan(codigo) {
     if (!plan) return;
 
     const sesion = obtenerSesion();
-    const admin = esAdministrador(sesion);
+    const opera = puedeOperarPlanes(sesion);
 
     const fondo = document.createElement("div");
     fondo.className = "modal-fondo";
@@ -665,7 +727,7 @@ function abrirDetallePlan(codigo) {
 
     pie.appendChild(btnCerrar);
 
-    if (admin) {
+    if (opera) {
         const btnEditar = document.createElement("button");
         btnEditar.type = "button";
         btnEditar.className = "btn btn-primary modal-aceptar";
@@ -698,7 +760,7 @@ function abrirDetallePlan(codigo) {
 
 // 10. ACTIVAR / DESACTIVAR  (PlanController.cambiarEstadoPlan)
 function alternarEstadoPlan(codigo) {
-    if (!esAdministrador(obtenerSesion())) return;
+    if (!puedeOperarPlanes(obtenerSesion())) return;
 
     const planes = obtenerPlanes();
     const plan = planes.find(p => p.codigo === Number(codigo));
@@ -721,10 +783,7 @@ async function eliminarPlanCatalogo(codigo) {
     const plan = planes.find(p => p.codigo === Number(codigo));
     if (!plan) return;
 
-    const afectados = clientesConPlan(plan.nombre);
-    const aviso = afectados.length > 0
-        ? " " + afectados.length + " cliente(s) tienen este plan y serán reasignados automáticamente."
-        : "";
+    const aviso = " Los clientes que lo tengan serán reasignados automáticamente por el sistema.";
 
     const confirmado = await confirmarAccionPlanes({
         titulo: "Eliminar plan del catálogo",
@@ -735,49 +794,13 @@ async function eliminarPlanCatalogo(codigo) {
     });
     if (!confirmado) return;
 
-    // 1. Quitar el plan del catálogo
+    // Se quita del catálogo. La reasignación de los clientes afectados la
+    // hace el backend automáticamente (PlanModel.eliminarPlan -> cascada).
     const restantes = planes.filter(p => p.codigo !== plan.codigo);
-    guardarPlanes(restantes);
+    await guardarPlanes(restantes);
 
-    // 2. Reasignar a los clientes afectados al primer plan disponible
-    const sustituto = restantes.length > 0 ? restantes[0].nombre : "Sin plan";
-    reasignarClientes(plan.nombre, sustituto);
-
-    notificarPlanes(
-        "Plan eliminado. " + afectados.length + " cliente(s) reasignados a: " + sustituto + ".",
-        "ok"
-    );
+    notificarPlanes("Plan eliminado del catálogo.", "ok");
     renderizarTablaPlanes();
-}
-
-function clientesConPlan(nombrePlan) {
-    const usuarios = JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || [];
-    return usuarios.filter(u =>
-        u.planActual && u.planActual.toLowerCase() === nombrePlan.toLowerCase()
-    );
-}
-
-function reasignarClientes(nombreViejo, nombreNuevo) {
-    const usuarios = JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || [];
-    let cambios = 0;
-
-    usuarios.forEach(u => {
-        if (u.planActual && u.planActual.toLowerCase() === nombreViejo.toLowerCase()) {
-            u.planActual = nombreNuevo;
-            cambios++;
-        }
-    });
-
-    if (cambios > 0) {
-        localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
-
-        // Si el cliente afectado es el que tiene la sesión abierta, se actualiza también
-        const sesion = obtenerSesion();
-        if (sesion && sesion.planActual && sesion.planActual.toLowerCase() === nombreViejo.toLowerCase()) {
-            sesion.planActual = nombreNuevo;
-            localStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
-        }
-    }
 }
 
 // 12. CONTRATACIÓN (ClienteModel.asignarPlan)
@@ -823,15 +846,29 @@ async function contratarPlan() {
     });
     if (!confirmado) return;
 
-    // 1. Guardar el plan en el usuario
-    const usuarios = JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || [];
-    const indice = usuarios.findIndex(u => u.identificacion === sesion.identificacion);
-    if (indice >= 0) {
-        usuarios[indice].planActual = plan.nombre;
-        localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
+    // 1. Se asigna el plan en el servidor:
+    //    UsuarioController.asignarPlan(identificacion, nombrePlan)
+    try {
+        const respuesta = await fetch(
+            API_CLIENTES_PLAN + "/" + encodeURIComponent(sesion.identificacion) + "/plan",
+            {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan: plan.nombre })
+            }
+        );
+        const json = await respuesta.json();
+
+        if (!json.exito) {
+            notificarPlanes(json.mensaje || "No se pudo contratar el plan.", "error");
+            return;
+        }
+    } catch (error) {
+        notificarPlanes("No se pudo conectar con el servidor Java (ApiServer).", "error");
+        return;
     }
 
-    // 2. Actualizar la sesión activa
+    // 2. Se actualiza la sesión del navegador (solo para mostrar el plan)
     sesion.planActual = plan.nombre;
     localStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
 
@@ -839,50 +876,21 @@ async function contratarPlan() {
     renderizarTablaPlanes();
 }
 
-// 12.b USUARIO DE PRUEBA (rol CLIENTE con un plan del catálogo)
-//      Sirve para demostrar cómo ve un cliente su plan.
-//      Credenciales: 1045678902 / Demo123!
-const CLAVE_DEMO = "demoClienteCreado";
-const CLIENTE_DEMO = {
-    identificacion: "1045678902",
-    usuario: "1045678902",
-    contrasena: "Demo123!",
-    nombre: "Camila",
-    apellido: "Restrepo",
-    tipo: "CC",
-    telefono: "3001234567",
-    correo: "camila.restrepo@winetcontrol.com",
-    direccion: "Calle 45 # 12-30",
-    rol: "CLIENTE",
-    sucursal: "Residencial Norte",
-    activo: true
-};
-
-function asegurarClienteDemo() {
-    if (localStorage.getItem(CLAVE_DEMO) === "1") return;
-
-    const usuarios = JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || [];
-    const yaExiste = usuarios.some(u => u.identificacion === CLIENTE_DEMO.identificacion);
-
-    if (!yaExiste) {
-        // Se le asigna el primer plan activo del catálogo, así siempre es un plan real
-        const activos = obtenerPlanes().filter(p => p.activo);
-        usuarios.push(Object.assign({}, CLIENTE_DEMO, {
-            planActual: activos.length > 0 ? activos[0].nombre : "",
-            pagoAlDia: true
-        }));
-        localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
+// 13. ARRANQUE
+// Pide los planes al servidor y dibuja la tabla.
+// Se llama al abrir la sección (igual que hace Clientes con cargarClientes).
+async function cargarPlanes() {
+    try {
+        await inicializarPlanes();
+        renderizarTablaPlanes();
+    } catch (error) {
+        console.error("Error al cargar los planes:", error);
+        notificarPlanes("Error al cargar los planes: " + error.message, "error");
     }
-
-    localStorage.setItem(CLAVE_DEMO, "1");
 }
 
-// 13. ARRANQUE
-document.addEventListener("DOMContentLoaded", () => {
-    inicializarPlanes();
-    asegurarClienteDemo();
-    renderizarTablaPlanes();
-});
+// Carga inicial por si la página abre directamente en esta sección
+document.addEventListener("DOMContentLoaded", cargarPlanes);
 
 // Al entrar a la sección Planes se repinta (siempre con datos frescos)
 document.addEventListener("click", (evento) => {

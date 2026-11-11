@@ -2,8 +2,11 @@
 /dist/
 .idea/
 .vscode/
+**/.vscode/
 .classpath
 .project
 nbproject/private/
 bin/
+**/bin/
 *.class
+**/facturas/
