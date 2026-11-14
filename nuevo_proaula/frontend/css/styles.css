@@ -9,7 +9,7 @@
 :root {
     --color-primario: #2563eb;       /* Azul principal (Royal Blue) */
     --color-primario-oscuro: #1d4ed8;/* Azul más oscuro para hover */
-    --color-fondo: #eef5ff;          /* Fondo azul muy claro: hace que las cajas blancas resalten */
+    --color-fondo: #e6f0ff;          /* Fondo azul claro de toda la app: resalta las cajas blancas */
     --color-tarjeta: #ffffff;        /* Fondo blanco para las cajas/tarjetas */
     --color-texto: #1e293b;          /* Gris oscuro casi negro para texto legible (Slate 800) */
     --color-texto-suave: #64748b;    /* Gris para subtítulos y textos secundarios (Slate 500) */
@@ -1375,7 +1375,7 @@ body {
 }
 
 .content-area::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: transparent;
 }
 
 .content-area::-webkit-scrollbar-thumb {
