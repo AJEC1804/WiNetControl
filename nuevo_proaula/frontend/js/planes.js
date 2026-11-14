@@ -408,8 +408,8 @@ function aplicarPermisos(sesion) {
     const barraAdmin = document.getElementById("barraAdminPlanes");
     if (barraAdmin) barraAdmin.style.display = admin ? "flex" : "none";
 
-    const formulario = document.getElementById("panelFormularioPlan");
-    if (formulario && !opera) formulario.style.display = "none";
+    const modalFormulario = document.getElementById("modalPlan");
+    if (modalFormulario && !opera) modalFormulario.style.display = "none";
 
     // El catálogo completo (contadores + tabla) es solo para administradores.
     // El cliente no debe ver el catálogo: ve su plan o, si no tiene, la contratación.
@@ -560,14 +560,14 @@ function irASoportePlanes() {
 function abrirFormularioNuevo() {
     if (!esAdministrador(obtenerSesion())) return;
 
-    document.getElementById("tituloFormularioPlan").textContent = "Nuevo plan";
+    document.getElementById("tituloFormularioPlan").textContent = "➕ Nuevo plan";
     document.getElementById("formCodigoOriginal").value = "";
     document.getElementById("formCodigo").value = "";
     document.getElementById("formNombre").value = "";
     document.getElementById("formVelocidad").value = "";
     document.getElementById("formPrecio").value = "";
     document.getElementById("formDescripcion").value = "";
-    document.getElementById("panelFormularioPlan").style.display = "block";
+    document.getElementById("modalPlan").style.display = "flex";
     document.getElementById("formCodigo").focus();
 }
 
@@ -578,19 +578,32 @@ function editarPlan(codigo) {
     const plan = obtenerPlanes().find(p => p.codigo === Number(codigo));
     if (!plan) return;
 
-    document.getElementById("tituloFormularioPlan").textContent = "Editar plan " + plan.codigo;
+    document.getElementById("tituloFormularioPlan").textContent = "✏️ Editar plan " + plan.codigo;
     document.getElementById("formCodigoOriginal").value = plan.codigo;
     document.getElementById("formCodigo").value = plan.codigo;
     document.getElementById("formNombre").value = plan.nombre;
     document.getElementById("formVelocidad").value = plan.velocidad;
     document.getElementById("formPrecio").value = plan.precio;
     document.getElementById("formDescripcion").value = plan.descripcion || "";
-    document.getElementById("panelFormularioPlan").style.display = "block";
+    document.getElementById("modalPlan").style.display = "flex";
     document.getElementById("formNombre").focus();
 }
 
+// Escape cierra la ventana del formulario de planes
+document.addEventListener("keydown", function (evento) {
+    if (evento.key !== "Escape") return;
+    const modal = document.getElementById("modalPlan");
+    if (modal && modal.style.display === "flex") {
+        cerrarFormularioPlan();
+    }
+});
+
 function cerrarFormularioPlan() {
-    document.getElementById("panelFormularioPlan").style.display = "none";
+    // Se quita el foco antes de ocultar para que el navegador no haga un salto
+    if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+    document.getElementById("modalPlan").style.display = "none";
 }
 
 function guardarFormularioPlan(evento) {

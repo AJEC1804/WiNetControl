@@ -69,7 +69,7 @@
     </script>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/planes.css?v=50">
+    <link rel="stylesheet" href="css/planes.css?v=51">
     <link rel="stylesheet" href="css/inicio.css?v=10">
     <link rel="stylesheet" href="css/facturacion-soporte.css?v=45">
     <link rel="stylesheet" href="css/consistencia.css?v=4">
@@ -568,44 +568,51 @@
                             <span class="contador-clientes">Mostrando <strong id="planMostrando">0</strong></span>
                         </div>
 
-                        <!-- Formulario de creación / edición (solo administradores) -->
-                        <form id="panelFormularioPlan" class="plan-form-panel" style="display: none;"
-                              onsubmit="guardarFormularioPlan(event)">
-                            <h4 id="tituloFormularioPlan">Nuevo plan</h4>
-                            <input type="hidden" id="formCodigoOriginal">
+                        <!-- Formulario de creación / edición en ventana modal (solo administradores) -->
+                        <div id="modalPlan" class="modal-cli-fondo" onclick="if(event.target===this){cerrarFormularioPlan();}">
+                            <div class="modal-cli-caja">
 
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="formCodigo">Código</label>
-                                    <input type="number" id="formCodigo" min="1" required placeholder="105">
-                                </div>
-                                <div class="form-group">
-                                    <label for="formNombre">Nombre del plan</label>
-                                    <input type="text" id="formNombre" required placeholder="Plan Fibra 400M">
-                                </div>
-                            </div>
+                                <h3 id="tituloFormularioPlan">➕ Nuevo plan</h3>
+                                <p class="nota-obligatorio">Los campos marcados con <span class="obligatorio">*</span> son obligatorios.</p>
 
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="formVelocidad">Velocidad</label>
-                                    <input type="text" id="formVelocidad" required placeholder="400 Mbps">
-                                </div>
-                                <div class="form-group">
-                                    <label for="formPrecio">Precio mensual (COP)</label>
-                                    <input type="number" id="formPrecio" min="0" step="100" required placeholder="149900">
-                                </div>
-                            </div>
+                                <form id="panelFormularioPlan" onsubmit="guardarFormularioPlan(event)">
+                                    <input type="hidden" id="formCodigoOriginal">
 
-                            <div class="form-group">
-                                <label for="formDescripcion">Descripción (opcional)</label>
-                                <input type="text" id="formDescripcion" placeholder="Ideal para hogares con varios dispositivos">
-                            </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="formCodigo">Código <span class="obligatorio">*</span></label>
+                                            <input type="number" id="formCodigo" min="1" required placeholder="Ej. 105">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="formNombre">Nombre del plan <span class="obligatorio">*</span></label>
+                                            <input type="text" id="formNombre" required placeholder="Ej. Plan Fibra 400M">
+                                        </div>
+                                    </div>
 
-                            <div class="plan-form-botones">
-                                <button type="submit" class="btn btn-primary">Guardar plan</button>
-                                <button type="button" class="btn btn-secondary" onclick="cerrarFormularioPlan()">Cancelar</button>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="formVelocidad">Velocidad <span class="obligatorio">*</span></label>
+                                            <input type="text" id="formVelocidad" required placeholder="Ej. 400 Mbps">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="formPrecio">Precio mensual (COP) <span class="obligatorio">*</span></label>
+                                            <input type="number" id="formPrecio" min="0" step="100" required placeholder="Ej. 149900">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="formDescripcion">Descripción (opcional)</label>
+                                        <input type="text" id="formDescripcion" placeholder="Ej. Ideal para hogares con varios dispositivos">
+                                    </div>
+
+                                    <div class="modal-cli-acciones">
+                                        <button type="button" class="btn btn-secondary btn-auto" onclick="cerrarFormularioPlan()">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary btn-auto">Guardar plan</button>
+                                    </div>
+                                </form>
+
                             </div>
-                        </form>
+                        </div>
 
                         <div class="tabla-planes-wrapper" id="tablaPlanesWrapper">
                             <table class="tabla-planes">
@@ -672,7 +679,7 @@
     <script src="js/config.js?v=47"></script>
     <script src="js/errores.js?v=1"></script>
     <script src="js/app.js?v=67"></script>
-    <script src="js/planes.js?v=49"></script>
+    <script src="js/planes.js?v=50"></script>
     <script src="js/facturacion-soporte.js?v=45"></script>
     <script>
         // Función sencilla para cambiar entre pestañas desde el menú lateral

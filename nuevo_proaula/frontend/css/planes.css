@@ -249,36 +249,6 @@
     padding: 10px 22px;
 }
 
-/* 6. FORMULARIO DE CREAR / EDITAR PLAN */
-.plan-form-panel {
-    background: #f8fafc;
-    border: 1px solid var(--color-borde);
-    border-radius: 8px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
-}
-
-.plan-form-panel h4 {
-    font-size: 15px;
-    color: var(--color-texto);
-    margin-bottom: 14px;
-}
-
-.plan-form-panel .form-group {
-    margin-bottom: 12px;
-}
-
-.plan-form-botones {
-    display: flex;
-    gap: 10px;
-    margin-top: 6px;
-}
-
-.plan-form-botones .btn {
-    width: auto;
-    padding: 9px 20px;
-}
-
 /* 7. BOTONES DE ACCIÓN POR FILA */
 .btn-accion {
     border: 1px solid var(--color-borde);
