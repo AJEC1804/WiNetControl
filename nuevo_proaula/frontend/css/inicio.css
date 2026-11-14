@@ -151,9 +151,9 @@
 
 .kpi-card {
     /* Paleta por defecto: azul (dato informativo) */
-    --kpi-fondo-1: #ffffff;
-    --kpi-fondo-2: #f2f7ff;
-    --kpi-borde: #d5e5fd;
+    --kpi-fondo-1: #fbfdff;
+    --kpi-fondo-2: #eef6ff;
+    --kpi-borde: #dbeafe;
     --kpi-acento: #2563eb;
     --kpi-icono-1: #dbeafe;
     --kpi-icono-2: #bfdbfe;
@@ -345,8 +345,7 @@
 
 /* --- Paletas por tono --- */
 .kpi-card.tono-azul {
-    --kpi-fondo-2: #f1f7ff;
-    --kpi-borde: #d5e5fd;
+
     --kpi-acento: #2563eb;
     --kpi-icono-1: #dbeafe;
     --kpi-icono-2: #bfdbfe;
@@ -356,8 +355,7 @@
 }
 
 .kpi-card.tono-violeta {
-    --kpi-fondo-2: #f7f2ff;
-    --kpi-borde: #e4dcfb;
+
     --kpi-acento: #7c3aed;
     --kpi-icono-1: #ede9fe;
     --kpi-icono-2: #ddd6fe;
@@ -367,8 +365,7 @@
 }
 
 .kpi-card.tono-verde {
-    --kpi-fondo-2: #f1fdf5;
-    --kpi-borde: #cdeed9;
+
     --kpi-acento: #15803d;
     --kpi-icono-1: #dcfce7;
     --kpi-icono-2: #bbf7d0;
@@ -378,8 +375,7 @@
 }
 
 .kpi-card.tono-ambar {
-    --kpi-fondo-2: #fffaec;
-    --kpi-borde: #fbe4b5;
+
     --kpi-acento: #b45309;
     --kpi-icono-1: #fef3c7;
     --kpi-icono-2: #fde68a;
@@ -389,8 +385,7 @@
 }
 
 .kpi-card.tono-rojo {
-    --kpi-fondo-2: #fef4f4;
-    --kpi-borde: #fbcfcf;
+
     --kpi-acento: #b91c1c;
     --kpi-icono-1: #fee2e2;
     --kpi-icono-2: #fecaca;
@@ -431,8 +426,8 @@
     gap: 12px;
     padding: 14px 16px;
     border-radius: 12px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: linear-gradient(158deg, #fbfdff 0%, #eef6ff 100%);
+    border: 1px solid #dbeafe;
     cursor: pointer;
     text-align: left;
     font-family: inherit;
