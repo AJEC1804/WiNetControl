@@ -359,17 +359,37 @@ async function reunirDatosInicio(usuario) {
 }
 
 // ---------- Construcción de tarjetas ----------
+function porcentaje(parte, total) {
+    if (!total) return 0;
+    return Math.round((parte / total) * 100);
+}
+
+// 0 pendientes -> verde (todo al día) · 1-2 -> ambar · 3 o más -> rojo
+// Texto en singular o plural según la cantidad
+function plural(n, singular, pluralForma) {
+    return n + " " + (n === 1 ? singular : pluralForma);
+}
+
+function semaforo(pendientes) {
+    if (pendientes === 0) return "verde";
+    if (pendientes <= 2) return "ambar";
+    return "rojo";
+}
+
 function tarjetasSegunRol(usuario, d) {
     const clientes = (d.clientes && d.clientes.datos) || [];
     const planes = (d.planes && d.planes.datos) || [];
     const facturas = (d.facturas && d.facturas.datos) || [];
     const pendientes = (d.soporte && d.soporte.pendientes) || [];
+    const atendidos = (d.soporte && d.soporte.atendidos) || [];
     const empleados = (d.empleados && d.empleados.datos) || [];
 
+    // ---------- CLIENTE ----------
     if (d.esCliente) {
         const mias = facturas.filter(function (f) { return f.identificacionCliente === usuario.identificacion; });
         const pagadas = mias.filter(function (f) { return f.estado === "PAGADA"; }).length;
         const porPagar = mias.length - pagadas;
+        const alDia = porcentaje(pagadas, mias.length);
         const misTickets = pendientes.filter(function (t) { return t.correo === usuario.correo; }).length;
         const miPlan = planes.find(function (p) {
             return (p.nombre || "").toLowerCase() === (usuario.planActual || "").toLowerCase();
@@ -379,15 +399,20 @@ function tarjetasSegunRol(usuario, d) {
             { icono: "📡", etiqueta: "Mi plan", valor: usuario.planActual || "Sin plan",
               pie: miPlan ? miPlan.velocidad + " · $" + Number(miPlan.precio).toLocaleString("es-CO")
                           : "Contrátalo desde el catálogo",
+              extra: miPlan ? "Estado del plan: " + miPlan.estado : "Aún no tienes un plan contratado",
               tono: "violeta", ir: "planes" },
             { icono: "🧾", etiqueta: "Mis facturas", valor: String(mias.length),
               pie: pagadas + " pagadas · " + porPagar + " por pagar",
+              extra: mias.length ? alDia + "% al día en pago" : "Todavía no tienes facturas",
+              barra: mias.length ? alDia : null,
               tono: semaforo(porPagar), ir: "facturas" },
             { icono: "🎧", etiqueta: "Mis solicitudes", valor: String(misTickets),
               pie: misTickets ? "Abiertas en la mesa de ayuda" : "Ninguna abierta",
+              extra: atendidos.length ? atendidos.length + " atendidas históricamente" : "Sin historial de atención",
               tono: semaforo(misTickets), ir: "soporte" },
             { icono: "✅", etiqueta: "Estado del servicio", valor: usuario.activo ? "Activo" : "Inactivo",
               pie: usuario.activo ? "Línea en servicio" : "Contacta a tu sucursal",
+              extra: usuario.correo || "Cliente residencial",
               tono: usuario.activo ? "verde" : "rojo", ir: "perfil" }
         ];
     }
@@ -397,42 +422,72 @@ function tarjetasSegunRol(usuario, d) {
     const planesActivos = planes.filter(function (p) { return p.activo; }).length;
     const pagadas = facturas.filter(function (f) { return f.estado === "PAGADA"; }).length;
     const porCobrar = facturas.length - pagadas;
+    const alDia = porcentaje(pagadas, facturas.length);
+    const empleadosActivos = empleados.filter(function (e) { return e.activo; }).length;
 
+    // Tarjeta de sucursal: nombre de la sede y personal adscrito
+    const sede = usuario.sucursal || "Sede principal";
+    const enMiSede = empleados.filter(function (e) {
+        return (e.sucursal || "").toLowerCase() === String(sede).toLowerCase();
+    }).length;
+    const tarjetaSucursal = {
+        icono: "🏢", etiqueta: usuario.rol === "SUPERADMIN" ? "Cobertura" : "Sucursal asignada",
+        valor: usuario.rol === "SUPERADMIN" ? "Acceso global" : sede,
+        pie: usuario.rol === "SUPERADMIN" ? "Todas las sedes" : "Gestión de sede local",
+        extra: empleados.length
+            ? (enMiSede || empleados.length) + " empleados · " + empleadosActivos + " activos"
+            : "Personal operativo",
+        textoLargo: true,
+        tono: "azul", ir: "empleados"
+    };
+
+    // ---------- EMPLEADO ----------
     if (usuario.rol === "EMPLEADO") {
         return [
+            tarjetaSucursal,
             { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
-              pie: activos + " activos · " + inactivos + " inactivos", tono: "azul", ir: "clientes" },
+              pie: activos + " activos · " + inactivos + " inactivos",
+              extra: inactivos ? plural(inactivos, "pendiente por reconexión", "pendientes por reconexión")
+                               : "Sin pendientes por reconexión",
+              tono: "azul", ir: "clientes" },
             { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
               pie: pendientes.length === 0 ? "Sin tickets pendientes" : "Atención en orden de llegada (FIFO)",
+              extra: atendidos.length + " atendidos hasta hoy",
               tono: semaforo(pendientes.length), ir: "soporte" },
             { icono: "🧾", etiqueta: "Facturas por cobrar", valor: String(porCobrar),
               pie: pagadas + " pagadas de " + facturas.length,
+              extra: facturas.length ? alDia + "% al día en pago" : "Sin facturas emitidas",
+              barra: facturas.length ? alDia : null,
               tono: semaforo(porCobrar), ir: "facturas" },
             { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
-              pie: "En el catálogo comercial", tono: "azul", ir: "planes" }
+              pie: "En el catálogo comercial",
+              extra: (planes.length - planesActivos) + " inactivos",
+              tono: "violeta", ir: "planes" }
         ];
     }
 
-    const tarjetas = [
+    // ---------- ADMIN y SUPERADMIN ----------
+    return [
+        tarjetaSucursal,
         { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
-          pie: activos + " activos · " + inactivos + " inactivos", tono: "azul", ir: "clientes" },
+          pie: activos + " activos · " + inactivos + " inactivos",
+          extra: inactivos ? plural(inactivos, "pendiente por reconexión", "pendientes por reconexión")
+                           : "Sin pendientes por reconexión",
+          tono: "azul", ir: "clientes" },
         { icono: "🧾", etiqueta: "Facturación", valor: String(facturas.length),
           pie: porCobrar + " por cobrar · " + pagadas + " pagadas",
+          extra: facturas.length ? alDia + "% al día en pago" : "Sin facturas emitidas",
+          barra: facturas.length ? alDia : null,
           tono: semaforo(porCobrar), ir: "facturas" },
         { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
           pie: pendientes.length === 0 ? "Sin tickets pendientes" : "Esperando atención (FIFO)",
+          extra: atendidos.length + " atendidos hasta hoy",
           tono: semaforo(pendientes.length), ir: "soporte" },
         { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
-          pie: planes.length + " en el catálogo", tono: "violeta", ir: "planes" }
+          pie: "En el catálogo comercial",
+          extra: (planes.length - planesActivos) + " inactivos",
+          tono: "violeta", ir: "planes" }
     ];
-
-    if (d.empleados) {
-        tarjetas.push({ icono: "👔", etiqueta: "Empleados", valor: String(empleados.length),
-                        pie: empleados.filter(function (e) { return e.activo; }).length + " activos en la sede",
-                        tono: "azul", ir: "empleados" });
-    }
-
-    return tarjetas;
 }
 
 function irAlModulo(seccion) {
@@ -442,15 +497,13 @@ function irAlModulo(seccion) {
     }
 }
 
-// 0 pendientes -> verde (todo al día) · 1-2 -> ambar · 3 o más -> rojo
-function semaforo(pendientes) {
-    if (pendientes === 0) return "verde";
-    if (pendientes <= 2) return "ambar";
-    return "rojo";
-}
-
 function pintarTarjeta(t) {
     const tono = t.tono ? " tono-" + t.tono : "";
+    const barra = (typeof t.barra === "number" && t.barra > 0)
+        ? '<div class="kpi-barra"><span style="width:' + Math.max(0, Math.min(100, t.barra)) + '%"></span></div>'
+        : "";
+    const extra = t.extra ? '<p class="kpi-extra">' + t.extra + '</p>' : "";
+
     return '<div class="kpi-card es-enlace' + tono + '" role="button" tabindex="0"' +
            ' onclick="irAlModulo(\'' + t.ir + '\')"' +
            ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();irAlModulo(\'' + t.ir + '\');}">' +
@@ -459,8 +512,10 @@ function pintarTarjeta(t) {
              '<span class="kpi-icono">' + t.icono + '</span>' +
              '<p class="kpi-etiqueta">' + t.etiqueta + '</p>' +
            '</div>' +
-           '<div class="kpi-valor">' + t.valor + '</div>' +
+           '<div class="kpi-valor' + (t.textoLargo ? ' kpi-valor--texto' : '') + '">' + t.valor + '</div>' +
            '<p class="kpi-pie">' + t.pie + '</p>' +
+           extra +
+           barra +
            '</div>';
 }
 

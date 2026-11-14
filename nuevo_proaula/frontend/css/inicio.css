@@ -258,6 +258,12 @@
     z-index: 1;
 }
 
+.kpi-valor--texto {
+    font-size: 19px;
+    line-height: 1.25;
+    letter-spacing: -0.2px;
+}
+
 .kpi-valor small {
     font-size: 13px;
     font-weight: 700;
@@ -278,6 +284,36 @@
     color: var(--kpi-pildora-texto);
     position: relative;
     z-index: 1;
+}
+
+/* Línea informativa secundaria (porcentajes, pendientes, personal) */
+.kpi-extra {
+    font-size: 11.8px;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Barra de progreso del % al día */
+.kpi-barra {
+    position: relative;
+    z-index: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(100, 116, 139, 0.16);
+    overflow: hidden;
+    margin-top: auto;
+}
+
+.kpi-barra span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--kpi-acento);
+    opacity: 0.85;
+    transition: width 0.4s ease;
 }
 
 /* Flecha en círculo, arriba a la derecha */
