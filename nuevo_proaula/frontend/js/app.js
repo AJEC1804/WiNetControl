@@ -425,26 +425,9 @@ function tarjetasSegunRol(usuario, d) {
     const alDia = porcentaje(pagadas, facturas.length);
     const empleadosActivos = empleados.filter(function (e) { return e.activo; }).length;
 
-    // Tarjeta de sucursal: nombre de la sede y personal adscrito
-    const sede = usuario.sucursal || "Sede principal";
-    const enMiSede = empleados.filter(function (e) {
-        return (e.sucursal || "").toLowerCase() === String(sede).toLowerCase();
-    }).length;
-    const tarjetaSucursal = {
-        icono: "🏢", etiqueta: usuario.rol === "SUPERADMIN" ? "Cobertura" : "Sucursal asignada",
-        valor: usuario.rol === "SUPERADMIN" ? "Acceso global" : sede,
-        pie: usuario.rol === "SUPERADMIN" ? "Todas las sedes" : "Gestión de sede local",
-        extra: empleados.length
-            ? (enMiSede || empleados.length) + " empleados · " + empleadosActivos + " activos"
-            : "Personal operativo",
-        textoLargo: true,
-        tono: "azul", ir: "empleados"
-    };
-
     // ---------- EMPLEADO ----------
     if (usuario.rol === "EMPLEADO") {
         return [
-            tarjetaSucursal,
             { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
               pie: activos + " activos · " + inactivos + " inactivos",
               extra: inactivos ? plural(inactivos, "pendiente por reconexión", "pendientes por reconexión")
@@ -461,14 +444,13 @@ function tarjetasSegunRol(usuario, d) {
               tono: semaforo(porCobrar), ir: "facturas" },
             { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
               pie: "En el catálogo comercial",
-              extra: (planes.length - planesActivos) + " inactivos",
+              extra: plural(planes.length - planesActivos, "inactivo", "inactivos"),
               tono: "violeta", ir: "planes" }
         ];
     }
 
     // ---------- ADMIN y SUPERADMIN ----------
-    return [
-        tarjetaSucursal,
+    const tarjetas = [
         { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
           pie: activos + " activos · " + inactivos + " inactivos",
           extra: inactivos ? plural(inactivos, "pendiente por reconexión", "pendientes por reconexión")
@@ -485,9 +467,19 @@ function tarjetasSegunRol(usuario, d) {
           tono: semaforo(pendientes.length), ir: "soporte" },
         { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
           pie: "En el catálogo comercial",
-          extra: (planes.length - planesActivos) + " inactivos",
+          extra: plural(planes.length - planesActivos, "inactivo", "inactivos"),
           tono: "violeta", ir: "planes" }
     ];
+
+    // Personal: solo tiene sentido para quien administra empleados
+    if (d.empleados) {
+        tarjetas.push({ icono: "👔", etiqueta: "Empleados", valor: String(empleados.length),
+                        pie: plural(empleadosActivos, "activo", "activos") + " de " + empleados.length,
+                        extra: "Personal de la sucursal",
+                        tono: "azul", ir: "empleados" });
+    }
+
+    return tarjetas;
 }
 
 function irAlModulo(seccion) {
