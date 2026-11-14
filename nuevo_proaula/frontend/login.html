@@ -7,6 +7,55 @@
     <!-- Enlazamos nuestra hoja de estilos CSS -->
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Campo de contraseña con botón para ver lo que se escribe */
+        .campo-con-ojo {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .campo-con-ojo input {
+            width: 100%;
+            padding-right: 46px;
+        }
+
+        .btn-ojo {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            opacity: 0.65;
+            transition: opacity 0.15s ease, background 0.15s ease;
+        }
+
+        .btn-ojo:hover {
+            opacity: 1;
+            background: #eff6ff;
+        }
+
+        .btn-ojo:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 1px;
+            opacity: 1;
+        }
+
+        .btn-ojo.activo {
+            opacity: 1;
+            background: #dbeafe;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,16 +87,21 @@
                     >
                 </div>
 
-                <!-- Campo: Contraseña -->
+                <!-- Campo: Contraseña (con botón para mostrarla) -->
                 <div class="form-group">
                     <label for="loginContrasena">Contraseña:</label>
-                    <input 
-                        type="password" 
-                        id="loginContrasena" 
-                        placeholder="••••••••" 
-                        required
-                        autocomplete="current-password"
-                    >
+                    <div class="campo-con-ojo">
+                        <input 
+                            type="password" 
+                            id="loginContrasena" 
+                            placeholder="••••••••" 
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" id="btnVerContrasena" class="btn-ojo"
+                                title="Mostrar la contraseña" aria-label="Mostrar la contraseña"
+                                aria-pressed="false" onclick="alternarContrasena()">👁️</button>
+                    </div>
                 </div>
 
                 <!-- Botón de Envío -->
@@ -62,40 +116,27 @@
                 <a href="registro.html">Regístrate aquí como nuevo cliente</a>
             </div>
 
-            <!-- Guía de Cuentas del Sistema por Roles -->
-            <div style="margin-top: 25px; padding: 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 12px; color: #475569;">
-                <div style="font-weight: 700; color: #1e293b; margin-bottom: 8px;">
-                    🔑 Cuentas por Roles Disponibles:
-                </div>
-                <div style="margin-bottom: 6px;">
-                    👑 <strong>Superusuario (Acceso Total):</strong><br>
-                    Usuario: <code>superadmin</code> | Clave: <code>Super123!</code>
-                </div>
-                <div style="margin-bottom: 6px;">
-                    🏢 <strong>Administrador Local (Sucursal):</strong><br>
-                    Usuario: <code>admin123</code> | Clave: <code>Admin123!</code>
-                </div>
-                <div style="margin-bottom: 6px;">
-                    👔 <strong>Empleado (Portal Operativo):</strong><br>
-                    Cédula: <code>1020304050</code> | Clave: <code>Clave123</code>
-                </div>
-                <div style="margin-bottom: 6px;">
-                    👤 <strong>Cliente (Suscriptor Activo):</strong><br>
-                    Cédula: <code>1045678901</code> | Clave: <code>Clave123</code>
-                </div>
-                <div style="margin-bottom: 6px;">
-                    🚫 <strong>Cliente Inactivo (Prueba de Bloqueo):</strong><br>
-                    Cédula: <code>1098765432</code> | Clave: <code>Clave456</code>
-                </div>
-                <div style="color:#94a3b8;">
-                    Las cuentas se validan en el servidor Java (ApiServer).
-                </div>
-            </div>
-
-        </div>
+                    </div>
     </div>
 
     <!-- Enlazamos el archivo de lógica JavaScript -->
+    <script>
+        // Mostrar u ocultar la contraseña mientras se escribe
+        function alternarContrasena() {
+            const campo = document.getElementById("loginContrasena");
+            const boton = document.getElementById("btnVerContrasena");
+            if (!campo || !boton) return;
+
+            const oculta = campo.type === "password";
+            campo.type = oculta ? "text" : "password";
+            boton.textContent = oculta ? "🙈" : "👁️";
+            boton.classList.toggle("activo", oculta);
+            boton.title = oculta ? "Ocultar la contraseña" : "Mostrar la contraseña";
+            boton.setAttribute("aria-label", boton.title);
+            boton.setAttribute("aria-pressed", oculta ? "true" : "false");
+            campo.focus();
+        }
+    </script>
     <script src="js/config.js?v=39"></script>
     <script src="js/errores.js?v=1"></script>
     <script src="js/app.js?v=59"></script>
