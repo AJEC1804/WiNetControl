@@ -9,7 +9,7 @@
 :root {
     --color-primario: #2563eb;       /* Azul principal (Royal Blue) */
     --color-primario-oscuro: #1d4ed8;/* Azul más oscuro para hover */
-    --color-fondo: #e6f0ff;          /* Fondo azul claro de toda la app: resalta las cajas blancas */
+    --color-fondo: #f1f5f9;          /* Fondo gris claro (Slate 100): hace resaltar las cajas blancas */
     --color-tarjeta: #ffffff;        /* Fondo blanco para las cajas/tarjetas */
     --color-texto: #1e293b;          /* Gris oscuro casi negro para texto legible (Slate 800) */
     --color-texto-suave: #64748b;    /* Gris para subtítulos y textos secundarios (Slate 500) */
