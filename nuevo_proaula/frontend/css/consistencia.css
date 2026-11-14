@@ -171,3 +171,21 @@
 .comprobante-tabla tbody td:first-child {
     box-shadow: inset 3px 0 0 #22c55e;
 }
+
+/* --------------------------------------------------------------------------
+   4. ESTADOS SIEMPRE EN MAYÚSCULAS
+   Los badges de estado se escriben en mayúsculas sin importar cómo los
+   devuelva la API o cómo se construyan en el texto. Se excluye .badge-scope,
+   que muestra el nombre de la sede y no un estado.
+   -------------------------------------------------------------------------- */
+.badge-activo,
+.badge-inactivo,
+.badge-alerta,
+.badge-superadmin,
+.badge-admin,
+.badge-cliente,
+.facturacion__badge--cima,
+.soporte__badge--frente,
+.soporte__badge--espera {
+    text-transform: uppercase;
+}

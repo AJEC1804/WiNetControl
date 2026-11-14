@@ -400,7 +400,7 @@ function tarjetasSegunRol(usuario, d) {
               pie: misTickets ? "Abiertas en la mesa de ayuda" : "Ninguna abierta",
               extra: atendidos.length ? atendidos.length + " atendidas históricamente" : "Sin historial de atención",
               tono: semaforo(misTickets), ir: "soporte" },
-            { icono: "✅", etiqueta: "Estado del servicio", valor: usuario.activo ? "Activo" : "Inactivo",
+            { icono: "✅", etiqueta: "Estado del servicio", valor: usuario.activo ? "ACTIVO" : "INACTIVO",
               pie: usuario.activo ? "Línea en servicio" : "Contacta a tu sucursal",
               extra: usuario.correo || "Cliente residencial",
               tono: usuario.activo ? "verde" : "rojo", ir: "perfil" }
