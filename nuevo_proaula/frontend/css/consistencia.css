@@ -226,11 +226,9 @@
     font-weight: 800;
     letter-spacing: -0.25px;
     margin: 0;
-    color: #1e40af;                       /* respaldo sin degradado */
-    background: linear-gradient(120deg, #1e3a8a 0%, #2563eb 60%, #1d4ed8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* Gris muy oscuro: el azul se reserva para los títulos de los módulos y así
+       la cabecera no compite con ellos. */
+    color: #1e293b;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
