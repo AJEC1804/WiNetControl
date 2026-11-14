@@ -286,10 +286,23 @@
     z-index: 1;
 }
 
-/* En pantallas anchas, las cinco tarjetas van siempre en una fila */
+/* En pantallas anchas las tarjetas van en una sola fila, con tantas columnas
+   como tarjetas haya (4 en el panel del cliente, 5 en los de gestión). */
 @media (min-width: 1080px) {
     .kpi-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .kpi-grid[data-cantidad="4"] {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .kpi-grid[data-cantidad="3"] {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .kpi-grid[data-cantidad="2"] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 

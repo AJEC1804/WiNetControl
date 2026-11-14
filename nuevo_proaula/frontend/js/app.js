@@ -255,6 +255,8 @@ async function renderizarEstadisticasPorRol(usuario) {
     const datos = await reunirDatosInicio(usuario);
     const tarjetas = tarjetasSegunRol(usuario, datos);
     contenedor.innerHTML = tarjetas.map(pintarTarjeta).join("");
+    // La rejilla ajusta el número de columnas a las tarjetas que haya
+    contenedor.setAttribute("data-cantidad", String(tarjetas.length));
 
     const sello = document.getElementById("kpiActualizado");
     if (sello) {
