@@ -1,8 +1,8 @@
 /* ==========================================================================
    PANEL DE INICIO  (WiNet Control)
    Archivo: css/inicio.css
-   Estilos propios del inicio: bienvenida, tarjetas de resumen (KPI) y accesos
-   directos. Se mantienen aparte para no tocar styles.css.
+   Estilos propios del inicio: bienvenida y tarjetas de resumen (KPI).
+   Se mantienen aparte para no tocar styles.css.
    ========================================================================== */
 
 /* ---------- 1. BIENVENIDA ---------- */
@@ -397,77 +397,6 @@
 /* Esqueleto mientras llegan los datos */
 .kpi-cargando .kpi-valor {
     color: #cbd5e1;
-}
-
-/* ---------- 3. ACCESOS DIRECTOS ---------- */
-.accesos-titulo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0 0 12px;
-}
-
-.accesos-titulo h3 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0;
-}
-
-.accesos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
-    gap: 12px;
-}
-
-.acceso-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    background: #ffffff;
-    border: 1px solid #dbeafe;
-    cursor: pointer;
-    text-align: left;
-    font-family: inherit;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.acceso-card:hover {
-    transform: translateY(-2px);
-    border-color: #bfdbfe;
-    box-shadow: 0 12px 24px -16px rgba(37, 99, 235, 0.55);
-}
-
-.acceso-card:focus-visible {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
-}
-
-.acceso-icono {
-    flex: 0 0 auto;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    background: #eff6ff;
-    border: 1px solid #dbeafe;
-}
-
-.acceso-texto strong {
-    display: block;
-    font-size: 13.5px;
-    color: #1e293b;
-    font-weight: 700;
-}
-
-.acceso-texto span {
-    font-size: 11.5px;
-    color: #64748b;
 }
 
 /* ---------- 4. RESPONSIVE ---------- */

@@ -241,17 +241,8 @@ function cargarDashboard() {
 
 // ==========================================================================
 // PANEL DE INICIO
-// Bienvenida + tarjetas de resumen + accesos directos, con datos reales de la API.
+// Bienvenida y tarjetas de resumen con datos reales de la API.
 // ==========================================================================
-const KPI_MODULOS = {
-    clientes:  { icono: "👥", titulo: "Clientes" },
-    empleados: { icono: "👔", titulo: "Empleados" },
-    planes:    { icono: "📡", titulo: "Planes" },
-    facturas:  { icono: "📄", titulo: "Facturación" },
-    soporte:   { icono: "🎧", titulo: "Mesa de Ayuda" },
-    inicio:    { icono: "🏠", titulo: "Inicio" },
-    perfil:    { icono: "👤", titulo: "Mi perfil" }
-};
 
 async function renderizarEstadisticasPorRol(usuario) {
     pintarBienvenida(usuario);
@@ -270,7 +261,6 @@ async function renderizarEstadisticasPorRol(usuario) {
         sello.textContent = "actualizado " + new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
     }
 
-    pintarAccesos(usuario);
 }
 
 // ---------- Bienvenida ----------
@@ -518,33 +508,6 @@ function tarjetaCargando(texto) {
              '<div class="kpi-valor">—</div>' +
              '<p class="kpi-pie">' + texto + '</p>' +
            '</div>';
-}
-
-// ---------- Accesos directos ----------
-function pintarAccesos(usuario) {
-    const caja = document.getElementById("inicioAccesos");
-    const grid = document.getElementById("inicioAccesosGrid");
-    if (!caja || !grid) return;
-
-    const secciones = ["clientes", "empleados", "planes", "facturas", "soporte", "perfil"];
-    const permitidas = secciones.filter(function (s) {
-        return typeof seccionPermitida !== "function" || seccionPermitida(s, usuario.rol);
-    });
-
-    if (permitidas.length === 0) {
-        caja.style.display = "none";
-        return;
-    }
-
-    grid.innerHTML = permitidas.map(function (s) {
-        const m = KPI_MODULOS[s] || { icono: "•", titulo: s };
-        return '<button type="button" class="acceso-card" onclick="irAlModulo(\'' + s + '\')">' +
-                 '<span class="acceso-icono">' + m.icono + '</span>' +
-                 '<span class="acceso-texto"><strong>' + m.titulo + '</strong><span>Ir al módulo</span></span>' +
-               '</button>';
-    }).join("");
-
-    caja.style.display = "block";
 }
 
 // Adaptar la visibilidad de enlaces y secciones según rol
