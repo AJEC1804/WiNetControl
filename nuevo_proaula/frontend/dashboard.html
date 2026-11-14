@@ -72,7 +72,7 @@
     <link rel="stylesheet" href="css/planes.css?v=50">
     <link rel="stylesheet" href="css/inicio.css?v=9">
     <link rel="stylesheet" href="css/facturacion-soporte.css?v=45">
-    <link rel="stylesheet" href="css/consistencia.css?v=3">
+    <link rel="stylesheet" href="css/consistencia.css?v=4">
 </head>
 <body onload="cargarDashboard()">
 
@@ -123,9 +123,13 @@
             
             <!-- BARRA SUPERIOR (TOPBAR CON DATOS DE SESIÓN) -->
             <header class="topbar">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <h3 style="font-size: 16px; color: #334155; font-weight: 600;">Sistema de Gestión de Telecomunicaciones</h3>
-                    <span id="dashSucursalBadge" class="badge-scope">Sede Principal</span>
+                <div class="topbar-titulo">
+                    <span class="topbar-icono">📡</span>
+                    <div class="topbar-textos">
+                        <h3 class="topbar-titulo-texto">Sistema de Gestión de Telecomunicaciones</h3>
+                        <span class="topbar-subtitulo">WiNet Control · suscriptores, planes, facturación y soporte</span>
+                    </div>
+                    <span id="dashSucursalBadge" class="badge-scope topbar-sede">Sede Principal</span>
                 </div>
                 
                 <!-- Perfil del usuario activo y badge de rol -->
