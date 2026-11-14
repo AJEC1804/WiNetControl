@@ -70,6 +70,7 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/planes.css?v=50">
+    <link rel="stylesheet" href="css/inicio.css?v=1">
     <link rel="stylesheet" href="css/facturacion-soporte.css?v=45">
 </head>
 <body onload="cargarDashboard()">
@@ -147,17 +148,46 @@
                 <!-- ======================================================= -->
                 <div id="seccion-inicio" class="seccion-modulo">
                     
-                    <!-- Banner de bienvenida -->
-                    <div class="welcome-banner">
-                        <h2>¡Hola de nuevo, <span id="dashNombreBienvenida">Usuario</span>! 👋</h2>
-                        <p id="dashDescBienvenida">
-                            Bienvenido al panel principal de WiNet Control. Aquí gestionas tu sesión activa y tienes acceso a todos los módulos del sistema.
-                        </p>
+                    <!-- =============================================== -->
+                    <!-- BIENVENIDA (saludo, rol, sucursal y fecha)      -->
+                    <!-- =============================================== -->
+                    <div class="inicio-hero">
+                        <div class="inicio-hero-contenido">
+                            <div class="inicio-hero-icono" id="inicioIcono">👋</div>
+
+                            <div class="inicio-hero-texto">
+                                <h2 class="inicio-hero-saludo" id="inicioSaludo">¡Hola de nuevo!</h2>
+                                <p class="inicio-hero-detalle" id="dashDescBienvenida">
+                                    Bienvenido al panel principal de WiNet Control.
+                                </p>
+                                <div class="inicio-hero-chips">
+                                    <span class="inicio-chip" id="inicioChipRol">👤 Usuario</span>
+                                    <span class="inicio-chip" id="inicioChipSucursal">🏢 Sucursal</span>
+                                </div>
+                            </div>
+
+                            <div class="inicio-hero-fecha">
+                                <strong id="inicioFechaDia">—</strong>
+                                <span id="inicioFechaHora">—</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Tarjetas de Resumen (KPIs generadas según el rol por app.js) -->
-                    <div id="dashStatsGrid" class="stats-grid">
-                        <!-- Generadas dinámicamente según sesión activa -->
+                    <!-- Tarjetas de resumen con datos reales de la API -->
+                    <div class="kpi-titulo">
+                        <h3>Resumen de tu operación</h3>
+                        <span id="kpiActualizado"></span>
+                    </div>
+                    <div id="dashStatsGrid" class="kpi-grid">
+                        <!-- Se generan según el rol de la sesión -->
+                    </div>
+
+                    <!-- Accesos directos a los módulos permitidos -->
+                    <div id="inicioAccesos" style="display: none;">
+                        <div class="accesos-titulo">
+                            <h3>Accesos directos</h3>
+                        </div>
+                        <div class="accesos-grid" id="inicioAccesosGrid"></div>
                     </div>
 
                 </div>

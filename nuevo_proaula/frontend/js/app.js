@@ -239,110 +239,258 @@ function cargarDashboard() {
     adaptarVistasPorRol(usuario);
 }
 
-// Renderizar tarjetas de estadísticas según el rol
-function renderizarEstadisticasPorRol(usuario) {
-    const statsContainer = document.getElementById("dashStatsGrid");
-    if (!statsContainer) return;
+// ==========================================================================
+// PANEL DE INICIO
+// Bienvenida + tarjetas de resumen + accesos directos, con datos reales de la API.
+// ==========================================================================
+const KPI_MODULOS = {
+    clientes:  { icono: "👥", titulo: "Clientes" },
+    empleados: { icono: "👔", titulo: "Empleados" },
+    planes:    { icono: "📡", titulo: "Planes" },
+    facturas:  { icono: "📄", titulo: "Facturación" },
+    soporte:   { icono: "🎧", titulo: "Mesa de Ayuda" },
+    inicio:    { icono: "🏠", titulo: "Inicio" },
+    perfil:    { icono: "👤", titulo: "Mi perfil" }
+};
 
-    if (usuario.rol === "SUPERADMIN") {
-        statsContainer.innerHTML = `
-            <div class="stat-card">
-                <h5>Ámbito de Acceso</h5>
-                <div class="stat-value" style="font-size: 18px; color: #6d28d9;">👑 Acceso Global</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Todas las sedes y módulos</div>
-            </div>
-            <div class="stat-card">
-                <h5>Suscriptores Totales</h5>
-                <div class="stat-value">1,420 <span style="font-size: 13px; color: #16a34a; font-weight: normal;">(Red WiNet)</span></div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Clientes en toda la plataforma</div>
-            </div>
-            <div class="stat-card">
-                <h5>Planes Comerciales</h5>
-                <div class="stat-value" style="color: #2563eb;">4 Activos</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Catálogo comercial vigente</div>
-            </div>
-            <div class="stat-card">
-                <h5>Recaudación Mensual</h5>
-                <div class="stat-value" style="color: #059669;">$84.5M COP</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Facturación consolidada</div>
-            </div>
-        `;
-    } else if (usuario.rol === "ADMIN") {
-        statsContainer.innerHTML = `
-            <div class="stat-card">
-                <h5>Sucursal Asignada</h5>
-                <div class="stat-value" style="font-size: 18px; color: #0369a1;">🏢 Norte Local</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Gestión de sede local</div>
-            </div>
-            <div class="stat-card">
-                <h5>Clientes de la Sede</h5>
-                <div class="stat-value">328 <span style="font-size: 13px; color: #16a34a; font-weight: normal;">(Activos)</span></div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">4 pendientes por reconexión</div>
-            </div>
-            <div class="stat-card">
-                <h5>Facturas de la Sede</h5>
-                <div class="stat-value" style="color: #2563eb;">324 Emitidas</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">98% al día en pago</div>
-            </div>
-            <div class="stat-card">
-                <h5>Tickets en Cola (FIFO)</h5>
-                <div class="stat-value" style="color: #d97706;">2 en Espera</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Atención en orden de llegada</div>
-            </div>
-        `;
-    } else if (usuario.rol === "EMPLEADO") {
-        // EMPLEADO: personal operativo, sin acceso a facturación ni catálogo
-        statsContainer.innerHTML = `
-            <div class="stat-card">
-                <h5>Mi Rol</h5>
-                <div class="stat-value" style="font-size: 18px; color: #1d4ed8;">👔 Empleado</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">${usuario.planActual || "Personal operativo"}</div>
-            </div>
-            <div class="stat-card">
-                <h5>Sucursal</h5>
-                <div class="stat-value" style="font-size: 18px; color: #0369a1;">${usuario.sucursal || "Sucursal Norte"}</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Sede asignada</div>
-            </div>
-            <div class="stat-card">
-                <h5>Permisos</h5>
-                <div class="stat-value" style="font-size: 16px; color: #16a34a;">Clientes y soporte</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Consulta planes · Sin eliminar clientes</div>
-            </div>
-            <div class="stat-card">
-                <h5>Tickets Pendientes</h5>
-                <div class="stat-value" style="color: #d97706;">Módulo de Soporte</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Issue #10 — Juan Esteban Navia</div>
-            </div>
-        `;
-    } else {
-        // CLIENTE
-        statsContainer.innerHTML = `
-            <div class="stat-card">
-                <h5>Estado del Servicio</h5>
-                <div style="margin-top: 8px;">
-                    <span class="badge ${usuario.activo ? 'badge-activo' : 'badge-inactivo'}">
-                        ${usuario.activo ? 'ACTIVO' : 'INACTIVO'}
-                    </span>
-                </div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 6px;">Línea de fibra en línea</div>
-            </div>
-            <div class="stat-card">
-                <h5>Plan Contratado</h5>
-                <div class="stat-value" style="font-size: 18px; color: #2563eb;">${usuario.planActual || 'Plan Básico 50M'}</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Internet de alta velocidad</div>
-            </div>
-            <div class="stat-card">
-                <h5>Velocidad de Conexión</h5>
-                <div class="stat-value">300 <span style="font-size: 14px; font-weight: 500; color: #64748b;">Mbps Simétrico</span></div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Fibra óptica directa al hogar</div>
-            </div>
-            <div class="stat-card">
-                <h5>Última Factura (LIFO)</h5>
-                <div class="stat-value" style="color: #16a34a; font-size: 18px;">Al Día ✅</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Próximo corte: 15/11/2026</div>
-            </div>
-        `;
+async function renderizarEstadisticasPorRol(usuario) {
+    pintarBienvenida(usuario);
+
+    const contenedor = document.getElementById("dashStatsGrid");
+    if (!contenedor) return;
+
+    contenedor.innerHTML = tarjetaCargando("Consultando datos…");
+
+    const datos = await reunirDatosInicio(usuario);
+    const tarjetas = tarjetasSegunRol(usuario, datos);
+    contenedor.innerHTML = tarjetas.map(pintarTarjeta).join("");
+
+    const sello = document.getElementById("kpiActualizado");
+    if (sello) {
+        sello.textContent = "actualizado " + new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
     }
+
+    pintarAccesos(usuario);
+}
+
+// ---------- Bienvenida ----------
+function pintarBienvenida(usuario) {
+    const hora = new Date().getHours();
+    let saludo = "Buenas noches";
+    let icono = "🌙";
+    if (hora < 12) { saludo = "Buenos días"; icono = "☀️"; }
+    else if (hora < 19) { saludo = "Buenas tardes"; icono = "🌤️"; }
+
+    const nombre = ((usuario.nombre || "") + " " + (usuario.apellido || "")).trim() || "de nuevo";
+    const saludoEl = document.getElementById("inicioSaludo");
+    if (saludoEl) {
+        saludoEl.textContent = saludo + ", " + nombre + " 👋";
+    }
+
+    const iconoEl = document.getElementById("inicioIcono");
+    if (iconoEl) {
+        iconoEl.textContent = icono;
+    }
+
+    const descEl = document.getElementById("dashDescBienvenida");
+    if (descEl) {
+        if (usuario.rol === "SUPERADMIN") {
+            descEl.textContent = "Tienes control global: todas las sedes, clientes, catálogo, facturación y auditoría.";
+        } else if (usuario.rol === "ADMIN") {
+            descEl.textContent = "Administra los clientes, el catálogo, la facturación y el soporte de tu sucursal.";
+        } else if (usuario.rol === "EMPLEADO") {
+            descEl.textContent = "Consulta y actualiza clientes, y atiende las solicitudes de soporte en orden de llegada.";
+        } else {
+            descEl.textContent = "Consulta el estado de tu servicio, tu plan contratado y tus solicitudes de soporte.";
+        }
+    }
+
+    const rolEl = document.getElementById("inicioChipRol");
+    if (rolEl) {
+        const etiquetas = { SUPERADMIN: "👑 Superusuario", ADMIN: "🛡️ Administrador local",
+                            EMPLEADO: "👔 Empleado", CLIENTE: "👤 Cliente" };
+        rolEl.textContent = etiquetas[usuario.rol] || usuario.rol || "Usuario";
+    }
+
+    const sucursalEl = document.getElementById("inicioChipSucursal");
+    if (sucursalEl) {
+        const sede = usuario.sucursal || (usuario.rol === "CLIENTE" ? "Cliente residencial" : "Sede principal");
+        sucursalEl.textContent = "🏢 " + sede;
+    }
+
+    const dia = new Date().toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" });
+    const diaEl = document.getElementById("inicioFechaDia");
+    if (diaEl) {
+        diaEl.textContent = dia.charAt(0).toUpperCase() + dia.slice(1);
+    }
+    const horaEl = document.getElementById("inicioFechaHora");
+    if (horaEl) {
+        horaEl.textContent = new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+    }
+}
+
+// ---------- Lectura de datos ----------
+async function traer(ruta) {
+    const respuesta = await fetch(API_BASE + ruta);
+    return respuesta.json();
+}
+
+async function reunirDatosInicio(usuario) {
+    const esCliente = usuario.rol === "CLIENTE";
+    const puedeVerEmpleados = usuario.rol === "ADMIN" || usuario.rol === "SUPERADMIN";
+
+    const pedidos = [
+        traer("/api/clientes").catch(function () { return null; }),
+        traer("/api/planes").catch(function () { return null; }),
+        traer("/api/facturas").catch(function () { return null; }),
+        traer("/api/soporte").catch(function () { return null; }),
+        puedeVerEmpleados ? traer("/api/empleados").catch(function () { return null; }) : Promise.resolve(null)
+    ];
+
+    const resultados = await Promise.all(pedidos);
+    return {
+        esCliente: esCliente,
+        clientes: resultados[0],
+        planes: resultados[1],
+        facturas: resultados[2],
+        soporte: resultados[3],
+        empleados: resultados[4]
+    };
+}
+
+// ---------- Construcción de tarjetas ----------
+function tarjetasSegunRol(usuario, d) {
+    const clientes = (d.clientes && d.clientes.datos) || [];
+    const planes = (d.planes && d.planes.datos) || [];
+    const facturas = (d.facturas && d.facturas.datos) || [];
+    const pendientes = (d.soporte && d.soporte.pendientes) || [];
+    const empleados = (d.empleados && d.empleados.datos) || [];
+
+    if (d.esCliente) {
+        const mias = facturas.filter(function (f) { return f.identificacionCliente === usuario.identificacion; });
+        const pagadas = mias.filter(function (f) { return f.estado === "PAGADA"; }).length;
+        const porPagar = mias.length - pagadas;
+        const misTickets = pendientes.filter(function (t) { return t.correo === usuario.correo; }).length;
+        const miPlan = planes.find(function (p) {
+            return (p.nombre || "").toLowerCase() === (usuario.planActual || "").toLowerCase();
+        });
+
+        return [
+            { icono: "📡", etiqueta: "Mi plan", valor: usuario.planActual || "Sin plan",
+              pie: miPlan ? miPlan.velocidad + " · $" + Number(miPlan.precio).toLocaleString("es-CO")
+                          : "Contrátalo desde el catálogo",
+              tono: "violeta", ir: "planes" },
+            { icono: "🧾", etiqueta: "Mis facturas", valor: String(mias.length),
+              pie: pagadas + " pagadas · " + porPagar + " por pagar",
+              tono: porPagar > 0 ? "ambar" : "verde", ir: "facturas" },
+            { icono: "🎧", etiqueta: "Mis solicitudes", valor: String(misTickets),
+              pie: misTickets ? "Abiertas en la mesa de ayuda" : "Ninguna abierta",
+              tono: misTickets ? "ambar" : "verde", ir: "soporte" },
+            { icono: "✅", etiqueta: "Estado del servicio", valor: usuario.activo ? "Activo" : "Inactivo",
+              pie: usuario.activo ? "Línea en servicio" : "Contacta a tu sucursal",
+              tono: usuario.activo ? "verde" : "rojo", ir: "perfil" }
+        ];
+    }
+
+    const activos = clientes.filter(function (c) { return c.activo; }).length;
+    const inactivos = clientes.length - activos;
+    const planesActivos = planes.filter(function (p) { return p.activo; }).length;
+    const pagadas = facturas.filter(function (f) { return f.estado === "PAGADA"; }).length;
+    const porCobrar = facturas.length - pagadas;
+
+    if (usuario.rol === "EMPLEADO") {
+        return [
+            { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
+              pie: activos + " activos · " + inactivos + " inactivos", tono: "azul", ir: "clientes" },
+            { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
+              pie: "Atención en orden de llegada (FIFO)",
+              tono: pendientes.length ? "ambar" : "verde", ir: "soporte" },
+            { icono: "🧾", etiqueta: "Facturas por cobrar", valor: String(porCobrar),
+              pie: pagadas + " pagadas de " + facturas.length,
+              tono: porCobrar ? "ambar" : "verde", ir: "facturas" },
+            { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
+              pie: "En el catálogo comercial", tono: "azul", ir: "planes" }
+        ];
+    }
+
+    const tarjetas = [
+        { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
+          pie: activos + " activos · " + inactivos + " inactivos", tono: "azul", ir: "clientes" },
+        { icono: "🧾", etiqueta: "Facturación", valor: String(facturas.length),
+          pie: porCobrar + " por cobrar · " + pagadas + " pagadas",
+          tono: porCobrar ? "ambar" : "verde", ir: "facturas" },
+        { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
+          pie: "Esperando atención (FIFO)",
+          tono: pendientes.length ? "ambar" : "verde", ir: "soporte" },
+        { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
+          pie: planes.length + " en el catálogo", tono: "violeta", ir: "planes" }
+    ];
+
+    if (d.empleados) {
+        tarjetas.push({ icono: "👔", etiqueta: "Empleados", valor: String(empleados.length),
+                        pie: empleados.filter(function (e) { return e.activo; }).length + " activos en la sede",
+                        tono: "azul", ir: "empleados" });
+    }
+
+    return tarjetas;
+}
+
+function irAlModulo(seccion) {
+    const enlace = document.querySelector('.nav-link[href="#' + seccion + '"]');
+    if (typeof mostrarSeccion === "function") {
+        mostrarSeccion(seccion, enlace);
+    }
+}
+
+function pintarTarjeta(t) {
+    const tono = t.tono ? " tono-" + t.tono : "";
+    return '<div class="kpi-card es-enlace' + tono + '" role="button" tabindex="0"' +
+           ' onclick="irAlModulo(\'' + t.ir + '\')"' +
+           ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();irAlModulo(\'' + t.ir + '\');}">' +
+           '<span class="kpi-flecha">→</span>' +
+           '<div class="kpi-cabecera">' +
+             '<span class="kpi-icono">' + t.icono + '</span>' +
+             '<p class="kpi-etiqueta">' + t.etiqueta + '</p>' +
+           '</div>' +
+           '<div class="kpi-valor">' + t.valor + '</div>' +
+           '<p class="kpi-pie">' + t.pie + '</p>' +
+           '</div>';
+}
+
+function tarjetaCargando(texto) {
+    return '<div class="kpi-card kpi-cargando">' +
+             '<div class="kpi-cabecera"><span class="kpi-icono">⏳</span>' +
+             '<p class="kpi-etiqueta">Cargando</p></div>' +
+             '<div class="kpi-valor">—</div>' +
+             '<p class="kpi-pie">' + texto + '</p>' +
+           '</div>';
+}
+
+// ---------- Accesos directos ----------
+function pintarAccesos(usuario) {
+    const caja = document.getElementById("inicioAccesos");
+    const grid = document.getElementById("inicioAccesosGrid");
+    if (!caja || !grid) return;
+
+    const secciones = ["clientes", "empleados", "planes", "facturas", "soporte", "perfil"];
+    const permitidas = secciones.filter(function (s) {
+        return typeof seccionPermitida !== "function" || seccionPermitida(s, usuario.rol);
+    });
+
+    if (permitidas.length === 0) {
+        caja.style.display = "none";
+        return;
+    }
+
+    grid.innerHTML = permitidas.map(function (s) {
+        const m = KPI_MODULOS[s] || { icono: "•", titulo: s };
+        return '<button type="button" class="acceso-card" onclick="irAlModulo(\'' + s + '\')">' +
+                 '<span class="acceso-icono">' + m.icono + '</span>' +
+                 '<span class="acceso-texto"><strong>' + m.titulo + '</strong><span>Ir al módulo</span></span>' +
+               '</button>';
+    }).join("");
+
+    caja.style.display = "block";
 }
 
 // Adaptar la visibilidad de enlaces y secciones según rol
