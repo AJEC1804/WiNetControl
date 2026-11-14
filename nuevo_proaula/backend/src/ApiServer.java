@@ -110,6 +110,10 @@ public class ApiServer {
         servidor.createContext(RUTA_LOGIN, ApiServer::manejarLogin);
         servidor.createContext(RUTA_FACTURAS, ApiServer::manejarFacturas);
         servidor.createContext(RUTA_SOPORTE, ApiServer::manejarSoporte);
+        // Cualquier otra ruta: 404 en JSON y con CORS. Sin este contexto, el 404 por
+        // defecto del JDK no trae cabeceras CORS y el navegador lo reporta como
+        // "no se pudo conectar" en lugar de "ruta no encontrada".
+        servidor.createContext("/", ApiServer::manejarRutaDesconocida);
         servidor.setExecutor(null);
         servidor.start();
 
@@ -151,6 +155,16 @@ public class ApiServer {
             ticketsAtendidos.addAll((List<Soporte>) leido);
             System.out.println("[persistencia] Tickets atendidos recuperados: " + ticketsAtendidos.size());
         }
+    }
+
+    /** Responde 404 a cualquier ruta que no exista, en JSON y con CORS. */
+    private static void manejarRutaDesconocida(HttpExchange ex) throws IOException {
+        if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+            responder(ex, 204, "");
+            return;
+        }
+        responderError(ex, 404, "Ruta no encontrada: " + ex.getRequestMethod()
+                + " " + ex.getRequestURI().getPath());
     }
 
     // ==================================================================
@@ -389,6 +403,26 @@ public class ApiServer {
         }
 
         try {
+            // GET /api/planes/{codigo}      ->  consultarPlanPorId(codigo), o 404
+            if (metodo.equalsIgnoreCase("GET") && ruta.startsWith(RUTA_PLANES + "/")) {
+                String texto = ultimoSegmento(ruta);
+                int codigo = 0;
+                try {
+                    codigo = Integer.parseInt(texto.trim());
+                } catch (NumberFormatException e) {
+                    responderError(ex, 400, "El código del plan debe ser numérico: " + texto);
+                    return;
+                }
+                Respuesta<Plan> uno = planCtrl.buscarPlanPorCodigo(String.valueOf(codigo));
+                if (!uno.isExito() || uno.getDatos() == null) {
+                    responderError(ex, 404, "No existe un plan con código " + codigo);
+                    return;
+                }
+                responder(ex, 200, "{\"exito\":true,\"mensaje\":\"Plan encontrado.\",\"datos\":"
+                        + jsonDePlan(uno.getDatos()) + "}");
+                return;
+            }
+
             // GET /api/planes              ->  listarPlanes()
             // GET /api/planes?estado=activos ->  listarPlanesActivos()
             if (metodo.equalsIgnoreCase("GET")) {
