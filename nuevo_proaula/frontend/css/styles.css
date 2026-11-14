@@ -9,7 +9,7 @@
 :root {
     --color-primario: #2563eb;       /* Azul principal (Royal Blue) */
     --color-primario-oscuro: #1d4ed8;/* Azul más oscuro para hover */
-    --color-fondo: #f1f5f9;          /* Fondo gris claro suave (Slate 100) */
+    --color-fondo: #eef5ff;          /* Fondo azul muy claro: hace que las cajas blancas resalten */
     --color-tarjeta: #ffffff;        /* Fondo blanco para las cajas/tarjetas */
     --color-texto: #1e293b;          /* Gris oscuro casi negro para texto legible (Slate 800) */
     --color-texto-suave: #64748b;    /* Gris para subtítulos y textos secundarios (Slate 500) */
