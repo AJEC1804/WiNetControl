@@ -133,3 +133,41 @@
 .tabla-planes thead th {
     border-bottom: 1px solid #1e40af;
 }
+
+/* --------------------------------------------------------------------------
+   3. GUÍAS DE COLOR POR ESTADO EN FACTURACIÓN Y SOPORTE
+   Misma idea que la tabla de planes: una barra fina en el borde izquierdo de
+   la fila que indica el estado de un vistazo.
+   -------------------------------------------------------------------------- */
+
+/* --- Facturas --- */
+.facturacion__tabla tbody tr.fila-pagada td:first-child {
+    box-shadow: inset 3px 0 0 #22c55e;      /* verde: pagada */
+}
+
+.facturacion__tabla tbody tr.fila-emitida td:first-child {
+    box-shadow: inset 3px 0 0 #f59e0b;      /* ámbar: emitida, pendiente de pago */
+}
+
+.facturacion__tabla tbody tr.fila-anulada td:first-child {
+    box-shadow: inset 3px 0 0 #dc2626;      /* rojo: anulada */
+}
+
+/* --- Historial de tickets atendidos --- */
+.facturacion__tabla tbody tr.fila-atendido td:first-child {
+    box-shadow: inset 3px 0 0 #22c55e;      /* verde: resuelto */
+}
+
+/* --- Cola de tickets (se muestran como tarjetas, no como tabla) --- */
+.soporte__nodo {
+    border-left: 3px solid #93c5fd;         /* azul: en espera */
+}
+
+.soporte__nodo--frente {
+    border-left: 3px solid #f59e0b;         /* ámbar: el siguiente en ser atendido */
+}
+
+/* Que la barra se note también en las filas del comprobante */
+.comprobante-tabla tbody td:first-child {
+    box-shadow: inset 3px 0 0 #22c55e;
+}

@@ -281,9 +281,10 @@ function renderizarFilasFacturas(lista, esPersonal) {
         const pos = facturasEnMemoria.findIndex(f => Number(f.idFactura) === Number(fact.idFactura)) + 1;
         const monto = Number(fact.monto || 0);
         const pagada = fact.estado === "PAGADA";
+        const estadoFila = String(fact.estado || "EMITIDA").toUpperCase();
 
         return `
-            <tr style="${esTope ? 'background-color: #eff6ff; font-weight: 600;' : ''}">
+            <tr class="fila-${estadoFila.toLowerCase()}" style="${esTope ? 'background-color: #eff6ff; font-weight: 600;' : ''}">
                 <td>
                     ${esTope ? '<span class="facturacion__badge--cima">CIMA</span>' : `#${pos}`}
                 </td>
@@ -562,7 +563,7 @@ async function cargarModuloSoporte() {
             cola.forEach((ticket, index) => {
                 const esFrente = index === 0;
                 html += `
-                    <div class="soporte__nodo ${esFrente ? 'soporte__nodo--frente' : ''}">
+                    <div class="soporte__nodo ${esFrente ? 'soporte__nodo--frente' : 'soporte__nodo--espera'}">
                         <div class="soporte__nodo-header">
                             <span class="soporte__nodo-id">
                                 ${esFrente ? '🥇 FRENTE (1° en ser atendido)' : `Posición #${index + 1} en cola`}
@@ -620,7 +621,7 @@ async function cargarModuloSoporte() {
         } else {
             atendidos.forEach(t => {
                 html += `
-                    <tr>
+                    <tr class="fila-atendido">
                         <td>#${t.idTicket}</td>
                         <td>${t.usuario}</td>
                         <td>${t.asunto}</td>
