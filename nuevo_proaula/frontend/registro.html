@@ -4,6 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Nuevo Cliente - WiNet Control</title>
+    <script>
+        (function () {
+            window.__ignorarLiveReloadHasta = 0;
+            const fetchOriginal = window.fetch;
+            if (fetchOriginal) {
+                window.fetch = function (url, opciones) {
+                    const metodo = (opciones && opciones.method) ? opciones.method.toUpperCase() : "GET";
+                    if (metodo !== "GET") {
+                        window.__ignorarLiveReloadHasta = Date.now() + 5000;
+                    }
+                    return fetchOriginal.apply(this, arguments).finally(function () {
+                        if (metodo !== "GET") {
+                            window.__ignorarLiveReloadHasta = Date.now() + 5000;
+                        }
+                    });
+                };
+            }
+            const WSOriginal = window.WebSocket;
+            if (WSOriginal) {
+                window.WebSocket = function (url, protocols) {
+                    const ws = protocols ? new WSOriginal(url, protocols) : new WSOriginal(url);
+                    const addOriginal = ws.addEventListener.bind(ws);
+                    let manejadorOnMessage = null;
+                    ws.addEventListener = function (tipo, fn, opciones) {
+                        if (tipo === "message" && typeof fn === "function") {
+                            const envuelto = function (evento) {
+                                if (evento && evento.data === "reload" && Date.now() < window.__ignorarLiveReloadHasta) {
+                                    return;
+                                }
+                                return fn.apply(this, arguments);
+                            };
+                            return addOriginal(tipo, envuelto, opciones);
+                        }
+                        return addOriginal(tipo, fn, opciones);
+                    };
+                    Object.defineProperty(ws, "onmessage", {
+                        configurable: true,
+                        get: function () { return manejadorOnMessage; },
+                        set: function (fn) {
+                            manejadorOnMessage = fn;
+                            ws.addEventListener("message", function (evento) {
+                                if (typeof manejadorOnMessage === "function") {
+                                    return manejadorOnMessage.call(ws, evento);
+                                }
+                            });
+                        }
+                    });
+                    return ws;
+                };
+                window.WebSocket.prototype = WSOriginal.prototype;
+            }
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -96,6 +150,8 @@
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <script src="js/config.js?v=38"></script>
+    <script src="js/errores.js?v=1"></script>
+    <script src="js/app.js?v=58"></script>
 </body>
 </html>

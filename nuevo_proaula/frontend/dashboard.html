@@ -4,7 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Principal - WiNet Control</title>
+    <script>
+        // Evita que Live Server recargue la página cuando el servidor Java
+        // genera un archivo PDF de factura en la carpeta backend/facturas/.
+        (function () {
+            window.__ignorarLiveReloadHasta = 0;
+
+            const fetchOriginal = window.fetch;
+            if (fetchOriginal) {
+                window.fetch = function (url, opciones) {
+                    const metodo = (opciones && opciones.method) ? opciones.method.toUpperCase() : "GET";
+                    if (metodo !== "GET") {
+                        window.__ignorarLiveReloadHasta = Date.now() + 5000;
+                    }
+                    return fetchOriginal.apply(this, arguments).finally(function () {
+                        if (metodo !== "GET") {
+                            window.__ignorarLiveReloadHasta = Date.now() + 5000;
+                        }
+                    });
+                };
+            }
+
+            const WSOriginal = window.WebSocket;
+            if (WSOriginal) {
+                window.WebSocket = function (url, protocols) {
+                    const ws = protocols ? new WSOriginal(url, protocols) : new WSOriginal(url);
+                    const addOriginal = ws.addEventListener.bind(ws);
+                    let manejadorOnMessage = null;
+
+                    ws.addEventListener = function (tipo, fn, opciones) {
+                        if (tipo === "message" && typeof fn === "function") {
+                            const envuelto = function (evento) {
+                                if (evento && evento.data === "reload" && Date.now() < window.__ignorarLiveReloadHasta) {
+                                    return;
+                                }
+                                return fn.apply(this, arguments);
+                            };
+                            return addOriginal(tipo, envuelto, opciones);
+                        }
+                        return addOriginal(tipo, fn, opciones);
+                    };
+
+                    Object.defineProperty(ws, "onmessage", {
+                        configurable: true,
+                        get: function () { return manejadorOnMessage; },
+                        set: function (fn) {
+                            manejadorOnMessage = fn;
+                            ws.addEventListener("message", function (evento) {
+                                if (typeof manejadorOnMessage === "function") {
+                                    return manejadorOnMessage.call(ws, evento);
+                                }
+                            });
+                        }
+                    });
+                    return ws;
+                };
+                window.WebSocket.prototype = WSOriginal.prototype;
+                window.WebSocket.CONNECTING = WSOriginal.CONNECTING;
+                window.WebSocket.OPEN = WSOriginal.OPEN;
+                window.WebSocket.CLOSING = WSOriginal.CLOSING;
+                window.WebSocket.CLOSED = WSOriginal.CLOSED;
+            }
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/planes.css?v=50">
+    <link rel="stylesheet" href="css/inicio.css?v=9">
+    <link rel="stylesheet" href="css/facturacion-soporte.css?v=45">
+    <link rel="stylesheet" href="css/consistencia.css?v=2">
 </head>
 <body onload="cargarDashboard()">
 
@@ -22,13 +90,19 @@
                 <a href="#inicio" class="nav-link active" onclick="mostrarSeccion('inicio', this)">
                     <span>🏠</span> Inicio / Resumen
                 </a>
-                <a href="#clientes" class="nav-link" onclick="mostrarSeccion('clientes', this)">
+                <a href="#clientes" class="nav-link" id="navLinkClientes" onclick="mostrarSeccion('clientes', this)">
                     <span>👥</span> Gestión de Clientes
                 </a>
-                <a href="#planes" class="nav-link" onclick="mostrarSeccion('planes', this)">
+                <a href="#perfil" class="nav-link" id="navLinkPerfil" onclick="mostrarSeccion('perfil', this)">
+                    <span>🙋</span> Mi perfil
+                </a>
+                <a href="#empleados" class="nav-link" id="navLinkEmpleados" onclick="mostrarSeccion('empleados', this)">
+                    <span>👔</span> Gestión de Empleados
+                </a>
+                <a href="#planes" class="nav-link" id="navLinkPlanes" onclick="mostrarSeccion('planes', this)">
                     <span>📡</span> Catálogo de Planes
                 </a>
-                <a href="#facturas" class="nav-link" onclick="mostrarSeccion('facturas', this)">
+                <a href="#facturas" class="nav-link" id="navLinkFacturacion" onclick="mostrarSeccion('facturas', this)">
                     <span>📄</span> Facturación
                 </a>
                 <a href="#soporte" class="nav-link" onclick="mostrarSeccion('soporte', this)">
@@ -75,124 +149,369 @@
                 <!-- ======================================================= -->
                 <div id="seccion-inicio" class="seccion-modulo">
                     
-                    <!-- Banner de bienvenida -->
-                    <div class="welcome-banner">
-                        <h2>¡Hola de nuevo, <span id="dashNombreBienvenida">Usuario</span>! 👋</h2>
-                        <p id="dashDescBienvenida">
-                            Bienvenido al panel principal de WiNet Control. Aquí gestionas tu sesión activa y tienes acceso a todos los módulos del sistema.
-                        </p>
-                    </div>
+                    <!-- =============================================== -->
+                    <!-- BIENVENIDA (saludo, rol, sucursal y fecha)      -->
+                    <!-- =============================================== -->
+                    <div class="inicio-hero">
+                        <div class="inicio-hero-contenido">
+                            <div class="inicio-hero-icono" id="inicioIcono">👋</div>
 
-                    <!-- Tarjetas de Resumen (KPIs generadas según el rol por app.js) -->
-                    <div id="dashStatsGrid" class="stats-grid">
-                        <!-- Generadas dinámicamente según sesión activa -->
-                    </div>
-
-                    <!-- GUÍA DE DISEÑO, TIPOGRAFÍA Y COLORES PARA EL EQUIPO -->
-                    <div style="background: #ffffff; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 15px;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                            <div>
-                                <h3 style="color: #1e293b; font-size: 18px;">🎨 Guía de Estilos Visuales del Proyecto</h3>
-                                <p style="color: #64748b; font-size: 13px;">
-                                    Estándares oficiales de tipografía y colores para que todo el equipo trabaje con la misma identidad visual.
+                            <div class="inicio-hero-texto">
+                                <h2 class="inicio-hero-saludo" id="inicioSaludo">¡Hola de nuevo!</h2>
+                                <p class="inicio-hero-detalle" id="dashDescBienvenida">
+                                    Bienvenido al panel principal de WiNet Control.
                                 </p>
+                                <div class="inicio-hero-chips">
+                                    <span class="inicio-chip" id="inicioChipRol">👤 Usuario</span>
+                                    <span class="inicio-chip" id="inicioChipSucursal">🏢 Sucursal</span>
+                                </div>
                             </div>
-                            <span class="badge" style="background: #e0f2fe; color: #0369a1;">Design System Oficial</span>
-                        </div>
 
-                        <!-- 1. MUESTRAS DE PALETA DE COLORES -->
-                        <h4 style="font-size: 14px; color: #334155; margin: 18px 0 10px;">1. Paleta de Colores (Códigos HEX y Uso):</h4>
-                        <div class="style-guide-grid">
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #2563eb;"></div>
-                                <span>Azul Primario</span>
-                                <code>#2563eb</code>
+                            <div class="inicio-hero-fecha">
+                                <strong id="inicioFechaDia">—</strong>
+                                <span id="inicioFechaHora">—</span>
                             </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #1d4ed8;"></div>
-                                <span>Azul Hover</span>
-                                <code>#1d4ed8</code>
-                            </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #1e293b;"></div>
-                                <span>Texto Oscuro</span>
-                                <code>#1e293b</code>
-                            </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #64748b;"></div>
-                                <span>Texto Suave</span>
-                                <code>#64748b</code>
-                            </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #f1f5f9; border: 1px solid #cbd5e1;"></div>
-                                <span>Fondo App</span>
-                                <code>#f1f5f9</code>
-                            </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #16a34a;"></div>
-                                <span>Verde Éxito</span>
-                                <code>#16a34a</code>
-                            </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #dc2626;"></div>
-                                <span>Rojo Error</span>
-                                <code>#dc2626</code>
-                            </div>
-                            <div class="color-swatch">
-                                <div class="color-swatch-box" style="background: #d97706;"></div>
-                                <span>Ámbar Alerta</span>
-                                <code>#d97706</code>
-                            </div>
-                        </div>
-
-                        <!-- 2. TIPOGRAFÍAS Y FUENTES -->
-                        <h4 style="font-size: 14px; color: #334155; margin: 20px 0 10px;">2. Tipografía Oficial:</h4>
-                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; line-height: 1.8;">
-                            • <strong>Familia Tipográfica:</strong> <code>'Segoe UI', Tahoma, Geneva, Verdana, sans-serif</code><br>
-                            • <strong>Títulos Principales:</strong> 24px - 26px (Negrita / Bold 700)<br>
-                            • <strong>Títulos de Sección:</strong> 18px - 20px (Seminegrita / Semi-bold 600)<br>
-                            • <strong>Etiquetas y Subtítulos:</strong> 14px - 15px (Mediana / Medium 600)<br>
-                            • <strong>Texto de Párrafo / Contenido:</strong> 14px (Regular 400, color <code>#1e293b</code>)<br>
-                            • <strong>Textos Secundarios / Ayudas:</strong> 12px - 13px (color <code>#64748b</code>)
-                        </div>
-
-                        <!-- 3. CLASES CSS REUTILIZABLES -->
-                        <h4 style="font-size: 14px; color: #334155; margin: 20px 0 10px;">3. Clases CSS Predefinidas para los Compañeros:</h4>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button class="btn btn-primary" style="width: auto; padding: 8px 15px; font-size: 13px;">.btn-primary</button>
-                            <button class="btn btn-secondary" style="width: auto; padding: 8px 15px; font-size: 13px;">.btn-secondary</button>
-                            <button class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 13px;">.btn-danger</button>
-                            <span class="badge badge-activo">.badge-activo</span>
-                            <span class="badge badge-inactivo">.badge-inactivo</span>
-                            <span class="badge badge-superadmin">.badge-superadmin</span>
-                            <span class="badge badge-admin">.badge-admin</span>
                         </div>
                     </div>
+
+                    <!-- Tarjetas de resumen con datos reales de la API -->
+                    <div class="kpi-titulo">
+                        <h3>Resumen de tu operación</h3>
+                        <span id="kpiActualizado"></span>
+                    </div>
+                    <div id="dashStatsGrid" class="kpi-grid">
+                        <!-- Se generan según el rol de la sesión -->
+                    </div>
+
                 </div>
 
                 <!-- ======================================================= -->
                 <!-- SECCIÓN 2: GESTIÓN DE CLIENTES (GYANELA MEZA - #8)      -->
                 <!-- ======================================================= -->
                 <div id="seccion-clientes" class="seccion-modulo" style="display: none;">
-                    <div class="integration-card">
-                        <span class="icon">👥</span>
-                        <h3>Módulo de Gestión de Clientes</h3>
-                        <p>
-                            Espacio de integración preparado para la vista <code>ClientesView</code> correspondiente a la tarea de <strong>Gyanela Meza</strong>.
-                        </p>
-                        <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 13px; padding: 6px 14px;">
-                            ⏳ Issue #8 — Asignado a: Gyanela Meza
-                        </span>
+                    <div class="modulo-cabecera">
+                        <div class="cli-titulo">
+                            <span class="cli-icono">👥</span>
+                            <div>
+                                <h3>Gestión de Clientes</h3>
+                                <p class="modulo-subtitulo">Administración de suscriptores, planes y estados de conexión (WiNet Control).</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-auto" onclick="abrirModalNuevo()">➕ Nuevo cliente</button>
+                    </div>
 
-                        <div class="integration-task-list">
-                            <strong>📌 Checklist de tareas a conectar en este espacio por Gyanela:</strong>
-                            <ul>
-                                <li>Maquetar la tabla de clientes (HTML / <code>JTable</code>) listando los suscriptores.</li>
-                                <li>Conectar la búsqueda por número de identificación con <code>UsuarioController.buscarCliente(id)</code>.</li>
-                                <li>Implementar formulario para registrar y actualizar clientes con <code>UsuarioController.actualizarCliente(...)</code>.</li>
-                                <li>Implementar botón para <strong>Activar / Desactivar</strong> clientes con <code>UsuarioController.cambiarEstadoCliente(...)</code>.</li>
-                                <li>Implementar botón para eliminar clientes con <code>UsuarioController.eliminarCliente(id)</code>.</li>
-                            </ul>
+                    <div class="cli-chips">
+                        <span class="chip chip-total">👥 Total: <strong id="chipTotal">0</strong></span>
+                        <span class="chip chip-activos">✅ Activos: <strong id="chipActivos">0</strong></span>
+                        <span class="chip chip-inactivos">⛔ Inactivos: <strong id="chipInactivos">0</strong></span>
+                    </div>
+
+                    <div class="modulo-toolbar">
+                        <input type="text" id="buscarCliente" class="campo-busqueda"
+                               placeholder="🔍  Buscar por cédula o nombre..." oninput="alEscribirBusqueda()">
+
+                        <select id="filtroEstado" onchange="filtrarClientes()">
+                            <option value="todos">Todos los estados</option>
+                            <option value="activos">Solo activos</option>
+                            <option value="inactivos">Solo inactivos</option>
+                        </select>
+
+                        <button type="button" class="btn btn-secondary btn-auto" onclick="recargarClientes(this)" title="Volver a pedir la lista al servidor">🔄 Recargar</button>
+
+                        <span class="contador-clientes">Mostrando <strong id="totalClientes">0</strong></span>
+                    </div>
+
+                    <table class="tabla-clientes">
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Suscriptor</th>
+                                <th>Correo electrónico</th>
+                                <th>Plan asignado</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaClientes"></tbody>
+                    </table>
+
+                    <!-- Aquí JavaScript dibuja los botones Anterior / 1 2 / Siguiente -->
+                    <div id="paginacion" class="paginacion"></div>
+
+                    <!-- ================================================================= -->
+                    <!-- MODAL: UN SOLO FORMULARIO PARA REGISTRAR Y PARA ACTUALIZAR      -->
+                    <!-- ================================================================= -->
+                    <div id="modalCliente" class="modal-cli-fondo">
+                        <div class="modal-cli-caja">
+
+                            <h3 id="modalTitulo">➕ Registrar Nuevo Cliente</h3>
+
+                            <p class="nota-obligatorio">Todos los campos son obligatorios.</p>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editIdentificacion">Cédula / Identificación <span class="obligatorio">*</span></label>
+                                    <input type="text" id="editIdentificacion" placeholder="Ej. 1047289123" maxlength="10" inputmode="numeric" oninput="soloNumeros(this)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editNombre">Nombre <span class="obligatorio">*</span></label>
+                                    <input type="text" id="editNombre" placeholder="Ej. Gyanela" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editApellido">Apellido <span class="obligatorio">*</span></label>
+                                    <input type="text" id="editApellido" placeholder="Ej. Meza" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCorreo">Correo electrónico <span class="obligatorio">*</span></label>
+                                    <input type="email" id="editCorreo" placeholder="Ej. gyanela@winetcontrol.com" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editTelefono">Teléfono / Móvil <span class="obligatorio">*</span></label>
+                                    <input type="text" id="editTelefono" placeholder="Ej. 3001234567" maxlength="10" inputmode="numeric" oninput="soloNumeros(this)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPlan">Plan asignado <span class="obligatorio">*</span></label>
+                                    <!-- Las opciones se cargan desde el servidor (solo planes activos) -->
+                                    <select id="editPlan" required></select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editEstado">Estado del servicio <span class="obligatorio">*</span></label>
+                                    <select id="editEstado" required>
+                                        <option>Activo</option>
+                                        <option>Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="modal-cli-acciones">
+                                <button type="button" class="btn btn-secondary btn-auto" onclick="cerrarModal()">Cancelar</button>
+                                <button type="button" class="btn btn-primary btn-auto" onclick="guardarCliente()">Guardar</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ============================================================= -->
+                    <!-- VENTANA DE CONFIRMACIÓN (reemplaza al dialogo del navegador)   -->
+                    
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- SECCIÓN 1b: MI PERFIL (SOLO ROL CLIENTE)                -->
+                <!-- ======================================================= -->
+                <div id="seccion-perfil" class="seccion-modulo" style="display: none;">
+
+                    <div class="modulo-cabecera">
+                        <div class="cli-titulo">
+                            <span class="cli-icono">🙋</span>
+                            <div>
+                                <h3>Mis datos</h3>
+                                <p class="modulo-subtitulo">Aquí puedes consultar y actualizar tu información personal.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="perfil-envoltura">
+                    <div class="perfil-tarjeta">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfilIdentificacion">Cédula / Identificación</label>
+                                <input type="text" id="perfilIdentificacion" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="perfilNombre">Nombre</label>
+                                <input type="text" id="perfilNombre" placeholder="Ej. Alejandro">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfilApellido">Apellido</label>
+                                <input type="text" id="perfilApellido" placeholder="Ej. Escudero">
+                            </div>
+                            <div class="form-group">
+                                <label for="perfilCorreo">Correo electrónico</label>
+                                <input type="email" id="perfilCorreo" placeholder="Ej. correo@dominio.com">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfilTelefono">Teléfono / Móvil</label>
+                                <input type="text" id="perfilTelefono" maxlength="10" inputmode="numeric" oninput="soloNumeros(this)" placeholder="Ej. 3001234567">
+                            </div>
+                            <div class="form-group">
+                                <label for="perfilDireccion">Dirección</label>
+                                <input type="text" id="perfilDireccion" placeholder="Ej. Calle 10 # 20-30">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfilContrasena">Nueva contraseña</label>
+                                <input type="password" id="perfilContrasena" placeholder="Déjala vacía si no quieres cambiarla">
+                            </div>
+                            <div class="form-group">
+                                <label for="perfilContrasena2">Confirmar contraseña</label>
+                                <input type="password" id="perfilContrasena2" placeholder="Repite la nueva contraseña">
+                            </div>
+                        </div>
+
+                        <p class="nota-obligatorio perfil-nota">La contraseña debe tener mínimo 6 caracteres e incluir letras y números.</p>
+
+                        <div class="perfil-acciones">
+                            <button type="button" class="btn btn-primary btn-auto" onclick="guardarPerfil()">Guardar mis datos</button>
+                        </div>
+
+                    </div>
+                    </div>
+                </div>
+
+                <!-- ======================================================= -->
+                <!-- SECCIÓN 2b: GESTIÓN DE EMPLEADOS (ISSUE #13)            -->
+                <!-- ======================================================= -->
+                <div id="seccion-empleados" class="seccion-modulo" style="display: none;">
+
+                    <div class="modulo-cabecera">
+                        <div class="cli-titulo">
+                            <span class="cli-icono">👔</span>
+                            <div>
+                                <h3>Gestión de Empleados</h3>
+                                <p class="modulo-subtitulo">Personal de la empresa: cargos, sucursales y estado laboral.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-auto" onclick="abrirModalEmpleadoNuevo()">➕ Nuevo empleado</button>
+                    </div>
+
+                    <div class="cli-chips">
+                        <span class="chip chip-total">👔 Total: <strong id="empChipTotal">0</strong></span>
+                        <span class="chip chip-activos">✅ Activos: <strong id="empChipActivos">0</strong></span>
+                        <span class="chip chip-inactivos">⛔ Inactivos: <strong id="empChipInactivos">0</strong></span>
+                    </div>
+
+                    <div class="modulo-toolbar">
+                        <input type="text" id="buscarEmpleado" class="campo-busqueda"
+                               placeholder="🔍  Buscar por cédula o nombre..." oninput="filtrarEmpleados()">
+
+                        <select id="filtroEstadoEmpleado" onchange="filtrarEmpleados()">
+                            <option value="todos">Todos los estados</option>
+                            <option value="activos">Solo activos</option>
+                            <option value="inactivos">Solo inactivos</option>
+                        </select>
+
+                        <button type="button" class="btn btn-secondary btn-auto" onclick="recargarEmpleados(this)" title="Volver a pedir la lista al servidor">🔄 Recargar</button>
+
+                        <span class="contador-clientes">Mostrando <strong id="empTotal">0</strong></span>
+                    </div>
+
+                    <div class="tabla-empleados-envoltura">
+                    <table class="tabla-clientes">
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Empleado</th>
+                                <th>Correo electrónico</th>
+                                <th>Cargo</th>
+                                <th>Sucursal</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaEmpleados"></tbody>
+                    </table>
+                    </div>
+
+                    <div id="empPaginacion" class="paginacion"></div>
+
+                    <!-- MODAL DE EMPLEADO -->
+                    <div id="modalEmpleado" class="modal-cli-fondo">
+                        <div class="modal-cli-caja">
+
+                            <h3 id="modalEmpleadoTitulo">➕ Registrar Nuevo Empleado</h3>
+                            <p class="nota-obligatorio">Todos los campos son obligatorios.</p>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empIdentificacion">Cédula / Identificación <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empIdentificacion" placeholder="Ej. 1020304050" maxlength="10" inputmode="numeric" oninput="soloNumeros(this)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="empNombre">Nombre <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empNombre" placeholder="Ej. Carlos" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empApellido">Apellido <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empApellido" placeholder="Ej. Pineda" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="empCorreo">Correo electrónico <span class="obligatorio">*</span></label>
+                                    <input type="email" id="empCorreo" placeholder="Ej. carlos@winetcontrol.com" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empTelefono">Teléfono / Móvil <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empTelefono" placeholder="Ej. 3005556677" maxlength="10" inputmode="numeric" oninput="soloNumeros(this)" required>
+                                </div>
+                                <div class="form-group" id="filaEmpRol" style="display: none;">
+                                    <label for="empRol">Tipo de usuario <span class="obligatorio">*</span></label>
+                                    <select id="empRol" onchange="alCambiarRolEmpleado()">
+                                        <option value="EMPLEADO">Empleado (escoger rol de empleado)</option>
+                                        <option value="ADMIN">Administrador (permisos de administrador)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group" id="grupoEmpCargo">
+                                    <label for="empCargo">Rol / Cargo del empleado <span class="obligatorio">*</span></label>
+                                    <select id="empCargo" required>
+                                        <option>Técnico de campo</option>
+                                        <option>Técnico de red</option>
+                                        <option>Atención al cliente</option>
+                                        <option>Supervisor</option>
+                                        <option>Administrativo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="empSucursal">Sucursal <span class="obligatorio">*</span></label>
+                                    <select id="empSucursal" required>
+                                        <option>Sucursal Local Norte</option>
+                                        <option>Sucursal Centro</option>
+                                        <option>Sucursal Sur</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empEstado">Estado del empleado <span class="obligatorio">*</span></label>
+                                    <select id="empEstado" required>
+                                        <option>Activo</option>
+                                        <option>Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="modal-cli-acciones">
+                                <button type="button" class="btn btn-secondary btn-auto" onclick="cerrarModalEmpleado()">Cancelar</button>
+                                <button type="button" class="btn btn-primary btn-auto" onclick="guardarEmpleado()">Guardar</button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -201,26 +520,126 @@
                 <!-- SECCIÓN 3: CATÁLOGO DE PLANES (YEINI ÁLVAREZ - #9)       -->
                 <!-- ======================================================= -->
                 <div id="seccion-planes" class="seccion-modulo" style="display: none;">
-                    <div class="integration-card">
-                        <span class="icon">📡</span>
-                        <h3>Catálogo de Planes y Servicios</h3>
-                        <p>
-                            Espacio de integración preparado para las vistas <code>PlanesView</code> y <code>ContratarPlanView</code> correspondiente a la tarea de <strong>Yeini Álvarez</strong>.
-                        </p>
-                        <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 13px; padding: 6px 14px;">
-                            ⏳ Issue #9 — Asignado a: Yeini Álvarez
-                        </span>
 
-                        <div class="integration-task-list">
-                            <strong>📌 Checklist de tareas a conectar en este espacio por Yeini:</strong>
-                            <ul>
-                                <li>Maquetar el catálogo visual o tabla de planes de telecomunicaciones (código, nombre, velocidad, tarifa).</li>
-                                <li>Conectar la creación y edición de planes con <code>PlanController.crearPlan(...)</code> y <code>actualizarPlan(...)</code>.</li>
-                                <li>Implementar botón para <strong>Activar / Desactivar</strong> planes comerciales con <code>PlanController.cambiarEstadoPlan(...)</code>.</li>
-                                <li>Eliminación de planes con reasignación automática usando <code>PlanController.eliminarPlan(codigo)</code>.</li>
-                                <li>Vista de contratación de servicios: cargar planes activos y asignar a cliente con <code>UsuarioController.asignarPlan(...)</code>.</li>
-                            </ul>
+                    <!-- =================================================== -->
+                    <!-- MÓDULO DE PLANES - YEINI ÁLVAREZ (Issue #9)          -->
+                    <!-- Tabla del catálogo comercial de planes de internet. -->
+                    <!-- =================================================== -->
+                    <div class="modulo-planes">
+
+                        <div class="modulo-cabecera">
+                            <div class="modulo-titulo">
+                                <span class="modulo-icono">📡</span>
+                                <div class="modulo-titulo-texto">
+                                    <h3 class="titulo-panel">Catálogo de Planes y Servicios</h3>
+                                    <p id="descripcionPlanes">
+                                        Planes comerciales de fibra óptica. Un plan <strong>activo</strong> puede
+                                        contratarse; uno <strong>inactivo</strong> queda fuera del catálogo de contratación.
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Barra de administración (solo ADMIN / SUPERADMIN) -->
+                            <div id="barraAdminPlanes" class="plan-barra-admin" style="display: none;">
+                                <button type="button" class="btn btn-primary btn-auto" onclick="abrirFormularioNuevo()">➕ Nuevo plan</button>
+                            </div>
                         </div>
+
+                        <!-- Contadores del catálogo (chips) -->
+                        <div class="plan-resumen" id="resumenPlanes"></div>
+
+                        <!-- Buscador, filtro y recarga (mismo patrón que Clientes) -->
+                        <div class="modulo-toolbar" id="toolbarPlanes">
+                            <input type="text" id="buscarPlan" class="campo-busqueda"
+                                   placeholder="🔍  Buscar por código, nombre o velocidad..." oninput="filtrarPlanes()">
+
+                            <select id="filtroEstadoPlan" onchange="filtrarPlanes()">
+                                <option value="todos">Todos los estados</option>
+                                <option value="activos">Solo activos</option>
+                                <option value="inactivos">Solo inactivos</option>
+                            </select>
+
+                            <button type="button" class="btn btn-secondary btn-auto" onclick="recargarPlanes(this)"
+                                    title="Volver a pedir el catálogo al servidor">🔄 Recargar</button>
+
+                            <span class="contador-clientes">Mostrando <strong id="planMostrando">0</strong></span>
+                        </div>
+
+                        <!-- Formulario de creación / edición (solo administradores) -->
+                        <form id="panelFormularioPlan" class="plan-form-panel" style="display: none;"
+                              onsubmit="guardarFormularioPlan(event)">
+                            <h4 id="tituloFormularioPlan">Nuevo plan</h4>
+                            <input type="hidden" id="formCodigoOriginal">
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="formCodigo">Código</label>
+                                    <input type="number" id="formCodigo" min="1" required placeholder="105">
+                                </div>
+                                <div class="form-group">
+                                    <label for="formNombre">Nombre del plan</label>
+                                    <input type="text" id="formNombre" required placeholder="Plan Fibra 400M">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="formVelocidad">Velocidad</label>
+                                    <input type="text" id="formVelocidad" required placeholder="400 Mbps">
+                                </div>
+                                <div class="form-group">
+                                    <label for="formPrecio">Precio mensual (COP)</label>
+                                    <input type="number" id="formPrecio" min="0" step="100" required placeholder="149900">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="formDescripcion">Descripción (opcional)</label>
+                                <input type="text" id="formDescripcion" placeholder="Ideal para hogares con varios dispositivos">
+                            </div>
+
+                            <div class="plan-form-botones">
+                                <button type="submit" class="btn btn-primary">Guardar plan</button>
+                                <button type="button" class="btn btn-secondary" onclick="cerrarFormularioPlan()">Cancelar</button>
+                            </div>
+                        </form>
+
+                        <div class="tabla-planes-wrapper" id="tablaPlanesWrapper">
+                            <table class="tabla-planes">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Plan</th>
+                                        <th>Velocidad</th>
+                                        <th>Precio</th>
+                                        <th>Estado</th>
+                                        <th id="thAccionesPlanes">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaPlanesBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center; padding: 28px; color: #64748b;">
+                                            Cargando planes...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Contratación: solo para CLIENTE sin plan asignado -->
+                        <div id="panelContratacion" class="plan-contratacion" style="display: none;">
+                            <h4>🎯 Contrata tu plan</h4>
+                            <p>Todavía no tienes un plan asignado. Elige uno de los planes activos y actívalo al instante.</p>
+                            <div class="plan-contratacion-fila">
+                                <select id="selectPlanContratar"></select>
+                                <button type="button" class="btn btn-primary" onclick="contratarPlan()">Contratar plan</button>
+                            </div>
+                        </div>
+
+                        <!-- Cliente que ya tiene plan contratado o asignado por un administrador -->
+                        <div id="panelPlanActual" class="plan-tarjeta-contenedor" style="display: none;">
+                            <div id="detallePlanActual" class="plan-tarjeta"></div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -228,62 +647,40 @@
                 <!-- SECCIÓN 4: FACTURACIÓN (JUAN ESTEBAN NAVIA - #10)       -->
                 <!-- ======================================================= -->
                 <div id="seccion-facturas" class="seccion-modulo" style="display: none;">
-                    <div class="integration-card">
-                        <span class="icon">📄</span>
-                        <h3>Módulo de Facturación de Servicios (Pila LIFO)</h3>
-                        <p>
-                            Espacio de integración preparado para la vista <code>FacturasView</code> correspondiente a la tarea de <strong>Juan Esteban Navia</strong>.
-                        </p>
-                        <span class="badge" style="background: #ede9fe; color: #6d28d9; font-size: 13px; padding: 6px 14px;">
-                            ⏳ Issue #10 — Asignado a: Juan Esteban Navia
-                        </span>
-
-                        <div class="integration-task-list">
-                            <strong>📌 Checklist de tareas a conectar en este espacio por Juan:</strong>
-                            <ul>
-                                <li>Maquetar tabla con el historial de facturas del usuario usando <code>FacturaController.obtenerFacturasUsuario(...)</code>.</li>
-                                <li>Visualización destacada de la última factura en la cima de la pila (LIFO) con <code>FacturaController.consultarCima()</code>.</li>
-                                <li>Botón para ver y descargar el comprobante de pago oficial en PDF generado en disco.</li>
-                                <li>Opción administrativa para desapilar la última factura emitida con <code>FacturaController.desapilarUltimaFactura()</code>.</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <!-- El contenido lo genera js/facturacion-soporte.js -->
                 </div>
 
                 <!-- ======================================================= -->
                 <!-- SECCIÓN 5: SOPORTE TÉCNICO (JUAN ESTEBAN NAVIA - #10)   -->
                 <!-- ======================================================= -->
                 <div id="seccion-soporte" class="seccion-modulo" style="display: none;">
-                    <div class="integration-card">
-                        <span class="icon">🎧</span>
-                        <h3>Mesa de Ayuda y Soporte Técnico (Cola FIFO)</h3>
-                        <p>
-                            Espacio de integración preparado para la vista <code>SoporteView</code> correspondiente a la tarea de <strong>Juan Esteban Navia</strong>.
-                        </p>
-                        <span class="badge" style="background: #ede9fe; color: #6d28d9; font-size: 13px; padding: 6px 14px;">
-                            ⏳ Issue #10 — Asignado a: Juan Esteban Navia
-                        </span>
-
-                        <div class="integration-task-list">
-                            <strong>📌 Checklist de tareas a conectar en este espacio por Juan:</strong>
-                            <ul>
-                                <li>Formulario de radicación de tickets (asunto, descripción, prioridad) con <code>SoporteController.radicarTicket(...)</code>.</li>
-                                <li>Panel de atención administrativa con la lista de solicitudes en espera con <code>SoporteController.listarTicketsPendientes()</code>.</li>
-                                <li>Botón <strong>"Atender Siguiente Ticket"</strong> que desencola en orden FIFO con <code>SoporteController.atenderSiguienteTicket()</code>.</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <!-- El contenido lo genera js/facturacion-soporte.js -->
                 </div>
 
             </main>
         </div>
     </div>
 
+    <!-- Modal de Comprobante Imprimible (Facturación) -->
+    <div id="comprobanteModal" class="comprobante-modal"></div>
+
     <!-- Script de lógica JavaScript -->
-    <script src="js/app.js"></script>
+    <script src="js/config.js?v=47"></script>
+    <script src="js/errores.js?v=1"></script>
+    <script src="js/app.js?v=67"></script>
+    <script src="js/planes.js?v=49"></script>
+    <script src="js/facturacion-soporte.js?v=45"></script>
     <script>
         // Función sencilla para cambiar entre pestañas desde el menú lateral
         function mostrarSeccion(nombreSeccion, enlaceClickeado) {
+            // Se comprueba el permiso del rol antes de mostrar nada
+            const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
+            if (sesion && typeof seccionPermitida === "function"
+                && !seccionPermitida(nombreSeccion, sesion.rol)) {
+                nombreSeccion = "inicio";
+                enlaceClickeado = document.querySelector('.nav-link[href="#inicio"]');
+            }
+
             const secciones = document.querySelectorAll('.seccion-modulo');
             secciones.forEach(sec => sec.style.display = 'none');
 
@@ -292,12 +689,86 @@
                 seccionAMostrar.style.display = 'block';
             }
 
+            if (nombreSeccion === "clientes") {
+                // Un cliente no tiene permiso sobre la lista de clientes
+                const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
+                if (sesion && sesion.rol === "CLIENTE") {
+                    mostrarSeccion("perfil", document.querySelector('.nav-link[href="#perfil"]'));
+                    return;
+                }
+                cargarClientes();
+            }
+
+            if (nombreSeccion === "perfil" && typeof cargarPerfil === "function") {
+                cargarPerfil();
+            }
+
+            if (nombreSeccion === "empleados" && typeof cargarEmpleados === "function") {
+                cargarEmpleados();
+            }
+
+            // Igual que Clientes: cada vez que se abre la sección se piden los datos
+            if (nombreSeccion === "planes" && typeof cargarPlanes === "function") {
+                cargarPlanes();
+            }
+
+            if (nombreSeccion === "facturas" && typeof cargarModuloFacturas === "function") {
+                cargarModuloFacturas();
+            }
+
+            if (nombreSeccion === "soporte" && typeof cargarModuloSoporte === "function") {
+                cargarModuloSoporte();
+            }
+
             const enlaces = document.querySelectorAll('.nav-link');
             enlaces.forEach(link => link.classList.remove('active'));
             if (enlaceClickeado) {
                 enlaceClickeado.classList.add('active');
             }
+
+            // Se recuerda la sección abierta, para volver a ella aunque la
+            // página se recargue y la URL pierda el #hash.
+            sessionStorage.setItem("seccionAbierta", nombreSeccion);
         }
+
+        // Al cargar (o recargar) la pagina, se abre la seccion que dice la URL.
+        // Asi no te devuelve a "Inicio" despues de guardar, actualizar o eliminar.
+        document.addEventListener("DOMContentLoaded", function () {
+            const delHash = (window.location.hash || "").replace("#", "");
+            const guardada = sessionStorage.getItem("seccionAbierta") || "";
+            let seccion = delHash !== "" ? delHash : (guardada !== "" ? guardada : "inicio");
+
+            // Si el rol no tiene permiso sobre esa sección, va a Inicio
+            const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
+            if (sesion && typeof seccionPermitida === "function"
+                && !seccionPermitida(seccion, sesion.rol)) {
+                seccion = "inicio";
+            }
+
+            const enlace = document.querySelector('.nav-link[href="#' + seccion + '"]');
+            mostrarSeccion(seccion, enlace);
+        });
     </script>
+
+    <!-- ============================================================= -->
+    <!-- VENTANA DE CONFIRMACIÓN (global: se usa desde cualquier sección) -->
+    <!-- ============================================================= -->
+<!-- ============================================================= -->
+                    <div id="modalConfirmar" class="confirma-cli-fondo">
+                        <div class="confirma-cli-caja">
+
+                            <div class="confirma-cli-icono">⚠️</div>
+
+                            <h3 id="confirmaTitulo" class="confirma-cli-titulo">Eliminar cliente</h3>
+                            <p id="confirmaMensaje" class="confirma-cli-mensaje">¿Seguro?</p>
+
+                            <div class="confirma-cli-acciones">
+                                <button type="button" class="btn btn-secondary btn-auto" onclick="responderConfirmacion(false)">Cancelar</button>
+                                <button type="button" class="btn btn-primary btn-auto confirma-cli-peligro" onclick="responderConfirmacion(true)">Sí, eliminar</button>
+                            </div>
+
+                        </div>
+                    </div>
+
 </body>
 </html>

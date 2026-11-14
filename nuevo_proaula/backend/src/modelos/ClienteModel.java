@@ -1,5 +1,7 @@
 package modelos;
 
+import utils.PersistenciaUtil;
+
 import entidades.Cliente;
 import entidades.Plan;
 import metodos.ListaClientes;
@@ -16,10 +18,13 @@ import java.util.List;
  */
 public class ClienteModel {
 
-    private final ListaClientes listaClientes;
+    private ListaClientes listaClientes;
+
+    private static final String ARCHIVO = "clientes.dat";
 
     public ClienteModel() {
         this.listaClientes = new ListaClientes();
+        cargarEstado();
     }
 
     public ClienteModel(ListaClientes listaClientes) {
@@ -81,10 +86,10 @@ public class ClienteModel {
 
         // 4. Asignación de plan inicial y encriptación
         if (!ValidadorTexto.esNoVacio(cliente.getPlanActual()) || cliente.getPlanActual().equalsIgnoreCase("Sin plan")) {
-            cliente.setPlanActual(ValidadorTexto.esNoVacio(planPorDefecto) ? planPorDefecto : "Plan Básico");
+            cliente.setPlanActual(ValidadorTexto.esNoVacio(planPorDefecto) ? planPorDefecto : "");
         }
 
-        cliente.setContrasena(EncriptadorUtil.encriptarSHA256(cliente.getContrasena()));
+        cliente.setContrasena(EncriptadorUtil.encriptarContrasena(cliente.getContrasena()));
         listaClientes.insertarFinal(cliente);
 
         return Respuesta.exito("Cliente registrado exitosamente.", cliente);
@@ -145,7 +150,7 @@ public class ClienteModel {
             if (!ValidadorTexto.validarPassword(datosNuevos.getContrasena())) {
                 return Respuesta.error("La nueva contraseña debe tener mínimo 6 caracteres e incluir letras y números.");
             }
-            actual.setContrasena(EncriptadorUtil.encriptarSHA256(datosNuevos.getContrasena()));
+            actual.setContrasena(EncriptadorUtil.encriptarContrasena(datosNuevos.getContrasena()));
         }
 
         return Respuesta.exito("Cliente actualizado correctamente.", actual);
@@ -301,4 +306,19 @@ public class ClienteModel {
             return Respuesta.error("Usuario o contraseña incorrectos.", 401);
         }
     }
+
+    // ================= PERSISTENCIA =================
+    /** Vuelca la lista de clientes al archivo datos/clientes.dat. */
+    public void guardarEstado() {
+        PersistenciaUtil.guardar(listaClientes, ARCHIVO);
+    }
+
+    /** Recupera la lista desde disco, si existe; si no, se queda la vacía. */
+    private void cargarEstado() {
+        ListaClientes cargada = PersistenciaUtil.cargar(ARCHIVO, ListaClientes.class);
+        if (cargada != null) {
+            listaClientes = cargada;
+        }
+    }
+
 }

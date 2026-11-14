@@ -1,5 +1,7 @@
 package modelos;
 
+import utils.PersistenciaUtil;
+
 import entidades.Cliente;
 import entidades.Plan;
 import metodos.ListaPlanes;
@@ -13,10 +15,13 @@ import java.util.List;
  */
 public class PlanModel {
 
-    private final ListaPlanes listaPlanes;
+    private ListaPlanes listaPlanes;
+
+    private static final String ARCHIVO = "planes.dat";
 
     public PlanModel() {
         this.listaPlanes = new ListaPlanes();
+        cargarEstado();
     }
 
     public PlanModel(ListaPlanes listaPlanes) {
@@ -200,4 +205,19 @@ public class PlanModel {
         }
         return new Plan(1, "Plan Básico", "50 Mbps", 45000, "Plan residencial estándar");
     }
+
+    // ================= PERSISTENCIA =================
+    /** Vuelca el catálogo de planes al archivo datos/planes.dat. */
+    public void guardarEstado() {
+        PersistenciaUtil.guardar(listaPlanes, ARCHIVO);
+    }
+
+    /** Recupera el catálogo desde disco, si existe. */
+    private void cargarEstado() {
+        ListaPlanes cargada = PersistenciaUtil.cargar(ARCHIVO, ListaPlanes.class);
+        if (cargada != null) {
+            listaPlanes = cargada;
+        }
+    }
+
 }

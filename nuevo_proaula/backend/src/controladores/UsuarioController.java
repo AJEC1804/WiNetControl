@@ -54,14 +54,14 @@ public class UsuarioController {
         Administrador superAdmin = new Administrador(
                 "Super Administrador", "Global", "CC", "9999999999",
                 "3009999999", "superadmin@winetcontrol.com", "Sede Central Corporativa",
-                EncriptadorUtil.encriptarSHA256("Super123!"), "SUPERADMIN", "Sede Central (Global)"
+                EncriptadorUtil.encriptarContrasena("Super123!"), "SUPERADMIN", "Sede Central (Global)"
         );
 
         // 2. Administrador Local
         Administrador adminLocal = new Administrador(
                 "Administrador", "Local", "CC", "1000000001",
                 "3008888888", "admin@winetcontrol.com", "Sucursal Local Norte # 45-20",
-                EncriptadorUtil.encriptarSHA256("Admin123!"), "ADMIN", "Sucursal Local Norte"
+                EncriptadorUtil.encriptarContrasena("Admin123!"), "ADMIN", "Sucursal Local Norte"
         );
 
         administradoresSistema.add(superAdmin);
@@ -118,7 +118,9 @@ public class UsuarioController {
                                               String identificacion, String telefono, String correo,
                                               String direccion, String contrasena, String confirmarContrasena) {
 
-        String planInicial = planModel.obtenerPlanPorDefecto().getNombrePlan();
+        // El cliente nuevo queda SIN plan: así puede elegir uno desde la vista de
+        // contratación. Se asigna uno solo si el catálogo lo decide explícitamente.
+        String planInicial = "";
 
         Cliente nuevoCliente = new Cliente(
                 nombre, apellido, tipoDocumento, identificacion,

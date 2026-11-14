@@ -1,12 +1,15 @@
 package metodos;
 
+import java.io.Serializable;
+
 /**
  * Implementación de Lista Simplemente Enlazada.
  * Estructurada siguiendo la metodología y lógica del docente y estudiantes
  * (recorridos con punteros auxiliares sapo, sapa y sapito), completando
  * todos los métodos faltantes para un CRUD y manipulación total de la estructura.
  */
-public class ListaSimple {
+public class ListaSimple implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Nodo primero;
 

@@ -1,5 +1,7 @@
 package metodos;
 
+import java.io.Serializable;
+
 import entidades.Soporte;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +10,12 @@ import java.util.List;
  * Cola (FIFO) especializada para Tickets de Soporte Técnico.
  * Estructura de datos autosuficiente mediante nodos enlazados desde el frente al final.
  */
-public class ColaSoporte {
+public class ColaSoporte implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Nodo doblemente enlazado para Cola de Soporte
-    public static class NodoSoporte {
+    public static class NodoSoporte implements Serializable {
+        private static final long serialVersionUID = 1L;
         private Soporte dato;
         private NodoSoporte siguiente;
         private NodoSoporte anterior;

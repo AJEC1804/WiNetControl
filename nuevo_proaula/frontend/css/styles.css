@@ -9,7 +9,7 @@
 :root {
     --color-primario: #2563eb;       /* Azul principal (Royal Blue) */
     --color-primario-oscuro: #1d4ed8;/* Azul más oscuro para hover */
-    --color-fondo: #f1f5f9;          /* Fondo gris claro suave (Slate 100) */
+    --color-fondo: #f1f5f9;          /* Fondo gris claro (Slate 100): hace resaltar las cajas blancas */
     --color-tarjeta: #ffffff;        /* Fondo blanco para las cajas/tarjetas */
     --color-texto: #1e293b;          /* Gris oscuro casi negro para texto legible (Slate 800) */
     --color-texto-suave: #64748b;    /* Gris para subtítulos y textos secundarios (Slate 500) */
@@ -513,4 +513,1049 @@ body {
     .content-area {
         padding: 15px;
     }
+}
+
+
+/* ==================================================================
+   MÓDULO DE GESTIÓN DE CLIENTES - GYANELA MEZA (Issue #8)
+   Este bloque va AL FINAL de styles.css.
+   No modifica nada de lo que ya existe en el archivo.
+   ================================================================== */
+
+
+/* ------------------------------------------------------------------
+   1. ENCABEZADO
+   Pongo el título a la izquierda y el botón "Nuevo cliente"
+   a la derecha. Uso flex para alinearlos en la misma fila.
+   ------------------------------------------------------------------ */
+.modulo-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* El texto pequeño gris que va debajo del título */
+.modulo-subtitulo {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+
+/* ------------------------------------------------------------------
+   2. BARRA DE HERRAMIENTAS
+   Es la caja blanca donde van el buscador, el filtro y el contador.
+   Con flex-wrap, si la pantalla es angosta los elementos bajan solos.
+   ------------------------------------------------------------------ */
+.modulo-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* La caja de búsqueda ocupa todo el espacio disponible (flex: 1) */
+.campo-busqueda {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* El selector de estado (Todos / Activos / Inactivos) */
+.modulo-toolbar select {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+/* El contador se empuja solito hacia la derecha con margin-left: auto */
+.contador-clientes {
+    margin-left: auto;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* Botón que NO ocupa todo el ancho (el .btn normal sí lo hace) */
+.btn-auto {
+    width: auto;
+    padding: 10px 15px;
+}
+
+
+/* ------------------------------------------------------------------
+   3. LA TABLA
+   La convierto en una tarjeta: fondo blanco, bordes suaves y
+   esquinas redondeadas. overflow: hidden es para que el redondeo
+   también recorte las esquinas de la cabecera gris.
+   ------------------------------------------------------------------ */
+.tabla-clientes {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+/* Los títulos de las columnas: mayúsculas pequeñas y gris suave */
+.tabla-clientes th {
+    background: #f8fafc;
+    color: #64748b;
+    text-align: left;
+    padding: 10px 15px;
+    font-size: 12px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Las celdas con los datos */
+.tabla-clientes td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+}
+
+/* Cuando pasas el mouse por una fila se ilumina un poco */
+.tabla-clientes tr:hover {
+    background: #f8fafc;
+}
+
+
+/* ------------------------------------------------------------------
+   4. BOTONES DE ACCIÓN (✏️ y 🗑️)
+   Cuadraditos con borde. Al pasar el mouse cambian de color para
+   avisar que se pueden pulsar.
+   ------------------------------------------------------------------ */
+.btn-icono {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-icono:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+}
+
+/* El de eliminar se pone rojo al pasar el mouse (avisa que es peligroso) */
+.btn-icono.peligro:hover {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+
+/* ------------------------------------------------------------------
+   5. EL MODAL (ventana que aparece encima de todo)
+   Se usa el truco clásico: una capa oscura que cubre toda la
+   pantalla y una caja blanca centrada encima.
+   ------------------------------------------------------------------ */
+.modal-cli-fondo {
+    display: none;              /* oculto por defecto */
+    position: fixed;            /* fijo: no se mueve al hacer scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);  /* negro transparente */
+    align-items: center;        /* centra la caja en vertical */
+    justify-content: center;    /* y en horizontal */
+    z-index: 1000;              /* por encima de todo */
+}
+
+/* La caja blanca del formulario */
+.modal-cli-caja {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 25px;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-cli-caja h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+/* Todos los campos del formulario del modal */
+.modal-cli-caja input,
+.modal-cli-caja select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+/* Cuando estás escribiendo en un campo, el borde se pone azul */
+.modal-cli-caja input:focus,
+.modal-cli-caja select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* La cédula bloqueada (readonly) se ve gris para avisar que no se edita */
+.modal-cli-caja input[readonly] {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* Los dos botones de abajo, alineados a la derecha */
+.modal-cli-acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+
+/* ------------------------------------------------------------------
+   6. PARA CELULAR
+   Si la pantalla mide menos de 768px, la barra y el encabezado
+   se ponen en columna, y la tabla se puede deslizar de lado.
+   ------------------------------------------------------------------ */
+@media (max-width: 768px) {
+    .modulo-cabecera {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .modulo-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .contador-clientes {
+        margin-left: 0;
+    }
+    .btn-auto {
+        width: 100%;
+    }
+    .tabla-clientes {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* ------------------------------------------------------------------
+   7. AVISO DE TABLA VACÍA
+   Cuando el filtro no encuentra clientes, en vez de una tabla en
+   blanco se muestra este mensaje centrado (colspan="7").
+   ------------------------------------------------------------------ */
+.tabla-vacia {
+    text-align: center;
+    padding: 25px 15px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* ------------------------------------------------------------------
+   8. PAGINACIÓN
+   Los botones "Anterior / 1 2 3 / Siguiente" que van debajo de la
+   tabla. Se alinean a la derecha con flex.
+   ------------------------------------------------------------------ */
+.paginacion {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    margin-top: 15px;
+}
+
+.pagina-btn {
+    min-width: 38px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1e293b;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.pagina-btn:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+}
+
+/* La página en la que estamos se marca en azul */
+.pagina-btn.activa {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Los botones deshabilitados (Anterior en la 1, Siguiente en la última) */
+.pagina-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+/* ------------------------------------------------------------------
+   9. CAMPOS OBLIGATORIOS DEL MODAL
+   El asterisco rojo avisa que el campo no puede quedar vacío.
+   ------------------------------------------------------------------ */
+.obligatorio {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.nota-obligatorio {
+    margin-bottom: 15px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+
+/* ------------------------------------------------------------------
+   10. TOQUES DE COLOR DEL MODULO DE CLIENTES
+   Estos estilos van despues de los anteriores, asi que los mejoran
+   sin tener que borrar nada.
+   ------------------------------------------------------------------ */
+
+/* --- El titulo con su icono en un cuadro de color --- */
+.cli-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cli-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #dbeafe;
+    font-size: 22px;
+}
+
+/* --- Chips de resumen (Total / Activos / Inactivos) --- */
+.cli-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.chip-total {
+    background: #e0edff;
+    color: #1d4ed8;
+}
+
+.chip-activos {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.chip-inactivos {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* --- La barra de herramientas con fondo suave --- */
+.modulo-toolbar {
+    background: #f8fafc;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+}
+
+/* El buscador brilla en azul al hacer clic */
+.campo-busqueda:focus,
+.modulo-toolbar select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #dbeafe;
+}
+
+/* --- La tabla con cabecera azul --- */
+.tabla-clientes {
+    border: 1px solid #dbeafe;
+}
+
+.tabla-clientes th {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-bottom: 2px solid #bfdbfe;
+}
+
+.tabla-clientes tr:hover {
+    background: #f5f9ff;
+}
+
+/* --- Botones de accion con su color --- */
+.btn-icono {
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+    background: #f5f9ff;
+}
+
+.btn-icono.peligro {
+    border-color: #fecaca;
+    color: #b91c1c;
+    background: #fef7f7;
+}
+
+/* --- El modal con banda azul arriba --- */
+.modal-cli-caja {
+    border-top: 5px solid #2563eb;
+}
+
+.modal-cli-caja h3 {
+    background: #eff6ff;
+    color: #1d4ed8;
+    margin: -25px -25px 20px -25px;
+    padding: 18px 25px;
+    border-radius: 8px 8px 0 0;
+}
+
+
+/* ------------------------------------------------------------------
+   11. ESTILO TIPO TARJETA (como el modulo de Planes de Yeini)
+   Cabecera azul con degradado, filas cebra, avatar y acentos.
+   ------------------------------------------------------------------ */
+
+/* La tabla queda como una tarjeta flotante */
+.tabla-clientes {
+    border: 1px solid #dbe6f5;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Cabecera azul fuerte con letras blancas */
+.tabla-clientes th {
+    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-size: 11.5px;
+    letter-spacing: 0.7px;
+    font-weight: 700;
+    padding: 13px 14px;
+    border-bottom: 2px solid #1e40af;
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.tabla-clientes th:last-child {
+    border-right: none;
+}
+
+/* Celdas mas espaciosas */
+.tabla-clientes td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #eaf1fb;
+    vertical-align: middle;
+}
+
+/* Filas cebra (una blanca, una azul muy clarito) */
+.tabla-clientes tbody tr:nth-child(even) td {
+    background: #fafcff;
+}
+
+/* Se ilumina al pasar el mouse */
+.tabla-clientes tbody tr:hover td {
+    background: #eef5ff;
+}
+
+/* Barra de color a la izquierda segun el estado */
+.tabla-clientes tbody td:first-child {
+    border-left: 3px solid transparent;
+}
+
+.tabla-clientes tbody tr.fila-activo td:first-child {
+    border-left-color: #16a34a;
+}
+
+.tabla-clientes tbody tr.fila-inactivo td:first-child {
+    border-left-color: #dc2626;
+}
+
+/* La cedula en "letra de computador" dentro de una etiqueta */
+.cli-cedula {
+    display: inline-block;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1d4ed8;
+    background: #eff6ff;
+    border: 1px solid #d7e6ff;
+    border-radius: 6px;
+    padding: 3px 9px;
+}
+
+/* Nombre con avatar circular y telefono debajo */
+.cli-persona {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cli-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.cli-nombre {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.cli-telefono {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* El plan en una etiqueta suave */
+.cli-plan {
+    display: inline-block;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 4px 9px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* El badge de estado con un puntico de color */
+.cli-punto {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    margin-right: 4px;
+}
+
+/* Botones de accion mas definidos */
+.btn-icono {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    transition: transform 0.12s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-icono:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.18);
+}
+
+.btn-icono.peligro:hover {
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.18);
+}
+
+
+/* ------------------------------------------------------------------
+   12. MENSAJES EMERGENTES (TOASTS)
+   Avisos que aparecen abajo a la derecha y desaparecen solos.
+   Verde = todo bien, rojo = error, azul = informacion.
+   ------------------------------------------------------------------ */
+.toast-cli-contenedor {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20000;
+}
+
+.toast-cli {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 270px;
+    max-width: 370px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #16a34a;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: #1e293b;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+    animation: toastEntra 0.2s ease-out;
+}
+
+.toast-cli.error {
+    border-left-color: #dc2626;
+}
+
+.toast-cli.info {
+    border-left-color: #2563eb;
+}
+
+.toast-cli-icono {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.toast-cli-texto {
+    flex: 1;
+    line-height: 1.35;
+}
+
+.toast-cli-cerrar {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+
+.toast-cli-cerrar:hover {
+    color: #1e293b;
+}
+
+.toast-cli.saliendo {
+    animation: toastSale 0.2s ease-in forwards;
+}
+
+@keyframes toastEntra {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastSale {
+    to { opacity: 0; transform: translateX(24px); }
+}
+
+
+/* ------------------------------------------------------------------
+   13. VENTANA DE CONFIRMACIÓN PROPIA
+   Es la que reemplaza al dialogo gris del navegador ("127.0.0.1 dice").
+   ------------------------------------------------------------------ */
+.confirma-cli-fondo {
+    display: none;            /* oculta hasta que se necesite */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 15000;           /* por encima del modal de clientes */
+}
+
+.confirma-cli-caja {
+    background: #ffffff;
+    border-radius: 12px;
+    border-top: 5px solid #dc2626;
+    padding: 25px;
+    width: 420px;
+    max-width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(15, 23, 42, 0.3);
+}
+
+.confirma-cli-icono {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px auto;
+    border-radius: 50%;
+    background: #fee2e2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.confirma-cli-titulo {
+    font-size: 18px;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.confirma-cli-mensaje {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.confirma-cli-acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* El botón de aceptar va en rojo porque la acción es destructiva */
+.confirma-cli-peligro {
+    background: #dc2626;
+}
+
+.confirma-cli-peligro:hover {
+    background: #b91c1c;
+}
+
+
+/* ------------------------------------------------------------------
+   14. "MIS DATOS" (perfil del cliente)
+   Se centra la tarjeta y se le da un poco de aire.
+   ------------------------------------------------------------------ */
+.perfil-envoltura {
+    display: flex;
+    justify-content: center;
+}
+
+.perfil-tarjeta {
+    width: 100%;
+    max-width: 760px;
+    background: #ffffff;
+    border: 1px solid #dbe6f5;
+    border-top: 5px solid #2563eb;
+    border-radius: 12px;
+    padding: 30px 32px 26px 32px;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.perfil-tarjeta .form-group label {
+    color: #334155;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.perfil-tarjeta input {
+    background: #f8fafc;
+}
+
+.perfil-tarjeta input:not([readonly]):focus {
+    background: #ffffff;
+}
+
+.perfil-nota {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #64748b;
+    text-align: left;
+}
+
+.perfil-acciones {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #eaf1fb;
+}
+
+
+/* ------------------------------------------------------------------
+   15. TABLA DE EMPLEADOS: que no se estire ni se rompa
+   Los textos largos no se parten y la tabla se puede deslizar.
+   ------------------------------------------------------------------ */
+.tabla-empleados-envoltura {
+    overflow-x: auto;
+    border-radius: 12px;
+}
+
+.tabla-empleados-envoltura table {
+    min-width: 900px;          /* por debajo de eso, se desliza */
+}
+
+.tabla-clientes td,
+.tabla-clientes th {
+    white-space: nowrap;       /* evita que "Técnico de campo" se parta */
+}
+
+.tabla-clientes td:nth-child(3) {
+    white-space: normal;       /* el correo sí puede partirse */
+    max-width: 240px;
+}
+
+.tabla-clientes .btn-icono {
+    flex-shrink: 0;
+}
+
+/* Los botones de acción siempre en fila */
+.tabla-clientes td:last-child {
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------------------
+   16. BARRA LATERAL Y SUPERIOR FIJAS
+   La página larga hace scroll SOLO en el área de contenido.
+   El menú, el botón "Cerrar Sesión" y la barra superior quedan fijos.
+   ------------------------------------------------------------------ */
+html,
+body {
+    height: 100%;
+}
+
+.dashboard-container {
+    height: 100vh;
+    overflow: hidden;          /* el scroll vive dentro del contenido */
+}
+
+/* La barra lateral ocupa toda la altura y no se mueve */
+.sidebar {
+    height: 100vh;
+    flex-shrink: 0;
+}
+
+/* Si hay muchos enlaces, solo el menú hace scroll (por dentro) */
+.sidebar-nav {
+    overflow-y: auto;
+}
+
+/* "Cerrar Sesión" siempre pegado abajo */
+.sidebar-footer {
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+/* La columna derecha también mide el alto de la pantalla */
+.main-wrapper {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* La barra superior queda fija arriba */
+.topbar {
+    flex-shrink: 0;
+}
+
+/* Aquí sí hay scroll: es la única zona que se desplaza */
+.content-area {
+    overflow-y: auto;
+    padding-bottom: 40px;
+}
+
+/* Barra de scroll discreta y azul */
+.content-area::-webkit-scrollbar {
+    width: 10px;
+}
+
+.content-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 5px;
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* En pantallas pequeñas se libera para que la página fluya normal */
+@media (max-width: 900px) {
+    .dashboard-container,
+    .main-wrapper {
+        height: auto;
+        overflow: visible;
+    }
+
+    .sidebar {
+        height: auto;
+    }
+
+    .content-area {
+        overflow-y: visible;
+    }
+}
+
+
+/* ------------------------------------------------------------------
+   17. TABLAS ADAPTADAS AL ESPACIO (sin scroll horizontal)
+   Reemplaza las reglas de la sección 15: la tabla usa el 100% del ancho,
+   los textos largos se abrevian y solo lo corto queda en una línea.
+   ------------------------------------------------------------------ */
+.tabla-empleados-envoltura {
+    overflow: hidden;          /* nada de scroll horizontal */
+    border-radius: 12px;
+}
+
+.tabla-empleados-envoltura table {
+    min-width: 0;
+    width: 100%;
+}
+
+.tabla-clientes {
+    table-layout: auto;
+    width: 100%;
+}
+
+/* Todo puede partirse en dos líneas si hace falta... */
+.tabla-clientes th,
+.tabla-clientes td {
+    white-space: normal;
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+.tabla-clientes th {
+    font-size: 11px;
+    letter-spacing: 0.4px;
+}
+
+/* ...menos estas columnas, que son cortas */
+.tabla-clientes td:first-child,
+.tabla-clientes td:last-child {
+    white-space: nowrap;
+}
+
+/* La cédula y el avatar más compactos */
+.cli-cedula {
+    font-size: 12px;
+    padding: 3px 7px;
+}
+
+.cli-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+}
+
+.cli-persona {
+    gap: 8px;
+}
+
+.cli-nombre {
+    font-size: 13px;
+}
+
+.cli-telefono {
+    font-size: 11.5px;
+}
+
+/* El correo, si es muy largo, se abrevia con puntos suspensivos */
+.tabla-clientes td:nth-child(3) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* El plan / cargo en su etiqueta, sin estirarse */
+.cli-plan {
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+/* Los botones de acción, juntos y sin apilarse */
+.tabla-clientes td:last-child {
+    width: 1%;
+}
+
+.tabla-clientes td:last-child .btn-icono {
+    vertical-align: middle;
+}
+
+
+/* ------------------------------------------------------------------
+   18. CÉDULA BLOQUEADA EN "MIS DATOS"
+   El campo es readonly: se ve gris y con el cursor de prohibido,
+   para que quede claro que NO se puede cambiar.
+   ------------------------------------------------------------------ */
+.perfil-tarjeta input[readonly] {
+    background: #eef2f7;
+    color: #64748b;
+    border-color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.perfil-tarjeta input[readonly]:focus {
+    outline: none;
+    border-color: #cbd5e1;
+    box-shadow: none;
+}
+
+
+/* ------------------------------------------------------------------
+   19. BOTÓN DE RECARGAR
+   El icono gira mientras se piden los datos al servidor.
+   ------------------------------------------------------------------ */
+.girando {
+    animation: girarIcono 0.7s linear infinite;
+    pointer-events: none;      /* evita doble clic mientras carga */
+    opacity: 0.7;
+}
+
+@keyframes girarIcono {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+
+/* ------------------------------------------------------------------
+   20. EVITAR QUE EL CONTENIDO "SALTE" AL REPINTAR LA TABLA
+   Chrome tiene un "anclaje de scroll" que reajusta la vista cuando
+   cambia el contenido. Al agregar una fila, eso mueve la pantalla.
+   Aquí se desactiva para el área de contenido.
+   ------------------------------------------------------------------ */
+.content-area {
+    overflow-anchor: none;
+}
+
+html,
+body {
+    overflow-anchor: none;
+}
+
+
+/* ------------------------------------------------------------------
+   21. SIN SCROLL HORIZONTAL EN EL ÁREA DE CONTENIDO
+   Al repintar la tabla, el contenido se ensancha un instante y el área
+   se desplazaba de lado. Aquí se bloquea el desplazamiento horizontal.
+   ------------------------------------------------------------------ */
+.content-area {
+    overflow-x: hidden;
+}
+
+/* Y las tablas nunca deben ser más anchas que su contenedor */
+.tabla-clientes,
+.tabla-empleados-envoltura,
+.modulo-toolbar,
+.modulo-cabecera {
+    max-width: 100%;
 }

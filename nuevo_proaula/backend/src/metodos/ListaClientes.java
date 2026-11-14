@@ -1,5 +1,7 @@
 package metodos;
 
+import java.io.Serializable;
+
 import entidades.Cliente;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +10,12 @@ import java.util.List;
  * Lista Doblemente Enlazada para la gestión CRUD de Clientes.
  * Estructura de datos autosuficiente mediante nodos con punteros hacia adelante y hacia atrás.
  */
-public class ListaClientes {
+public class ListaClientes implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Nodo doblemente enlazado para Clientes
-    public static class NodoCliente {
+    public static class NodoCliente implements Serializable {
+        private static final long serialVersionUID = 1L;
         private Cliente dato;
         private NodoCliente siguiente;
         private NodoCliente anterior;

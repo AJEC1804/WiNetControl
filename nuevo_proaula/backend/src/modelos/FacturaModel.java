@@ -1,5 +1,7 @@
 package modelos;
 
+import utils.PersistenciaUtil;
+
 import entidades.Cliente;
 import entidades.Factura;
 import entidades.Plan;
@@ -18,7 +20,9 @@ import java.util.List;
  */
 public class FacturaModel {
 
-    private final PilaFacturas pilaFacturas;
+    private PilaFacturas pilaFacturas;
+
+    private static final String ARCHIVO = "facturas.dat";
     private int consecutivoFactura;
     private static final String CARPETA_FACTURAS = "facturas";
 
@@ -26,6 +30,7 @@ public class FacturaModel {
         this.pilaFacturas = new PilaFacturas();
         this.consecutivoFactura = 1;
         asegurarDirectorio();
+        cargarEstado();
     }
 
     public FacturaModel(PilaFacturas pilaFacturas) {
@@ -140,4 +145,29 @@ public class FacturaModel {
         List<Factura> todas = pilaFacturas.listarTodas();
         return Respuesta.exito("Historial total de facturas obtenido (" + todas.size() + ").", todas);
     }
+
+    // ================= PERSISTENCIA =================
+    /**
+     * Vuelca la pila de facturas y el consecutivo de numeración.
+     * Se guarda un arreglo de dos posiciones porque el consecutivo no es parte
+     * de la estructura de datos.
+     */
+    public void guardarEstado() {
+        PersistenciaUtil.guardar(new Object[]{pilaFacturas, Integer.valueOf(consecutivoFactura)}, ARCHIVO);
+    }
+
+    /** Recupera la pila y el consecutivo desde disco, si existen. */
+    private void cargarEstado() {
+        Object[] estado = PersistenciaUtil.cargar(ARCHIVO, Object[].class);
+        if (estado == null || estado.length < 2) {
+            return;
+        }
+        if (estado[0] instanceof PilaFacturas) {
+            pilaFacturas = (PilaFacturas) estado[0];
+        }
+        if (estado[1] instanceof Integer) {
+            consecutivoFactura = ((Integer) estado[1]).intValue();
+        }
+    }
+
 }

@@ -1,12 +1,15 @@
 package metodos;
 
+import java.io.Serializable;
+
 /**
  * Implementación de Lista Doblemente Enlazada.
  * Estructura bidireccional con punteros 'primero' y 'ultimo',
  * implementando fielmente la metodología vista en clase
  * y completando todos los métodos requeridos para el CRUD completo.
  */
-public class ListaDoble {
+public class ListaDoble implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Nodo primero;
     private Nodo ultimo;

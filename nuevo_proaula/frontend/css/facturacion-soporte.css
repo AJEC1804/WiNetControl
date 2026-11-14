@@ -1,0 +1,598 @@
+/* ==========================================================================
+   ESTILOS BEM - FACTURACIÓN (LIFO) Y SOPORTE TÉCNICO (FIFO)
+   Autor: Juan Esteban Navia (Issue #10)
+   Proyecto: WiNet Control - ProAula Estructuras de Datos / MVC
+   Metodología: BEM (Bloque__Elemento--Modificador)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. MÓDULO DE FACTURACIÓN (PILA LIFO)
+   -------------------------------------------------------------------------- */
+.facturacion {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.facturacion__header {
+    background: var(--color-tarjeta);
+    padding: 22px 25px;
+    border-radius: var(--radio-borde);
+    border: 1px solid var(--color-borde);
+    box-shadow: var(--sombra);
+}
+
+.facturacion__header-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.facturacion__header-subtitulo {
+    font-size: 13px;
+    color: var(--color-texto-suave);
+}
+
+/* Tarjeta Destacada: Cima de la Pila (LIFO) */
+.facturacion__cima {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+    border: 1.5px solid #93c5fd;
+    border-left: 5px solid #2563eb;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);
+    position: relative;
+}
+
+.facturacion__cima-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.facturacion__cima-titulo {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.facturacion__badge--cima {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.facturacion__cima-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 1100px) {
+    .facturacion__cima-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.facturacion__dato {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 12px 14px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.facturacion__dato-etiqueta {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.facturacion__dato-valor {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.facturacion__dato-valor--monto {
+    color: #16a34a;
+}
+
+/* Barra de Herramientas y Acciones */
+.facturacion__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    padding: 14px 20px;
+    border-radius: 7px;
+    border: 1px solid #e2e8f0;
+}
+
+.facturacion__toolbar-acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.facturacion__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    width: auto;
+}
+
+.facturacion__btn--primario {
+    background-color: var(--color-primario, #2563eb);
+    color: #ffffff;
+}
+
+.facturacion__btn--primario:hover {
+    background-color: var(--color-primario-oscuro, #1d4ed8);
+}
+
+.facturacion__btn--secundario {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+}
+
+.facturacion__btn--secundario:hover {
+    background-color: #e2e8f0;
+}
+
+.facturacion__btn--peligro {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.facturacion__btn--peligro:hover {
+    background-color: #fca5a5;
+    color: #991b1b;
+}
+
+/* Tabla de Facturas */
+.facturacion__tabla-card {
+    background: #ffffff;
+    padding: 20px 24px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.facturacion__tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.facturacion__tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+}
+
+.facturacion__tabla th {
+    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+    color: #ffffff;
+    padding: 12px 14px;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+.facturacion__tabla td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.facturacion__tabla tr:hover {
+    background-color: #f8fafc;
+}
+
+.facturacion__tabla-vacia {
+    text-align: center;
+    padding: 30px 15px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. MÓDULO DE MESA DE AYUDA Y SOPORTE (COLA FIFO)
+   -------------------------------------------------------------------------- */
+.soporte {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.soporte__header {
+    background: #ffffff;
+    padding: 22px 25px;
+    border-radius: 7px;
+    border: 1px solid #e2e8f0;
+    box-shadow: var(--sombra, 0 4px 6px -1px rgba(0,0,0,0.1));
+}
+
+.soporte__header-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-texto, #1e293b);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.soporte__header-subtitulo {
+    font-size: 13px;
+    color: var(--color-texto-suave, #64748b);
+}
+
+/* Distribución en 2 Columnas: Formulario y Cola */
+.soporte__layout {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .soporte__layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.soporte__columna {
+    background: #ffffff;
+    padding: 22px 24px;
+    border-radius: 7px;
+    border: 1px solid #e2e8f0;
+    box-shadow: var(--sombra, 0 4px 6px -1px rgba(0,0,0,0.1));
+    display: flex;
+    flex-direction: column;
+}
+
+.soporte__seccion-titulo {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Visualizador de la Cola FIFO (Nodos enlazados) */
+.soporte__cola-info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    border-radius: 7px;
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.soporte__cola-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.soporte__nodo {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-left: 5px solid #64748b;
+    border-radius: 7px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.soporte__nodo:hover {
+    transform: translateX(2px);
+}
+
+/* Modificador para el frente de la cola (1° en ser atendido) */
+.soporte__nodo--frente {
+    border-left-color: #2563eb;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
+}
+
+.soporte__nodo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.soporte__nodo-id {
+    font-weight: 700;
+    font-size: 13px;
+    color: #1e293b;
+}
+
+.soporte__nodo-asunto {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.soporte__nodo-mensaje {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.soporte__nodo-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #64748b;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 6px;
+}
+
+/* Badges de Soporte */
+.soporte__badge--frente {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.soporte__badge--espera {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.soporte__btn-atender {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    background-color: #16a34a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.soporte__btn-atender:hover {
+    background-color: #15803d;
+}
+
+.soporte__btn-atender:disabled {
+    background-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. MODAL DE COMPROBANTE DE FACTURA (FORMATO IMPRIMIBLE)
+   -------------------------------------------------------------------------- */
+.comprobante-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.65);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.comprobante-modal__caja {
+    background: #ffffff;
+    width: 100%;
+    max-width: 620px;
+    border-radius: 7px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.comprobante-modal__header {
+    background-color: #f8fafc;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comprobante-modal__titulo {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.comprobante-modal__cerrar {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #64748b;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.comprobante-modal__cerrar:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.comprobante-modal__cuerpo {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* Documento de Factura Formal WiNet */
+.comprobante-papel {
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    padding: 24px;
+    background: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1e293b;
+}
+
+.comprobante-papel__encabezado {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+}
+
+.comprobante-papel__empresa h3 {
+    font-size: 18px;
+    color: #2563eb;
+    margin-bottom: 4px;
+}
+
+.comprobante-papel__empresa p {
+    font-size: 11px;
+    color: #64748b;
+    margin: 2px 0;
+}
+
+.comprobante-papel__factura-id {
+    text-align: right;
+}
+
+.comprobante-papel__factura-id h4 {
+    font-size: 15px;
+    color: #1e293b;
+}
+
+.comprobante-papel__factura-id p {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.comprobante-papel__datos-cliente {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+}
+
+.comprobante-papel__detalle-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 16px;
+}
+
+.comprobante-papel__detalle-tabla th {
+    background: #f1f5f9;
+    padding: 8px 10px;
+    border-bottom: 1px solid #cbd5e1;
+    text-align: left;
+}
+
+.comprobante-papel__detalle-tabla td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.comprobante-papel__total {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #1e293b;
+}
+
+.comprobante-papel__total-caja {
+    text-align: right;
+}
+
+.comprobante-papel__total-caja h3 {
+    font-size: 18px;
+    color: #16a34a;
+}
+
+.comprobante-modal__footer {
+    background-color: #f8fafc;
+    padding: 14px 20px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

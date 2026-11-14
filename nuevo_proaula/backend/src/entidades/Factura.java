@@ -1,9 +1,12 @@
 package entidades;
 
+import java.io.Serializable;
+
 /**
  * Entidad que representa la factura emitida a un cliente por la prestación del servicio.
  */
-public class Factura {
+public class Factura implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int idFactura;
     private String identificacionCliente;
