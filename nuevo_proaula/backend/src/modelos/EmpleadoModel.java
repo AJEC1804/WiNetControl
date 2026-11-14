@@ -61,7 +61,7 @@ public class EmpleadoModel {
                 ? empleado.getContrasena()
                 : "Clave123";
 
-        empleado.setContrasena(EncriptadorUtil.encriptarSHA256(clave));
+        empleado.setContrasena(EncriptadorUtil.encriptarContrasena(clave));
         if (empleado.getRol() != null && empleado.getRol().equalsIgnoreCase("ADMIN")) {
             empleado.setRol("ADMIN");
         } else {

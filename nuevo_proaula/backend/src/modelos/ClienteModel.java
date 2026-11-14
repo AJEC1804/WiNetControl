@@ -86,10 +86,10 @@ public class ClienteModel {
 
         // 4. Asignación de plan inicial y encriptación
         if (!ValidadorTexto.esNoVacio(cliente.getPlanActual()) || cliente.getPlanActual().equalsIgnoreCase("Sin plan")) {
-            cliente.setPlanActual(ValidadorTexto.esNoVacio(planPorDefecto) ? planPorDefecto : "Plan Básico");
+            cliente.setPlanActual(ValidadorTexto.esNoVacio(planPorDefecto) ? planPorDefecto : "");
         }
 
-        cliente.setContrasena(EncriptadorUtil.encriptarSHA256(cliente.getContrasena()));
+        cliente.setContrasena(EncriptadorUtil.encriptarContrasena(cliente.getContrasena()));
         listaClientes.insertarFinal(cliente);
 
         return Respuesta.exito("Cliente registrado exitosamente.", cliente);
@@ -150,7 +150,7 @@ public class ClienteModel {
             if (!ValidadorTexto.validarPassword(datosNuevos.getContrasena())) {
                 return Respuesta.error("La nueva contraseña debe tener mínimo 6 caracteres e incluir letras y números.");
             }
-            actual.setContrasena(EncriptadorUtil.encriptarSHA256(datosNuevos.getContrasena()));
+            actual.setContrasena(EncriptadorUtil.encriptarContrasena(datosNuevos.getContrasena()));
         }
 
         return Respuesta.exito("Cliente actualizado correctamente.", actual);
