@@ -1,11 +1,14 @@
 package entidades;
 
+import java.io.Serializable;
+
 import utils.FormateadorFecha;
 
 /**
  * Entidad que representa un ticket o solicitud de soporte técnico.
  */
-public class Soporte {
+public class Soporte implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int idTicket;
     private String usuario; // Identificación o nombre del usuario que radica

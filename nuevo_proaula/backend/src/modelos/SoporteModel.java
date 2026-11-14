@@ -1,5 +1,7 @@
 package modelos;
 
+import utils.PersistenciaUtil;
+
 import entidades.Soporte;
 import metodos.ColaSoporte;
 import utils.EmailUtil;
@@ -13,12 +15,15 @@ import java.util.List;
  */
 public class SoporteModel {
 
-    private final ColaSoporte colaSoporte;
+    private ColaSoporte colaSoporte;
+
+    private static final String ARCHIVO = "soporte.dat";
     private int consecutivoTicket;
 
     public SoporteModel() {
         this.colaSoporte = new ColaSoporte();
         this.consecutivoTicket = 1;
+        cargarEstado();
     }
 
     public SoporteModel(ColaSoporte colaSoporte) {
@@ -98,4 +103,25 @@ public class SoporteModel {
         List<Soporte> pendientes = colaSoporte.listarPendientes();
         return Respuesta.exito("Tickets pendientes en cola: " + pendientes.size(), pendientes);
     }
+
+    // ================= PERSISTENCIA =================
+    /** Vuelca la cola de tickets y el consecutivo de numeración. */
+    public void guardarEstado() {
+        PersistenciaUtil.guardar(new Object[]{colaSoporte, Integer.valueOf(consecutivoTicket)}, ARCHIVO);
+    }
+
+    /** Recupera la cola y el consecutivo desde disco, si existen. */
+    private void cargarEstado() {
+        Object[] estado = PersistenciaUtil.cargar(ARCHIVO, Object[].class);
+        if (estado == null || estado.length < 2) {
+            return;
+        }
+        if (estado[0] instanceof ColaSoporte) {
+            colaSoporte = (ColaSoporte) estado[0];
+        }
+        if (estado[1] instanceof Integer) {
+            consecutivoTicket = ((Integer) estado[1]).intValue();
+        }
+    }
+
 }

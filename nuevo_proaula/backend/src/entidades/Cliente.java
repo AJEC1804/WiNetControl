@@ -1,5 +1,7 @@
 package entidades;
 
+import java.io.Serializable;
+
 import utils.FormateadorFecha;
 
 /**
@@ -7,7 +9,8 @@ import utils.FormateadorFecha;
  * Hereda de Usuario (rol = "CLIENTE") e incluye estado (activo/inactivo),
  * plan suscrito y fecha de registro.
  */
-public class Cliente extends Usuario {
+public class Cliente extends Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String planActual;
     private String fechaRegistro;

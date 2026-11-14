@@ -1,5 +1,7 @@
 package metodos;
 
+import java.io.Serializable;
+
 import entidades.Plan;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +10,12 @@ import java.util.List;
  * Lista Doblemente Enlazada para la gestión CRUD de Planes de Internet.
  * Estructura de datos autosuficiente mediante nodos con punteros hacia adelante y hacia atrás.
  */
-public class ListaPlanes {
+public class ListaPlanes implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Nodo doblemente enlazado para Planes
-    public static class NodoPlan {
+    public static class NodoPlan implements Serializable {
+        private static final long serialVersionUID = 1L;
         private Plan dato;
         private NodoPlan siguiente;
         private NodoPlan anterior;

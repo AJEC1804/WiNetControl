@@ -1,5 +1,7 @@
 package modelos;
 
+import utils.PersistenciaUtil;
+
 import entidades.Cliente;
 import entidades.Plan;
 import metodos.ListaClientes;
@@ -16,10 +18,13 @@ import java.util.List;
  */
 public class ClienteModel {
 
-    private final ListaClientes listaClientes;
+    private ListaClientes listaClientes;
+
+    private static final String ARCHIVO = "clientes.dat";
 
     public ClienteModel() {
         this.listaClientes = new ListaClientes();
+        cargarEstado();
     }
 
     public ClienteModel(ListaClientes listaClientes) {
@@ -301,4 +306,19 @@ public class ClienteModel {
             return Respuesta.error("Usuario o contraseña incorrectos.", 401);
         }
     }
+
+    // ================= PERSISTENCIA =================
+    /** Vuelca la lista de clientes al archivo datos/clientes.dat. */
+    public void guardarEstado() {
+        PersistenciaUtil.guardar(listaClientes, ARCHIVO);
+    }
+
+    /** Recupera la lista desde disco, si existe; si no, se queda la vacía. */
+    private void cargarEstado() {
+        ListaClientes cargada = PersistenciaUtil.cargar(ARCHIVO, ListaClientes.class);
+        if (cargada != null) {
+            listaClientes = cargada;
+        }
+    }
+
 }

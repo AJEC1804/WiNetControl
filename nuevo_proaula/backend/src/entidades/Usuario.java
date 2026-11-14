@@ -1,5 +1,7 @@
 package entidades;
 
+import java.io.Serializable;
+
 import utils.ValidadorTexto;
 
 /**
@@ -10,7 +12,8 @@ import utils.ValidadorTexto;
  * - ADMIN: Administrador local de sucursal.
  * - CLIENTE: Suscriptor de servicios de telecomunicaciones.
  */
-public class Usuario {
+public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     protected String nombre;
     protected String apellido;

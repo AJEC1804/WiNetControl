@@ -60,8 +60,8 @@ const planesIniciales = [
 // (ApiServer -> PlanController -> ListaPlanes). Aquí solo se guarda una
 // copia en memoria (cachePlanes) para que la pantalla pueda dibujar rápido.
 // ------------------------------------------------------------------
-const API_PLANES = "http://localhost:8080/api/planes";
-const API_CLIENTES_PLAN = "http://localhost:8080/api/clientes";
+const API_PLANES = API_BASE + "/api/planes";
+const API_CLIENTES_PLAN = API_BASE + "/api/clientes";
 
 let cachePlanes = [];
 
@@ -232,6 +232,57 @@ function validarPlan(datos, planes, codigoOriginal) {
     return null; // sin errores
 }
 
+// 6.b BUSCADOR Y FILTROS DEL CATÁLOGO
+//     Mismo comportamiento que el buscador de Clientes: filtra sobre la copia
+//     que ya está en memoria (cachePlanes), sin volver a pedirla al servidor.
+function planesFiltrados() {
+    const planes = obtenerPlanes();
+
+    const caja = document.getElementById("buscarPlan");
+    const filtro = document.getElementById("filtroEstadoPlan");
+    const texto = caja ? caja.value.trim().toLowerCase() : "";
+    const estado = filtro ? filtro.value : "todos";
+
+    return planes.filter(plan => {
+        const nombre = (plan.nombre || "").toLowerCase();
+        const velocidad = (plan.velocidad || "").toLowerCase();
+        const coincideTexto = texto === ""
+            || String(plan.codigo).indexOf(texto) !== -1
+            || nombre.indexOf(texto) !== -1
+            || velocidad.indexOf(texto) !== -1;
+
+        const coincideEstado = estado === "todos"
+            || (estado === "activos" && plan.activo)
+            || (estado === "inactivos" && !plan.activo);
+
+        return coincideTexto && coincideEstado;
+    });
+}
+
+// Se invoca desde el buscador y desde el selector de estado
+function filtrarPlanes() {
+    renderizarTablaPlanes();
+}
+
+// Deja la barra como recién abierta: buscador vacío y estado en "Todos"
+function limpiarFiltrosPlanes() {
+    const caja = document.getElementById("buscarPlan");
+    if (caja) caja.value = "";
+
+    const filtro = document.getElementById("filtroEstadoPlan");
+    if (filtro) filtro.value = "todos";
+}
+
+// Vuelve a pedir el catálogo al servidor (botón Recargar)
+async function recargarPlanes(boton) {
+    if (boton) boton.classList.add("girando");
+
+    await cargarPlanes();
+
+    if (boton) boton.classList.remove("girando");
+    notificarPlanes("Catálogo de planes actualizado.", "info");
+}
+
 // 7. PINTAR LA TABLA (y decidir qué columnas ve cada rol)
 function renderizarTablaPlanes() {
     const cuerpo = document.getElementById("tablaPlanesBody");
@@ -241,6 +292,7 @@ function renderizarTablaPlanes() {
     const admin = esAdministrador(sesion);
     const opera = puedeOperarPlanes(sesion);   // admin o empleado
     const planes = obtenerPlanes();
+    const visibles = planesFiltrados();
 
     // Contador del encabezado
     const resumen = document.getElementById("resumenPlanes");
@@ -249,15 +301,9 @@ function renderizarTablaPlanes() {
         const activos = planes.filter(p => p.activo).length;
         const inactivos = total - activos;
         resumen.innerHTML = `
-            <span class="plan-chip plan-chip-total">
-                <span class="plan-chip-num">${total}</span> en el catálogo
-            </span>
-            <span class="plan-chip plan-chip-activos">
-                <span class="plan-chip-num">${activos}</span> activos
-            </span>
-            <span class="plan-chip plan-chip-inactivos">
-                <span class="plan-chip-num">${inactivos}</span> inactivos
-            </span>`;
+            <span class="plan-chip plan-chip-total">📡 Total: <strong>${total}</strong></span>
+            <span class="plan-chip plan-chip-activos">✅ Activos: <strong>${activos}</strong></span>
+            <span class="plan-chip plan-chip-inactivos">⛔ Inactivos: <strong>${inactivos}</strong></span>`;
     }
 
     // La columna "Acciones" solo existe para administradores
@@ -266,6 +312,11 @@ function renderizarTablaPlanes() {
     const encabezadoAcciones = document.getElementById("thAccionesPlanes");
     if (encabezadoAcciones) {
         encabezadoAcciones.style.display = opera ? "" : "none";
+    }
+
+    const mostrando = document.getElementById("planMostrando");
+    if (mostrando) {
+        mostrando.textContent = visibles.length;
     }
 
     if (planes.length === 0) {
@@ -279,7 +330,18 @@ function renderizarTablaPlanes() {
         return;
     }
 
-    cuerpo.innerHTML = planes.map(plan => {
+    if (visibles.length === 0) {
+        cuerpo.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center; padding: 28px; color: #64748b;">
+                    Ningún plan coincide con la búsqueda o el filtro aplicado.
+                </td>
+            </tr>`;
+        aplicarPermisos(sesion);
+        return;
+    }
+
+    cuerpo.innerHTML = visibles.map(plan => {
         // Columna de acciones: botones solo para ADMIN / SUPERADMIN
         let acciones = "";
 
@@ -356,6 +418,10 @@ function aplicarPermisos(sesion) {
 
     const tabla = document.getElementById("tablaPlanesWrapper");
     if (tabla) tabla.style.display = opera ? "block" : "none";
+
+    // La barra de búsqueda solo tiene sentido si se ve el catálogo
+    const barra = document.getElementById("toolbarPlanes");
+    if (barra) barra.style.display = opera ? "flex" : "none";
 
     // Panel de contratación: solo clientes sin plan
     const panelContratar = document.getElementById("panelContratacion");
@@ -880,6 +946,11 @@ async function contratarPlan() {
 // Pide los planes al servidor y dibuja la tabla.
 // Se llama al abrir la sección (igual que hace Clientes con cargarClientes).
 async function cargarPlanes() {
+    // Al cargar o recargar se vuelve al estado inicial: sin texto de búsqueda y
+    // sin filtro de estado, de manera que se ven TODOS los planes otra vez.
+    // Es el mismo comportamiento del botón Recargar de Clientes.
+    limpiarFiltrosPlanes();
+
     try {
         await inicializarPlanes();
         renderizarTablaPlanes();

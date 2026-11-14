@@ -1,12 +1,15 @@
 package entidades;
 
+import java.io.Serializable;
+
 /**
  * Entidad que representa a un Administrador del sistema WiNet Control.
  * Admite dos niveles según el rol heredado de Usuario:
  * 1. SUPERADMIN: Superusuario con acceso global a todas las sedes, módulos y auditoría.
  * 2. ADMIN: Administrador local encargado de la gestión de clientes, servicios y soporte de su sucursal.
  */
-public class Administrador extends Usuario {
+public class Administrador extends Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String sucursal;
     private String nivelAcceso; // "GLOBAL" o "LOCAL"

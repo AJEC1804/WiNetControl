@@ -4,10 +4,10 @@
    Conectado a ApiServer (FacturaController / PilaFacturas y SoporteController / ColaSoporte)
    ========================================================================== */
 
-const API_FACTURAS = "http://localhost:8080/api/facturas";
-const API_SOPORTE  = "http://localhost:8080/api/soporte";
-const API_CLIENTES_FACT = "http://localhost:8080/api/clientes";
-const API_PLANES_FACT   = "http://localhost:8080/api/planes?estado=activos";
+const API_FACTURAS = API_BASE + "/api/facturas";
+const API_SOPORTE  = API_BASE + "/api/soporte";
+const API_CLIENTES_FACT = API_BASE + "/api/clientes";
+const API_PLANES_FACT   = API_BASE + "/api/planes?estado=activos";
 
 let facturasEnMemoria = [];
 let cimaFacturaEnMemoria = null;
@@ -53,7 +53,7 @@ async function cargarModuloFacturas() {
         contenedor.innerHTML = `
             <div class="facturacion">
                 <div class="facturacion__tabla-card" style="text-align:center; padding:32px; color:#b91c1c;">
-                    ⚠️ No se pudo conectar con el servidor Java (<code>http://localhost:8080</code>). Verifica que <strong>ApiServer</strong> esté encendido.
+                    ⚠️ No se pudo conectar con el servidor Java (<code>' + API_BASE + '</code>). Verifica que <strong>ApiServer</strong> esté encendido.
                 </div>
             </div>
         `;
@@ -507,7 +507,7 @@ async function cargarModuloSoporte() {
         contenedor.innerHTML = `
             <div class="soporte">
                 <div class="facturacion__tabla-card" style="text-align:center; padding:32px; color:#b91c1c;">
-                    ⚠️ No se pudo conectar con el servidor Java (<code>http://localhost:8080</code>). Verifica que <strong>ApiServer</strong> esté encendido.
+                    ⚠️ No se pudo conectar con el servidor Java (<code>' + API_BASE + '</code>). Verifica que <strong>ApiServer</strong> esté encendido.
                 </div>
             </div>
         `;

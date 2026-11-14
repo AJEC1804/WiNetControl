@@ -1,5 +1,7 @@
 package modelos;
 
+import utils.PersistenciaUtil;
+
 import entidades.Empleado;
 import metodos.ListaEmpleados;
 import utils.EncriptadorUtil;
@@ -20,10 +22,13 @@ import java.util.List;
  */
 public class EmpleadoModel {
 
-    private final ListaEmpleados listaEmpleados;
+    private ListaEmpleados listaEmpleados;
+
+    private static final String ARCHIVO = "empleados.dat";
 
     public EmpleadoModel() {
         this.listaEmpleados = new ListaEmpleados();
+        cargarEstado();
     }
 
     public ListaEmpleados getListaEmpleados() {
@@ -251,4 +256,19 @@ public class EmpleadoModel {
         }
         return Respuesta.exito("Datos válidos.", Boolean.TRUE);
     }
+
+    // ================= PERSISTENCIA =================
+    /** Vuelca la lista de empleados al archivo datos/empleados.dat. */
+    public void guardarEstado() {
+        PersistenciaUtil.guardar(listaEmpleados, ARCHIVO);
+    }
+
+    /** Recupera la lista de empleados desde disco, si existe. */
+    private void cargarEstado() {
+        ListaEmpleados cargada = PersistenciaUtil.cargar(ARCHIVO, ListaEmpleados.class);
+        if (cargada != null) {
+            listaEmpleados = cargada;
+        }
+    }
+
 }

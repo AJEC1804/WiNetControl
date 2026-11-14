@@ -13,6 +13,7 @@ import entidades.Factura;
 import entidades.Soporte;
 import entidades.Usuario;
 import entidades.Plan;
+import utils.PersistenciaUtil;
 import utils.Respuesta;
 
 import java.io.File;
@@ -64,6 +65,13 @@ public class ApiServer {
     private static final String RUTA_LOGIN = "/api/login";
     private static final String RUTA_FACTURAS = "/api/facturas";
     private static final String RUTA_SOPORTE = "/api/soporte";
+    private static final String ARCHIVO_ATENDIDOS = "atendidos.dat";
+
+    // La persistencia en archivos .dat se activa antes de crear los controladores,
+    // porque cada modelo intenta cargar su estado en el constructor.
+    static {
+        PersistenciaUtil.activar();
+    }
 
     // Los controladores del equipo. Aquí NO hay lógica nueva: solo se les llama.
     private static final UsuarioController usuarioCtrl = new UsuarioController();
@@ -74,7 +82,26 @@ public class ApiServer {
     private static final List<Soporte> ticketsAtendidos = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        sembrarClientesDeEjemplo();
+        // Primero se recupera el historial de atendidos, para que la siembra
+        // (si hace falta) no lo sobrescriba con una lista vacía.
+        cargarTicketsAtendidos();
+
+        // La siembra solo ocurre en un arranque realmente vacío (primera ejecución).
+        // Si se recuperó algo de disco, no se siembra: de lo contrario se duplicarían
+        // los clientes y los tickets que sí se habían cargado.
+        List<Plan> planesEnDisco = planCtrl.listarPlanes().getDatos();
+        List<Cliente> clientesEnDisco = usuarioCtrl.listarClientes().getDatos();
+        List<Empleado> empleadosEnDisco = empleadoCtrl.listarEmpleados().getDatos();
+        boolean todoVacio = (planesEnDisco == null || planesEnDisco.isEmpty())
+                && (clientesEnDisco == null || clientesEnDisco.isEmpty())
+                && (empleadosEnDisco == null || empleadosEnDisco.isEmpty());
+
+        if (todoVacio) {
+            sembrarClientesDeEjemplo();
+            persistirTodo();
+        } else {
+            System.out.println("[persistencia] Estado recuperado de la carpeta datos/");
+        }
 
         HttpServer servidor = HttpServer.create(new InetSocketAddress(PUERTO), 0);
         servidor.createContext(RUTA_BASE, ApiServer::manejarClientes);
@@ -91,6 +118,39 @@ public class ApiServer {
         System.out.println("  Modulo: Gestion de Clientes (Issue #8 - Gyanela Meza)");
         System.out.println("  Ctrl+C para detener.");
         System.out.println("=========================================================");
+    }
+
+    // ==================================================================
+    // 0. PERSISTENCIA
+    // ==================================================================
+    /**
+     * Guarda en disco el estado de los cinco modelos. Se invoca al final de cada
+     * petición que modifica datos (POST, PUT y DELETE). Los GET no escriben nada.
+     */
+    private static void persistirTodo() {
+        if (!PersistenciaUtil.estaActiva()) {
+            return;
+        }
+        UsuarioController.getSharedClienteModel().guardarEstado();
+        UsuarioController.getSharedPlanModel().guardarEstado();
+        UsuarioController.getSharedFacturaModel().guardarEstado();
+        EmpleadoController.getSharedEmpleadoModel().guardarEstado();
+        SoporteController.getSharedSoporteModel().guardarEstado();
+        PersistenciaUtil.guardar(new ArrayList<>(ticketsAtendidos), ARCHIVO_ATENDIDOS);
+    }
+
+    /**
+     * Recupera el historial de tickets ya atendidos (el que consume GET /api/soporte).
+     * La cola de pendientes se recupera aparte, desde SoporteModel.
+     */
+    @SuppressWarnings("unchecked")
+    private static void cargarTicketsAtendidos() {
+        Object leido = PersistenciaUtil.cargar(ARCHIVO_ATENDIDOS, Object.class);
+        if (leido instanceof List) {
+            ticketsAtendidos.clear();
+            ticketsAtendidos.addAll((List<Soporte>) leido);
+            System.out.println("[persistencia] Tickets atendidos recuperados: " + ticketsAtendidos.size());
+        }
     }
 
     // ==================================================================
@@ -156,9 +216,12 @@ public class ApiServer {
 
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
+        } finally {
+            if (!metodo.equalsIgnoreCase("GET")) {
+                persistirTodo();
+            }
         }
     }
-
     // ==================================================================
     // 2. CADA MÉTODO LLAMA AL CONTROLADOR DEL EQUIPO
     // ==================================================================
@@ -360,9 +423,12 @@ public class ApiServer {
 
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
+        } finally {
+            if (!metodo.equalsIgnoreCase("GET")) {
+                persistirTodo();
+            }
         }
     }
-
     /**
      * Recibe el catálogo completo desde la página y lo aplica llamando a los
      * métodos del PlanController: no se inventa nada, solo se decide qué
@@ -507,9 +573,12 @@ public class ApiServer {
 
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
+        } finally {
+            if (!metodo.equalsIgnoreCase("GET")) {
+                persistirTodo();
+            }
         }
     }
-
     private static void listarEmpleados(HttpExchange ex, String query) throws IOException {
         String estado = valorDeQuery(query, "estado");
         String buscar = valorDeQuery(query, "buscar");
@@ -731,9 +800,12 @@ public class ApiServer {
 
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
+        } finally {
+            if (!metodo.equalsIgnoreCase("GET")) {
+                persistirTodo();
+            }
         }
     }
-
     /** Devuelve los datos que la página guarda como "sesión". */
     private static String jsonDeSesion(Usuario u) {
         if (u == null) {
@@ -870,9 +942,12 @@ public class ApiServer {
         } catch (Exception e) {
             e.printStackTrace();
             responderError(ex, 500, "Error interno en facturas: " + e.getMessage());
+        } finally {
+            if (!metodo.equalsIgnoreCase("GET")) {
+                persistirTodo();
+            }
         }
     }
-
     private static void servirPdfFactura(HttpExchange ex, String idTexto) throws IOException {
         int id = 0;
         try {
@@ -1006,9 +1081,12 @@ public class ApiServer {
         } catch (Exception e) {
             e.printStackTrace();
             responderError(ex, 500, "Error interno en soporte: " + e.getMessage());
+        } finally {
+            if (!metodo.equalsIgnoreCase("GET")) {
+                persistirTodo();
+            }
         }
     }
-
     private static String jsonDeSoporte(Soporte s) {
         if (s == null) {
             return "null";

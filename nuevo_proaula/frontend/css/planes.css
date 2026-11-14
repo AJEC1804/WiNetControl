@@ -7,21 +7,23 @@
    de Alejandro). Usa las mismas variables de color del design system.
    ========================================================================== */
 
-/* 1. CONTENEDOR DEL MÓDULO */
+/* 1. CONTENEDOR DEL MÓDULO
+   Sin tarjeta propia: el contenido va sobre el fondo de la página, igual que
+   el módulo de Clientes. Cada pieza (tabla, barra, tarjetas) ya trae su propio
+   marco, así que un contenedor con borde y relleno solo añadía aire de más. */
 .modulo-planes {
-    background-color: var(--color-tarjeta);
-    border-radius: var(--radio-borde);
-    box-shadow: var(--sombra);
-    border: 1px solid #e2e8f0;
-    padding: 24px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
 }
 
 .modulo-planes .modulo-cabecera {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
+    flex-wrap: nowrap;      /* el botón debe quedar en la misma fila, como en Clientes */
+    gap: 16px;
     margin-bottom: 18px;
     padding-bottom: 16px;
     border-bottom: 1px solid #e2e8f0;
@@ -48,37 +50,32 @@
 .plan-chip {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 12.5px;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
-    border: 1px solid transparent;
 }
 
-.plan-chip-num {
-    font-size: 14px;
+.plan-chip strong {
     font-weight: 700;
-    line-height: 1;
 }
 
+/* Mismos colores que los chips del módulo de Clientes */
 .plan-chip-total {
-    background: #eff6ff;
-    color: var(--color-primario-oscuro);
-    border-color: #bfdbfe;
+    background: #e0edff;
+    color: #1d4ed8;
 }
 
 .plan-chip-activos {
-    background: #f0fdf4;
+    background: #dcfce7;
     color: #15803d;
-    border-color: #bbf7d0;
 }
 
 .plan-chip-inactivos {
-    background: #fef2f2;
+    background: #fee2e2;
     color: #b91c1c;
-    border-color: #fecaca;
 }
 
 /* 2. TABLA DEL CATÁLOGO */
@@ -825,6 +822,8 @@
     display: flex;
     align-items: center;
     gap: 14px;
+    flex: 1 1 auto;
+    min-width: 0;           /* permite que la descripción baje de línea en vez de empujar el botón */
 }
 
 .modulo-icono {
@@ -862,10 +861,99 @@
         font-size: 18px;
     }
 
+    /* En pantallas angostas sí se permite que el botón baje */
+    .modulo-planes .modulo-cabecera {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
     .modulo-icono {
         width: 38px;
         height: 38px;
         border-radius: 11px;
         font-size: 18px;
     }
+}
+
+/* ==========================================================================
+   16. BUSCADOR Y FILTROS DEL CATÁLOGO
+   Mismo patrón visual que el módulo de Clientes: caja blanca con el buscador
+   a la izquierda, el selector de estado, el botón de recarga y el contador
+   empujado a la derecha.
+   ========================================================================== */
+.modulo-planes .modulo-cabecera .plan-barra-admin {
+    margin-bottom: 0;
+}
+
+.modulo-planes .plan-resumen {
+    margin-bottom: 16px;
+}
+
+#toolbarPlanes {
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+}
+
+#toolbarPlanes .campo-busqueda {
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#toolbarPlanes .campo-busqueda:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+#toolbarPlanes select {
+    border-radius: 10px;
+    padding: 11px 12px;
+    min-width: 170px;
+    cursor: pointer;
+}
+
+#toolbarPlanes select:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+#toolbarPlanes .btn-auto {
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* El icono de recarga gira mientras se piden los datos */
+#toolbarPlanes .girando {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+@media (max-width: 640px) {
+    #toolbarPlanes .campo-busqueda {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    #toolbarPlanes select {
+        min-width: 0;
+        flex: 1;
+    }
+
+    #toolbarPlanes .contador-clientes {
+        margin-left: 0;
+    }
+}
+
+/* El botón de la cabecera nunca se comprime ni parte su texto */
+.modulo-planes .modulo-cabecera .plan-barra-admin {
+    flex: 0 0 auto;
+}
+
+.modulo-planes .modulo-cabecera .plan-barra-admin .btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }

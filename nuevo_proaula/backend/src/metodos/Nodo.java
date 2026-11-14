@@ -1,10 +1,13 @@
 package metodos;
 
+import java.io.Serializable;
+
 /**
  * Clase Nodo fundamental para listas simples y listas dobles.
  * Contiene el dato almacenado y las referencias (punteros) al siguiente y anterior.
  */
-public class Nodo {
+public class Nodo implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String dato;
     private Nodo siguiente;

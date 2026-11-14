@@ -1,5 +1,7 @@
 package metodos;
 
+import java.io.Serializable;
+
 import entidades.Empleado;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +11,12 @@ import java.util.List;
  * Estructura de datos autosuficiente mediante nodos con punteros hacia adelante y hacia atrás.
  * (Misma estructura y mismo estilo que ListaClientes y ListaPlanes.)
  */
-public class ListaEmpleados {
+public class ListaEmpleados implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Nodo doblemente enlazado para Empleados
-    public static class NodoEmpleado {
+    public static class NodoEmpleado implements Serializable {
+        private static final long serialVersionUID = 1L;
         private Empleado dato;
         private NodoEmpleado siguiente;
         private NodoEmpleado anterior;

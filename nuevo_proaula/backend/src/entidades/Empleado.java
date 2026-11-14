@@ -1,5 +1,7 @@
 package entidades;
 
+import java.io.Serializable;
+
 /**
  * Entidad que representa a un Empleado (trabajador) del sistema WiNet Control.
  * Hereda de Usuario igual que Cliente y Administrador: la clase base aporta
@@ -13,7 +15,8 @@ package entidades;
  * - Atender tickets de soporte.
  * NO puede eliminar clientes ni cambiar el estado del servicio.
  */
-public class Empleado extends Usuario {
+public class Empleado extends Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String cargo;         // Técnico, Atención al cliente, Supervisor, etc.
     private String sucursal;      // Sede donde trabaja

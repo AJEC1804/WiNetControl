@@ -1,5 +1,7 @@
 package metodos;
 
+import java.io.Serializable;
+
 import entidades.Factura;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +10,12 @@ import java.util.List;
  * Pila (LIFO) especializada para Facturación.
  * Estructura de datos autosuficiente mediante nodos enlazados desde la cima.
  */
-public class PilaFacturas {
+public class PilaFacturas implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Nodo simplemente enlazado para Pila de Facturas
-    public static class NodoFactura {
+    public static class NodoFactura implements Serializable {
+        private static final long serialVersionUID = 1L;
         private Factura dato;
         private NodoFactura siguiente;
 

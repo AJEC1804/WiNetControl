@@ -1,10 +1,13 @@
 package metodos;
 
+import java.io.Serializable;
+
 /**
  * Estructura de datos Pila (LIFO - Last In, First Out) implementada con punteros mediante Nodos.
  * Utilizada para apilar y desapilar elementos (como el historial de facturas).
  */
-public class Pila {
+public class Pila implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Nodo cima;
     private int tamano;

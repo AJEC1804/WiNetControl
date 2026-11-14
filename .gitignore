@@ -10,3 +10,6 @@ bin/
 **/bin/
 *.class
 **/facturas/
+
+# Datos persistidos en .dat (se generan al ejecutar la API)
+**/datos/

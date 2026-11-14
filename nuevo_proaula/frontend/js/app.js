@@ -15,7 +15,7 @@
 //   EmpleadoController.autenticar()        -> empleados
 // La contraseña se compara con su hash SHA-256 y se verifica que esté activo.
 // ==========================================================================
-const API_LOGIN = "http://localhost:8080/api/login";
+const API_LOGIN = API_BASE + "/api/login";
 
 // ==========================================================================
 // 2. FUNCIÓN DE INICIO DE SESIÓN (LOGIN UNIVERSAL CON ROLES)
@@ -492,8 +492,8 @@ function puedeAdministrarClientes() {
 // de controladores.UsuarioController. Así las estructuras de datos
 // (ListaClientes, ListaDoble, Pila, Cola) son las que hacen el trabajo.
 // ==========================================================================
-const API_CLIENTES = "http://localhost:8080/api/clientes";
-const API_PLANES_CATALOGO = "http://localhost:8080/api/planes";
+const API_CLIENTES = API_BASE + "/api/clientes";
+const API_PLANES_CATALOGO = API_BASE + "/api/planes";
 
 const FILAS_POR_PAGINA = 5;   // cuántos clientes se ven por página
 let paginaActual = 1;         // en qué página estamos
@@ -1115,7 +1115,7 @@ async function recargarEmpleados(boton) {
 // (ApiServer -> EmpleadoController -> EmpleadoModel -> ListaEmpleados).
 // Los nombres llevan prefijo EMP_ para no chocar con los de otros módulos.
 // ==========================================================================
-const EMP_API = "http://localhost:8080/api/empleados";
+const EMP_API = API_BASE + "/api/empleados";
 const EMP_FILAS_POR_PAGINA = 4;   // 4 por página: la tabla no se hace eterna
 
 let empTodos = [];
