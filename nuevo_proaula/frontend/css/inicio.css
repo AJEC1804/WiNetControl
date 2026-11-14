@@ -179,12 +179,12 @@
     content: "";
     position: absolute;
     left: 0;
-    top: 16px;
-    bottom: 16px;
-    width: 4px;
-    border-radius: 0 4px 4px 0;
+    top: 18px;
+    bottom: 18px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
     background: var(--kpi-acento);
-    opacity: 0.85;
+    opacity: 0.38;      /* línea suave: el color fuerte queda en la píldora */
 }
 
 /* Círculo decorativo de la esquina */
@@ -197,7 +197,7 @@
     height: 96px;
     border-radius: 50%;
     background: var(--kpi-acento);
-    opacity: 0.07;
+    opacity: 0.05;
     pointer-events: none;
 }
 
@@ -284,6 +284,13 @@
     color: var(--kpi-pildora-texto);
     position: relative;
     z-index: 1;
+}
+
+/* En pantallas anchas, las cinco tarjetas van siempre en una fila */
+@media (min-width: 1080px) {
+    .kpi-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
 }
 
 /* Línea informativa secundaria (porcentajes, pendientes, personal) */
