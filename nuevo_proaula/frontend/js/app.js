@@ -382,10 +382,10 @@ function tarjetasSegunRol(usuario, d) {
               tono: "violeta", ir: "planes" },
             { icono: "🧾", etiqueta: "Mis facturas", valor: String(mias.length),
               pie: pagadas + " pagadas · " + porPagar + " por pagar",
-              tono: porPagar > 0 ? "ambar" : "verde", ir: "facturas" },
+              tono: semaforo(porPagar), ir: "facturas" },
             { icono: "🎧", etiqueta: "Mis solicitudes", valor: String(misTickets),
               pie: misTickets ? "Abiertas en la mesa de ayuda" : "Ninguna abierta",
-              tono: misTickets ? "ambar" : "verde", ir: "soporte" },
+              tono: semaforo(misTickets), ir: "soporte" },
             { icono: "✅", etiqueta: "Estado del servicio", valor: usuario.activo ? "Activo" : "Inactivo",
               pie: usuario.activo ? "Línea en servicio" : "Contacta a tu sucursal",
               tono: usuario.activo ? "verde" : "rojo", ir: "perfil" }
@@ -403,11 +403,11 @@ function tarjetasSegunRol(usuario, d) {
             { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
               pie: activos + " activos · " + inactivos + " inactivos", tono: "azul", ir: "clientes" },
             { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
-              pie: "Atención en orden de llegada (FIFO)",
-              tono: pendientes.length ? "ambar" : "verde", ir: "soporte" },
+              pie: pendientes.length === 0 ? "Sin tickets pendientes" : "Atención en orden de llegada (FIFO)",
+              tono: semaforo(pendientes.length), ir: "soporte" },
             { icono: "🧾", etiqueta: "Facturas por cobrar", valor: String(porCobrar),
               pie: pagadas + " pagadas de " + facturas.length,
-              tono: porCobrar ? "ambar" : "verde", ir: "facturas" },
+              tono: semaforo(porCobrar), ir: "facturas" },
             { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
               pie: "En el catálogo comercial", tono: "azul", ir: "planes" }
         ];
@@ -418,10 +418,10 @@ function tarjetasSegunRol(usuario, d) {
           pie: activos + " activos · " + inactivos + " inactivos", tono: "azul", ir: "clientes" },
         { icono: "🧾", etiqueta: "Facturación", valor: String(facturas.length),
           pie: porCobrar + " por cobrar · " + pagadas + " pagadas",
-          tono: porCobrar ? "ambar" : "verde", ir: "facturas" },
+          tono: semaforo(porCobrar), ir: "facturas" },
         { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
-          pie: "Esperando atención (FIFO)",
-          tono: pendientes.length ? "ambar" : "verde", ir: "soporte" },
+          pie: pendientes.length === 0 ? "Sin tickets pendientes" : "Esperando atención (FIFO)",
+          tono: semaforo(pendientes.length), ir: "soporte" },
         { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
           pie: planes.length + " en el catálogo", tono: "violeta", ir: "planes" }
     ];
@@ -440,6 +440,13 @@ function irAlModulo(seccion) {
     if (typeof mostrarSeccion === "function") {
         mostrarSeccion(seccion, enlace);
     }
+}
+
+// 0 pendientes -> verde (todo al día) · 1-2 -> ambar · 3 o más -> rojo
+function semaforo(pendientes) {
+    if (pendientes === 0) return "verde";
+    if (pendientes <= 2) return "ambar";
+    return "rojo";
 }
 
 function pintarTarjeta(t) {
