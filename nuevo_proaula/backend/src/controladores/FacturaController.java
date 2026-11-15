@@ -6,6 +6,7 @@ import entidades.Plan;
 import modelos.ClienteModel;
 import modelos.FacturaModel;
 import modelos.PlanModel;
+import utils.FormateadorFecha;
 import utils.Respuesta;
 import utils.ValidadorTexto;
 import java.util.List;
@@ -73,6 +74,34 @@ public class FacturaController {
     }
 
     /**
+     * Generar y apilar una factura usando exclusivamente el plan contratado del cliente
+     * para el mes y año indicados.
+     */
+    public Respuesta<Factura> generarFactura(String identificacionCliente, int mes, int ano) {
+        if (!ValidadorTexto.esNoVacio(identificacionCliente)) {
+            return Respuesta.error("Identificación del cliente requerida.");
+        }
+
+        Respuesta<Cliente> respCliente = clienteModel.consultarCliente(identificacionCliente);
+        if (!respCliente.isExito() || respCliente.getDatos() == null) {
+            return Respuesta.error("Cliente no encontrado con identificación: " + identificacionCliente, 404);
+        }
+        Cliente cliente = respCliente.getDatos();
+
+        String nombrePlan = (cliente.getPlanActual() != null) ? cliente.getPlanActual().trim() : "";
+        if (nombrePlan.isEmpty() || "Sin plan".equalsIgnoreCase(nombrePlan)) {
+            return Respuesta.error("El cliente no tiene un plan contratado. Asígnale un plan antes de facturar.", 400);
+        }
+
+        Respuesta<Plan> respPlan = planModel.consultarPlanPorNombre(nombrePlan);
+        if (!respPlan.isExito() || respPlan.getDatos() == null) {
+            return Respuesta.error("No se encontró en el catálogo el plan contratado por el cliente: " + nombrePlan, 404);
+        }
+
+        return facturaModel.emitirFactura(cliente, respPlan.getDatos(), mes, ano);
+    }
+
+    /**
      * Obtener el historial de facturas de un usuario.
      */
     public Respuesta<List<Factura>> obtenerFacturasUsuario(String criterioUsuarioOId) {
@@ -105,5 +134,12 @@ public class FacturaController {
      */
     public Respuesta<List<Factura>> listarTodasFacturas() {
         return facturaModel.listarTodas();
+    }
+
+    /**
+     * Registrar el pago de una factura por su ID.
+     */
+    public Respuesta<Factura> pagarFactura(int idFactura) {
+        return facturaModel.pagarFactura(idFactura);
     }
 }

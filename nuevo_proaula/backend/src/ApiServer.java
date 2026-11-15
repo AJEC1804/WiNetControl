@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,6 +82,21 @@ public class ApiServer {
     private static final FacturaController facturaCtrl = new FacturaController();
     private static final SoporteController soporteCtrl = new SoporteController();
     private static final List<Soporte> ticketsAtendidos = new ArrayList<>();
+    private static final Map<String, SesionToken> sesionesActivas = new ConcurrentHashMap<>();
+
+    private static final class SesionToken {
+        final String identificacion;
+        final String rol;
+        final String nombreCompleto;
+        final String correo;
+
+        SesionToken(String identificacion, String rol, String nombreCompleto, String correo) {
+            this.identificacion = identificacion != null ? identificacion : "";
+            this.rol = rol != null ? rol.toUpperCase() : "CLIENTE";
+            this.nombreCompleto = nombreCompleto != null ? nombreCompleto : "";
+            this.correo = correo != null ? correo : "";
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         // Primero se recupera el historial de atendidos, para que la siembra
@@ -182,33 +199,44 @@ public class ApiServer {
         }
 
         try {
+            SesionToken sesion = autenticarPeticion(ex);
+
             // GET /api/clientes  y  GET /api/clientes?estado=activos
             if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_BASE)) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN", "EMPLEADO")) return;
                 listarClientes(ex, query);
                 return;
             }
 
             // GET /api/clientes/{cedula}
             if (metodo.equalsIgnoreCase("GET") && ruta.startsWith(RUTA_BASE + "/")) {
-                buscarCliente(ex, ultimoSegmento(ruta));
+                String cedulaBuscada = ultimoSegmento(ruta);
+                if (!requierePersonalOPropio(ex, sesion, cedulaBuscada)) return;
+                buscarCliente(ex, cedulaBuscada);
                 return;
             }
 
-            // POST /api/clientes
+            // POST /api/clientes (público en registro.html, o desde panel por personal)
             if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_BASE)) {
-                registrarCliente(ex);
+                if (sesion != null && "CLIENTE".equals(sesion.rol)) {
+                    responderError(ex, 403, "No tienes permisos para registrar clientes.");
+                    return;
+                }
+                registrarCliente(ex, sesion != null);
                 return;
             }
 
             // PUT /api/clientes/{cedula}/plan  ->  asignarPlan()
             if (metodo.equalsIgnoreCase("PUT") && ruta.endsWith("/plan")) {
                 String cedulaPlan = segmentoAnterior(ruta);
+                if (!requierePersonalOPropio(ex, sesion, cedulaPlan)) return;
                 asignarPlan(ex, cedulaPlan);
                 return;
             }
 
             // PUT /api/clientes/{cedula}/estado
             if (metodo.equalsIgnoreCase("PUT") && ruta.endsWith("/estado")) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN")) return;
                 String cedula = segmentoAnterior(ruta);
                 cambiarEstado(ex, cedula);
                 return;
@@ -216,12 +244,15 @@ public class ApiServer {
 
             // PUT /api/clientes/{cedula}
             if (metodo.equalsIgnoreCase("PUT") && ruta.startsWith(RUTA_BASE + "/")) {
-                actualizarCliente(ex, ultimoSegmento(ruta));
+                String cedulaEdit = ultimoSegmento(ruta);
+                if (!requierePersonalOPropio(ex, sesion, cedulaEdit)) return;
+                actualizarCliente(ex, cedulaEdit, sesion);
                 return;
             }
 
             // DELETE /api/clientes/{cedula}
             if (metodo.equalsIgnoreCase("DELETE") && ruta.startsWith(RUTA_BASE + "/")) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN")) return;
                 eliminarCliente(ex, ultimoSegmento(ruta));
                 return;
             }
@@ -231,7 +262,7 @@ public class ApiServer {
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
         } finally {
-            if (!metodo.equalsIgnoreCase("GET")) {
+            if (!metodo.equalsIgnoreCase("GET") && !metodo.equalsIgnoreCase("OPTIONS")) {
                 persistirTodo();
             }
         }
@@ -283,7 +314,7 @@ public class ApiServer {
     }
 
     /** PUT /api/clientes/{cedula}  ->  actualizarCliente(...) */
-    private static void actualizarCliente(HttpExchange ex, String cedula) throws IOException {
+    private static void actualizarCliente(HttpExchange ex, String cedula, SesionToken sesion) throws IOException {
         Map<String, String> datos = leerJson(leerCuerpo(ex));
 
         Respuesta<Cliente> respuesta = usuarioCtrl.actualizarCliente(
@@ -295,7 +326,7 @@ public class ApiServer {
                 datos.getOrDefault("correo", ""),
                 datos.getOrDefault("direccion", "Sin dirección"),
                 datos.getOrDefault("contrasena", ""),
-                datos.getOrDefault("planActual", "")
+                datos.get("planActual")
         );
 
         if (!respuesta.isExito()) {
@@ -303,9 +334,9 @@ public class ApiServer {
             return;
         }
 
-        // Si la petición trae el estado, se cambia con el método del equipo
+        // Solo ADMIN / SUPERADMIN pueden cambiar el estado activo/inactivo
         String activo = datos.get("activo");
-        if (activo != null) {
+        if (activo != null && sesion != null && ("SUPERADMIN".equals(sesion.rol) || "ADMIN".equals(sesion.rol))) {
             usuarioCtrl.cambiarEstadoCliente(cedula, Boolean.parseBoolean(activo));
         }
 
@@ -313,7 +344,7 @@ public class ApiServer {
     }
 
     /** POST /api/clientes  ->  registrarCliente(...) */
-    private static void registrarCliente(HttpExchange ex) throws IOException {
+    private static void registrarCliente(HttpExchange ex, boolean esPersonalAutenticado) throws IOException {
         Map<String, String> datos = leerJson(leerCuerpo(ex));
 
         String nombre = datos.getOrDefault("nombre", "");
@@ -335,14 +366,21 @@ public class ApiServer {
             return;
         }
 
-        // Plan y estado elegidos en el formulario (si vienen)
-        String plan = datos.get("planActual");
-        if (plan != null && !plan.isEmpty()) {
-            usuarioCtrl.asignarPlan(cedula, plan);
-        }
-        String activo = datos.get("activo");
-        if (activo != null) {
-            usuarioCtrl.cambiarEstadoCliente(cedula, Boolean.parseBoolean(activo));
+        // Plan y estado elegidos en el formulario (solo si los envía personal autenticado)
+        if (esPersonalAutenticado) {
+            String plan = datos.get("planActual");
+            if (plan != null && !plan.isEmpty()) {
+                Respuesta<Cliente> respPlan = usuarioCtrl.asignarPlan(cedula, plan);
+                if (!respPlan.isExito()) {
+                    usuarioCtrl.eliminarCliente(cedula);
+                    responderError(ex, 400, respPlan.getMensaje());
+                    return;
+                }
+            }
+            String activo = datos.get("activo");
+            if (activo != null) {
+                usuarioCtrl.cambiarEstadoCliente(cedula, Boolean.parseBoolean(activo));
+            }
         }
 
         responder(ex, 201, jsonDeRespuestaCliente(usuarioCtrl.buscarCliente(cedula)));
@@ -403,6 +441,12 @@ public class ApiServer {
         }
 
         try {
+            SesionToken sesion = autenticarPeticion(ex);
+            if (sesion == null) {
+                responderError(ex, 401, "Sesión expirada o no iniciada. Inicia sesión nuevamente.");
+                return;
+            }
+
             // GET /api/planes/{codigo}      ->  consultarPlanPorId(codigo), o 404
             if (metodo.equalsIgnoreCase("GET") && ruta.startsWith(RUTA_PLANES + "/")) {
                 String texto = ultimoSegmento(ruta);
@@ -449,6 +493,7 @@ public class ApiServer {
 
             // PUT /api/planes/lote  ->  crearPlan / actualizarPlan / cambiarEstadoPlan / eliminarPlan
             if (metodo.equalsIgnoreCase("PUT")) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN", "EMPLEADO")) return;
                 sincronizarPlanes(ex);
                 return;
             }
@@ -458,7 +503,7 @@ public class ApiServer {
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
         } finally {
-            if (!metodo.equalsIgnoreCase("GET")) {
+            if (!metodo.equalsIgnoreCase("GET") && !metodo.equalsIgnoreCase("OPTIONS")) {
                 persistirTodo();
             }
         }
@@ -494,14 +539,26 @@ public class ApiServer {
             }
 
             if (existe) {
-                planCtrl.actualizarPlan(codigo, codigo, nombre, velocidad, precio, descripcion);
+                Respuesta<Plan> r = planCtrl.actualizarPlan(codigo, codigo, nombre, velocidad, precio, descripcion);
+                if (!r.isExito()) {
+                    responderError(ex, r.getCodigo(), r.getMensaje());
+                    return;
+                }
                 actualizados++;
             } else {
-                planCtrl.crearPlan(codigo, nombre, velocidad, precio, descripcion);
+                Respuesta<Plan> r = planCtrl.crearPlan(codigo, nombre, velocidad, precio, descripcion);
+                if (!r.isExito()) {
+                    responderError(ex, r.getCodigo(), r.getMensaje());
+                    return;
+                }
                 creados++;
             }
 
-            planCtrl.cambiarEstadoPlan(codigo, activo);
+            Respuesta<Plan> rEstado = planCtrl.cambiarEstadoPlan(codigo, activo);
+            if (!rEstado.isExito()) {
+                responderError(ex, rEstado.getCodigo(), rEstado.getMensaje());
+                return;
+            }
         }
 
         // 2. Eliminar los que ya no vienen (el modelo reasigna a los clientes)
@@ -516,7 +573,11 @@ public class ApiServer {
                     }
                 }
                 if (!sigue) {
-                    planCtrl.eliminarPlan(codigoActual);
+                    Respuesta<Boolean> rElim = planCtrl.eliminarPlan(codigoActual);
+                    if (!rElim.isExito()) {
+                        responderError(ex, rElim.getCodigo(), rElim.getMensaje());
+                        return;
+                    }
                     eliminados++;
                 }
             }
@@ -556,6 +617,9 @@ public class ApiServer {
         }
 
         try {
+            SesionToken sesion = autenticarPeticion(ex);
+            if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN")) return;
+
             // GET /api/empleados  (con ?estado=activos|inactivos  o  ?buscar=texto)
             if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_EMPLEADOS)) {
                 listarEmpleados(ex, query);
@@ -608,7 +672,7 @@ public class ApiServer {
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
         } finally {
-            if (!metodo.equalsIgnoreCase("GET")) {
+            if (!metodo.equalsIgnoreCase("GET") && !metodo.equalsIgnoreCase("OPTIONS")) {
                 persistirTodo();
             }
         }
@@ -804,8 +868,9 @@ public class ApiServer {
             Respuesta<Usuario> respuesta = usuarioCtrl.autenticarUsuario(identificador, contrasena);
 
             if (respuesta.isExito()) {
+                String token = emitirToken(respuesta.getDatos());
                 responder(ex, 200, "{\"exito\":true,\"mensaje\":\"" + escapar(respuesta.getMensaje())
-                        + "\",\"datos\":" + jsonDeSesion(respuesta.getDatos()) + "}");
+                        + "\",\"datos\":" + jsonDeSesion(respuesta.getDatos(), token) + "}");
                 return;
             }
 
@@ -813,8 +878,9 @@ public class ApiServer {
             Respuesta<Empleado> respuestaEmpleado = empleadoCtrl.autenticar(identificador, contrasena);
 
             if (respuestaEmpleado.isExito()) {
+                String token = emitirToken(respuestaEmpleado.getDatos());
                 responder(ex, 200, "{\"exito\":true,\"mensaje\":\"" + escapar(respuestaEmpleado.getMensaje())
-                        + "\",\"datos\":" + jsonDeSesion(respuestaEmpleado.getDatos()) + "}");
+                        + "\",\"datos\":" + jsonDeSesion(respuestaEmpleado.getDatos(), token) + "}");
                 return;
             }
 
@@ -834,14 +900,10 @@ public class ApiServer {
 
         } catch (Exception e) {
             responderError(ex, 500, "Error interno: " + e.getMessage());
-        } finally {
-            if (!metodo.equalsIgnoreCase("GET")) {
-                persistirTodo();
-            }
         }
     }
     /** Devuelve los datos que la página guarda como "sesión". */
-    private static String jsonDeSesion(Usuario u) {
+    private static String jsonDeSesion(Usuario u, String token) {
         if (u == null) {
             return "null";
         }
@@ -871,6 +933,7 @@ public class ApiServer {
                 + "\"rol\":\"" + escapar(u.getRol()) + "\","
                 + "\"planActual\":\"" + escapar(planActual.isEmpty() ? cargo : planActual) + "\","
                 + "\"sucursal\":\"" + escapar(sucursal) + "\","
+                + "\"token\":\"" + escapar(token) + "\","
                 + "\"activo\":" + u.isActivo()
                 + "}";
     }
@@ -889,9 +952,15 @@ public class ApiServer {
         }
 
         try {
+            SesionToken sesion = autenticarPeticion(ex);
+            if (sesion == null) {
+                responderError(ex, 401, "Sesión expirada o no iniciada. Inicia sesión nuevamente.");
+                return;
+            }
+
             // GET /api/facturas/pdf?id=1  -> devuelve el archivo PDF real en disco
             if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_FACTURAS + "/pdf")) {
-                servirPdfFactura(ex, valorDeQuery(query, "id"));
+                servirPdfFactura(ex, valorDeQuery(query, "id"), sesion);
                 return;
             }
 
@@ -899,14 +968,21 @@ public class ApiServer {
             if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_FACTURAS)) {
                 String usuario = valorDeQuery(query, "usuario");
                 Respuesta<List<Factura>> resp;
-                if (usuario != null && !usuario.trim().isEmpty()) {
+                if ("CLIENTE".equals(sesion.rol)) {
+                    resp = facturaCtrl.obtenerFacturasUsuario(sesion.identificacion);
+                } else if (usuario != null && !usuario.trim().isEmpty()) {
                     resp = facturaCtrl.obtenerFacturasUsuario(usuario.trim());
                 } else {
                     resp = facturaCtrl.listarTodasFacturas();
                 }
                 List<Factura> lista = resp.getDatos() != null ? resp.getDatos() : new ArrayList<>();
-                Respuesta<Factura> respCima = facturaCtrl.consultarCima();
-                Factura cima = respCima.isExito() ? respCima.getDatos() : null;
+                Factura cima;
+                if ("CLIENTE".equals(sesion.rol)) {
+                    cima = lista.isEmpty() ? null : lista.get(0);
+                } else {
+                    Respuesta<Factura> respCima = facturaCtrl.consultarCima();
+                    cima = respCima.isExito() ? respCima.getDatos() : null;
+                }
 
                 StringBuilder json = new StringBuilder();
                 json.append("{\"exito\":true,\"mensaje\":\"").append(escapar(resp.getMensaje())).append("\",");
@@ -921,12 +997,19 @@ public class ApiServer {
                 return;
             }
 
-            // POST /api/facturas  -> emitir factura a un cliente
+            // POST /api/facturas  -> emitir factura a un cliente (solo su plan contratado, para mes/año)
             if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_FACTURAS)) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN", "EMPLEADO")) return;
                 Map<String, String> datos = leerJson(leerCuerpo(ex));
                 String cedula = datos.getOrDefault("identificacion", "");
-                String plan = datos.getOrDefault("plan", "");
-                Respuesta<Factura> resp = facturaCtrl.generarFactura(cedula, plan);
+                int mes = utils.FormateadorFecha.getMesActual();
+                int ano = utils.FormateadorFecha.getAnoActual();
+                try {
+                    if (datos.containsKey("mes")) mes = Integer.parseInt(datos.get("mes").trim());
+                    if (datos.containsKey("ano")) ano = Integer.parseInt(datos.get("ano").trim());
+                } catch (NumberFormatException ignored) {
+                }
+                Respuesta<Factura> resp = facturaCtrl.generarFactura(cedula, mes, ano);
                 int codigo = resp.isExito() ? 201 : resp.getCodigo();
                 responder(ex, codigo, "{\"exito\":" + resp.isExito()
                         + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
@@ -942,28 +1025,21 @@ public class ApiServer {
                     idBuscado = Integer.parseInt(datos.getOrDefault("idFactura", "0").trim());
                 } catch (NumberFormatException ignored) {
                 }
-                List<Factura> todas = facturaCtrl.listarTodasFacturas().getDatos();
-                Factura encontrada = null;
-                if (todas != null) {
-                    for (Factura f : todas) {
-                        if (f != null && f.getIdFactura() == idBuscado) {
-                            encontrada = f;
-                            break;
-                        }
-                    }
-                }
-                if (encontrada == null) {
-                    responderError(ex, 404, "No se encontró la factura #" + idBuscado);
+                if ("CLIENTE".equals(sesion.rol) && !facturaPerteneceACliente(idBuscado, sesion.identificacion)) {
+                    responderError(ex, 403, "No tienes permisos para pagar una factura de otro cliente.");
                     return;
                 }
-                encontrada.setEstado("PAGADA");
-                responder(ex, 200, "{\"exito\":true,\"mensaje\":\"Pago registrado correctamente para la factura #00"
-                        + encontrada.getIdFactura() + ".\",\"datos\":" + jsonDeFactura(encontrada) + "}");
+                Respuesta<Factura> resp = facturaCtrl.pagarFactura(idBuscado);
+                int codigo = resp.isExito() ? 200 : resp.getCodigo();
+                responder(ex, codigo, "{\"exito\":" + resp.isExito()
+                        + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
+                        + ",\"datos\":" + jsonDeFactura(resp.getDatos()) + "}");
                 return;
             }
 
             // DELETE /api/facturas/cima  -> desapilar última factura (Pop LIFO)
             if (metodo.equalsIgnoreCase("DELETE") && ruta.equals(RUTA_FACTURAS + "/cima")) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN")) return;
                 Respuesta<Factura> resp = facturaCtrl.desapilarUltimaFactura();
                 int codigo = resp.isExito() ? 200 : resp.getCodigo();
                 responder(ex, codigo, "{\"exito\":" + resp.isExito()
@@ -977,12 +1053,12 @@ public class ApiServer {
             e.printStackTrace();
             responderError(ex, 500, "Error interno en facturas: " + e.getMessage());
         } finally {
-            if (!metodo.equalsIgnoreCase("GET")) {
+            if (!metodo.equalsIgnoreCase("GET") && !metodo.equalsIgnoreCase("OPTIONS")) {
                 persistirTodo();
             }
         }
     }
-    private static void servirPdfFactura(HttpExchange ex, String idTexto) throws IOException {
+    private static void servirPdfFactura(HttpExchange ex, String idTexto, SesionToken sesion) throws IOException {
         int id = 0;
         try {
             id = Integer.parseInt(idTexto != null ? idTexto.trim() : "0");
@@ -1002,6 +1078,12 @@ public class ApiServer {
 
         if (encontrada == null || encontrada.getArchivoPDF() == null || encontrada.getArchivoPDF().isEmpty()) {
             responderError(ex, 404, "No se encontró el PDF de la factura #" + id);
+            return;
+        }
+
+        if ("CLIENTE".equals(sesion.rol)
+                && !sesion.identificacion.equalsIgnoreCase(encontrada.getIdentificacionCliente())) {
+            responderError(ex, 403, "No tienes permisos para ver el comprobante de otro cliente.");
             return;
         }
 
@@ -1052,12 +1134,26 @@ public class ApiServer {
         }
 
         try {
+            SesionToken sesion = autenticarPeticion(ex);
+            if (sesion == null) {
+                responderError(ex, 401, "Sesión expirada o no iniciada. Inicia sesión nuevamente.");
+                return;
+            }
+
             // GET /api/soporte -> devuelve cola de pendientes, frente y atendidos
             if (metodo.equalsIgnoreCase("GET") && ruta.equals(RUTA_SOPORTE)) {
                 List<Soporte> pendientes = soporteCtrl.listarTicketsPendientes().getDatos();
                 if (pendientes == null) pendientes = new ArrayList<>();
-                Respuesta<Soporte> respFrente = soporteCtrl.consultarSiguienteTicket();
-                Soporte frente = respFrente.isExito() ? respFrente.getDatos() : null;
+                List<Soporte> atendidos = ticketsAtendidos;
+                if ("CLIENTE".equals(sesion.rol)) {
+                    pendientes = filtrarTicketsCliente(pendientes, sesion);
+                    atendidos = filtrarTicketsCliente(ticketsAtendidos, sesion);
+                }
+                Soporte frente = pendientes.isEmpty() ? null : pendientes.get(0);
+                if (!"CLIENTE".equals(sesion.rol)) {
+                    Respuesta<Soporte> respFrente = soporteCtrl.consultarSiguienteTicket();
+                    frente = respFrente.isExito() ? respFrente.getDatos() : null;
+                }
 
                 StringBuilder json = new StringBuilder();
                 json.append("{\"exito\":true,");
@@ -1068,9 +1164,9 @@ public class ApiServer {
                     json.append(jsonDeSoporte(pendientes.get(i)));
                 }
                 json.append("],\"atendidos\":[");
-                for (int i = 0; i < ticketsAtendidos.size(); i++) {
+                for (int i = 0; i < atendidos.size(); i++) {
                     if (i > 0) json.append(",");
-                    json.append(jsonDeSoporte(ticketsAtendidos.get(i)));
+                    json.append(jsonDeSoporte(atendidos.get(i)));
                 }
                 json.append("]}");
                 responder(ex, 200, json.toString());
@@ -1080,7 +1176,9 @@ public class ApiServer {
             // POST /api/soporte -> radicar nuevo ticket (encolar al final)
             if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_SOPORTE)) {
                 Map<String, String> datos = leerJson(leerCuerpo(ex));
-                String usuario = datos.getOrDefault("usuario", "");
+                String usuario = "CLIENTE".equals(sesion.rol)
+                        ? sesion.identificacion
+                        : datos.getOrDefault("usuario", "");
                 String correo = datos.getOrDefault("correo", "");
                 String categoria = datos.getOrDefault("categoria", "");
                 String asunto = datos.getOrDefault("asunto", "");
@@ -1100,6 +1198,7 @@ public class ApiServer {
 
             // POST /api/soporte/atender -> atender y desencolar el frente (FIFO)
             if (metodo.equalsIgnoreCase("POST") && ruta.equals(RUTA_SOPORTE + "/atender")) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN", "EMPLEADO")) return;
                 Respuesta<Soporte> resp = soporteCtrl.atenderSiguienteTicket();
                 if (resp.isExito() && resp.getDatos() != null) {
                     ticketsAtendidos.add(0, resp.getDatos());
@@ -1116,7 +1215,7 @@ public class ApiServer {
             e.printStackTrace();
             responderError(ex, 500, "Error interno en soporte: " + e.getMessage());
         } finally {
-            if (!metodo.equalsIgnoreCase("GET")) {
+            if (!metodo.equalsIgnoreCase("GET") && !metodo.equalsIgnoreCase("OPTIONS")) {
                 persistirTodo();
             }
         }
@@ -1158,6 +1257,8 @@ public class ApiServer {
                 + "\"correo\":\"" + escapar(c.getCorreo()) + "\","
                 + "\"direccion\":\"" + escapar(c.getDireccion()) + "\","
                 + "\"planActual\":\"" + escapar(c.getPlanActual()) + "\","
+                + "\"fechaRegistro\":\"" + escapar(c.getFechaRegistro()) + "\","
+                + "\"fechaInicioPlan\":\"" + escapar("Sin plan".equalsIgnoreCase(c.getPlanActual()) ? "" : c.getFechaEfectivaPlan()) + "\","
                 + "\"estado\":\"" + escapar(c.getEstado()) + "\","
                 + "\"activo\":" + c.isActivo()
                 + "}";
@@ -1179,7 +1280,7 @@ public class ApiServer {
         // CORS: permite que la página del Live Server (otro puerto) llame aquí
         ex.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         ex.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        ex.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+        ex.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         ex.getResponseHeaders().add("Content-Type", "application/json; charset=UTF-8");
 
         ex.sendResponseHeaders(codigo, bytes.length == 0 ? -1 : bytes.length);
@@ -1193,6 +1294,93 @@ public class ApiServer {
 
     private static void responderError(HttpExchange ex, int codigo, String mensaje) throws IOException {
         responder(ex, codigo, "{\"exito\":false,\"mensaje\":\"" + escapar(mensaje) + "\",\"datos\":null}");
+    }
+
+    // ==================================================================
+    // 4B. AUTENTICACIÓN Y CONTROL DE ROLES EN LA API
+    // ==================================================================
+    private static String emitirToken(Usuario u) {
+        if (u == null) return "";
+        String token = UUID.randomUUID().toString();
+        String nombreCompleto = ((u.getNombre() != null ? u.getNombre() : "") + " "
+                + (u.getApellido() != null ? u.getApellido() : "")).trim();
+        sesionesActivas.put(token, new SesionToken(
+                u.getIdentificacion(),
+                u.getRol(),
+                nombreCompleto,
+                u.getCorreo()
+        ));
+        return token;
+    }
+
+    private static SesionToken autenticarPeticion(HttpExchange ex) {
+        String auth = ex.getRequestHeaders().getFirst("Authorization");
+        String token = null;
+        if (auth != null && auth.regionMatches(true, 0, "Bearer ", 0, 7)) {
+            token = auth.substring(7).trim();
+        }
+        if (token == null || token.isEmpty()) {
+            token = valorDeQuery(ex.getRequestURI().getQuery(), "token");
+        }
+        if (token == null || token.isEmpty()) {
+            return null;
+        }
+        return sesionesActivas.get(token);
+    }
+
+    private static boolean requiereRol(HttpExchange ex, SesionToken sesion, String... rolesPermitidos) throws IOException {
+        if (sesion == null) {
+            responderError(ex, 401, "Sesión expirada o no iniciada. Inicia sesión nuevamente.");
+            return false;
+        }
+        for (String r : rolesPermitidos) {
+            if (r.equalsIgnoreCase(sesion.rol)) {
+                return true;
+            }
+        }
+        responderError(ex, 403, "No tienes permisos para realizar esta acción.");
+        return false;
+    }
+
+    private static boolean requierePersonalOPropio(HttpExchange ex, SesionToken sesion, String cedulaObjetivo) throws IOException {
+        if (sesion == null) {
+            responderError(ex, 401, "Sesión expirada o no iniciada. Inicia sesión nuevamente.");
+            return false;
+        }
+        if ("SUPERADMIN".equals(sesion.rol) || "ADMIN".equals(sesion.rol) || "EMPLEADO".equals(sesion.rol)) {
+            return true;
+        }
+        if ("CLIENTE".equals(sesion.rol) && sesion.identificacion.equalsIgnoreCase(cedulaObjetivo)) {
+            return true;
+        }
+        responderError(ex, 403, "No tienes permisos para consultar o modificar datos de otro cliente.");
+        return false;
+    }
+
+    private static boolean facturaPerteneceACliente(int idFactura, String cedula) {
+        List<Factura> todas = facturaCtrl.listarTodasFacturas().getDatos();
+        if (todas == null) return false;
+        for (Factura f : todas) {
+            if (f != null && f.getIdFactura() == idFactura) {
+                return cedula.equalsIgnoreCase(f.getIdentificacionCliente());
+            }
+        }
+        return false;
+    }
+
+    private static List<Soporte> filtrarTicketsCliente(List<Soporte> origen, SesionToken sesion) {
+        List<Soporte> filtrados = new ArrayList<>();
+        if (origen == null) return filtrados;
+        for (Soporte t : origen) {
+            if (t == null) continue;
+            boolean porNombre = t.getUsuario() != null && t.getUsuario().equalsIgnoreCase(sesion.nombreCompleto);
+            boolean porCorreo = t.getCorreo() != null && !sesion.correo.isEmpty()
+                    && t.getCorreo().equalsIgnoreCase(sesion.correo);
+            if (porNombre || porCorreo) {
+                filtrados.add(t);
+            }
+        }
+        return filtrados;
     }
 
     private static String leerCuerpo(HttpExchange ex) throws IOException {
@@ -1229,7 +1417,7 @@ public class ApiServer {
      * objetos. Sirve para el catálogo de planes.
      */
     private static List<Map<String, String>> leerArrayDeObjetos(String json, String clave) {
-        List<Map<String, String>> lista = new java.util.ArrayList<>();
+        List<Map<String, String>> lista = new ArrayList<>();
         if (json == null || json.isEmpty()) {
             return lista;
         }
@@ -1239,43 +1427,172 @@ public class ApiServer {
             return lista;
         }
         int corchete = json.indexOf('[', ini);
-        int fin = json.lastIndexOf(']');
-        if (corchete < 0 || fin < corchete) {
+        if (corchete < 0) {
             return lista;
         }
 
-        String contenido = json.substring(corchete + 1, fin);
-        for (String objeto : contenido.split("\\}\\s*,\\s*\\{")) {
-            String limpio = objeto.trim();
-            if (limpio.startsWith("{")) limpio = limpio.substring(1);
-            if (limpio.endsWith("}")) limpio = limpio.substring(0, limpio.length() - 1);
-            if (limpio.isEmpty()) continue;
-            lista.add(leerJson(limpio));
+        int n = json.length();
+        int i = corchete + 1;
+        boolean enCadena = false;
+        boolean escapado = false;
+        int profundidad = 0;
+        int inicioObj = -1;
+
+        while (i < n) {
+            char c = json.charAt(i);
+            if (enCadena) {
+                if (escapado) {
+                    escapado = false;
+                } else if (c == '\\') {
+                    escapado = true;
+                } else if (c == '"') {
+                    enCadena = false;
+                }
+            } else {
+                if (c == '"') {
+                    enCadena = true;
+                } else if (c == '{') {
+                    if (profundidad == 0) {
+                        inicioObj = i;
+                    }
+                    profundidad++;
+                } else if (c == '}') {
+                    profundidad--;
+                    if (profundidad == 0 && inicioObj >= 0) {
+                        lista.add(leerJson(json.substring(inicioObj, i + 1)));
+                        inicioObj = -1;
+                    }
+                } else if (c == ']' && profundidad == 0) {
+                    break;
+                }
+            }
+            i++;
         }
         return lista;
     }
 
-    /** Lee un JSON plano (solo texto y booleanos) sin librerías externas. */
+    /** Lee un JSON plano (cadenas con escapes, números enteros/decimales, booleanos y null). */
     private static Map<String, String> leerJson(String json) {
         Map<String, String> datos = new LinkedHashMap<>();
         if (json == null || json.isEmpty()) {
             return datos;
         }
-        Pattern patron = Pattern.compile("\"([^\"]+)\"\\s*:\\s*(?:\"([^\"]*)\"|(true|false|null)|(-?[0-9]+))");
-        Matcher m = patron.matcher(json);
-        while (m.find()) {
-            String clave = m.group(1);
-            String valor;
-            if (m.group(2) != null) {
-                valor = m.group(2);
-            } else if (m.group(3) != null) {
-                valor = m.group(3);
-            } else {
-                valor = m.group(4);
+
+        int n = json.length();
+        int i = 0;
+        while (i < n) {
+            char c = json.charAt(i);
+            if (c == '"') {
+                int[] finClave = new int[1];
+                String clave = leerCadenaJson(json, i, finClave);
+                i = saltarEspacios(json, finClave[0]);
+                if (i < n && json.charAt(i) == ':') {
+                    i = saltarEspacios(json, i + 1);
+                    if (i < n) {
+                        char v = json.charAt(i);
+                        if (v == '"') {
+                            int[] finVal = new int[1];
+                            String valor = leerCadenaJson(json, i, finVal);
+                            datos.put(clave, valor);
+                            i = finVal[0];
+                        } else if (v == '{' || v == '[') {
+                            i = saltarCompuestoJson(json, i);
+                        } else {
+                            int start = i;
+                            while (i < n && ",}] \t\r\n".indexOf(json.charAt(i)) < 0) {
+                                i++;
+                            }
+                            String token = json.substring(start, i);
+                            if (!token.isEmpty() && !"null".equals(token)) {
+                                datos.put(clave, token);
+                            }
+                        }
+                        continue;
+                    }
+                }
             }
-            datos.put(clave, valor);
+            i++;
         }
         return datos;
+    }
+
+    private static int saltarEspacios(String s, int i) {
+        while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
+            i++;
+        }
+        return i;
+    }
+
+    private static String leerCadenaJson(String s, int inicioComilla, int[] finSalida) {
+        StringBuilder sb = new StringBuilder();
+        int i = inicioComilla + 1;
+        int n = s.length();
+        while (i < n) {
+            char c = s.charAt(i);
+            if (c == '\\' && i + 1 < n) {
+                char sig = s.charAt(i + 1);
+                switch (sig) {
+                    case '"': sb.append('"'); i += 2; break;
+                    case '\\': sb.append('\\'); i += 2; break;
+                    case '/': sb.append('/'); i += 2; break;
+                    case 'b': sb.append('\b'); i += 2; break;
+                    case 'f': sb.append('\f'); i += 2; break;
+                    case 'n': sb.append('\n'); i += 2; break;
+                    case 'r': sb.append('\r'); i += 2; break;
+                    case 't': sb.append('\t'); i += 2; break;
+                    case 'u':
+                        if (i + 5 < n) {
+                            try {
+                                sb.append((char) Integer.parseInt(s.substring(i + 2, i + 6), 16));
+                                i += 6;
+                                break;
+                            } catch (NumberFormatException ignored) {
+                            }
+                        }
+                        sb.append(sig);
+                        i += 2;
+                        break;
+                    default:
+                        sb.append(sig);
+                        i += 2;
+                        break;
+                }
+            } else if (c == '"') {
+                finSalida[0] = i + 1;
+                return sb.toString();
+            } else {
+                sb.append(c);
+                i++;
+            }
+        }
+        finSalida[0] = n;
+        return sb.toString();
+    }
+
+    private static int saltarCompuestoJson(String s, int inicio) {
+        char apertura = s.charAt(inicio);
+        char cierre = (apertura == '{') ? '}' : ']';
+        int prof = 0;
+        boolean enCadena = false;
+        boolean escapado = false;
+        int i = inicio;
+        while (i < s.length()) {
+            char c = s.charAt(i);
+            if (enCadena) {
+                if (escapado) escapado = false;
+                else if (c == '\\') escapado = true;
+                else if (c == '"') enCadena = false;
+            } else {
+                if (c == '"') enCadena = true;
+                else if (c == apertura) prof++;
+                else if (c == cierre) {
+                    prof--;
+                    if (prof == 0) return i + 1;
+                }
+            }
+            i++;
+        }
+        return s.length();
     }
 
     // ==================================================================

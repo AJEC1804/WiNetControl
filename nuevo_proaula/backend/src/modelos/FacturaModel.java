@@ -51,25 +51,67 @@ public class FacturaModel {
     }
 
     /**
-     * Emite una factura para un cliente dado según su plan contratado y la apila.
+     * Emite una factura para un cliente dado según su plan contratado y la apila (mes actual).
      */
     public Respuesta<Factura> emitirFactura(Cliente cliente, Plan plan) {
+        return emitirFactura(cliente, plan, FormateadorFecha.getMesActual(), FormateadorFecha.getAnoActual());
+    }
+
+    /**
+     * Emite una factura para un cliente dado en un mes y año específicos y la apila.
+     */
+    public Respuesta<Factura> emitirFactura(Cliente cliente, Plan plan, int mes, int ano) {
         if (cliente == null || plan == null) {
             return Respuesta.error("Cliente y plan son requeridos para facturar.");
         }
+        if (mes < 1 || mes > 12 || ano < 2000 || ano > 2100) {
+            return Respuesta.error("El mes o año seleccionado es inválido.", 400);
+        }
 
-        int mes = FormateadorFecha.getMesActual();
-        int ano = FormateadorFecha.getAnoActual();
-        String fechaActual = FormateadorFecha.fechaActualTexto();
+        int mesActual = FormateadorFecha.getMesActual();
+        int anoActual = FormateadorFecha.getAnoActual();
+        if (ano > anoActual || (ano == anoActual && mes > mesActual)) {
+            return Respuesta.error("No se puede emitir factura para un mes futuro (" + String.format("%02d/%d", mes, ano) + ").", 400);
+        }
 
-        String nombreArchivo = String.format("%s/factura_%s-%d-%d.pdf",
+        // Validar que no se facture un mes anterior a la fecha en que el cliente adquirió su plan
+        String fechaPlan = cliente.getFechaEfectivaPlan();
+        if (fechaPlan != null && fechaPlan.contains("/")) {
+            String[] partes = fechaPlan.split("/");
+            if (partes.length == 3) {
+                try {
+                    int mesInicio = Integer.parseInt(partes[1].trim());
+                    int anoInicio = Integer.parseInt(partes[2].trim());
+                    if (ano < anoInicio || (ano == anoInicio && mes < mesInicio)) {
+                        return Respuesta.error(
+                                "No se puede emitir factura para " + String.format("%02d/%d", mes, ano)
+                                        + " porque el cliente adquirió su plan el " + fechaPlan + ".",
+                                400);
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+        String fechaActual = (mes == mesActual && ano == anoActual)
+                ? FormateadorFecha.fechaActualTexto()
+                : String.format("01/%02d/%d", mes, ano);
+
+        // No permitir emitir más de una factura por cliente en el mismo mes (búsqueda LIFO)
+        if (pilaFacturas.buscarFacturaMes(cliente.getIdentificacion(), mes, ano) != null) {
+            return Respuesta.error("Ya se emitió una factura para este cliente en el mes " + mes + "/" + ano + ".", 400);
+        }
+
+        int idFactura = consecutivoFactura++;
+        String nombreArchivo = String.format("%s/factura_%d_%s-%d-%d.pdf",
                 CARPETA_FACTURAS,
+                idFactura,
                 cliente.getNombreCompleto().replace(" ", "_"),
                 mes,
                 ano);
 
         Factura factura = new Factura(
-                consecutivoFactura++,
+                idFactura,
                 cliente.getIdentificacion(),
                 cliente.getNombreCompleto(),
                 plan.getIdPlan(),
@@ -144,6 +186,28 @@ public class FacturaModel {
     public Respuesta<List<Factura>> listarTodas() {
         List<Factura> todas = pilaFacturas.listarTodas();
         return Respuesta.exito("Historial total de facturas obtenido (" + todas.size() + ").", todas);
+    }
+
+    /**
+     * Registra el pago de una factura existente en la pila.
+     */
+    public Respuesta<Factura> pagarFactura(int idFactura) {
+        if (idFactura <= 0) {
+            return Respuesta.error("Número de factura inválido.", 400);
+        }
+
+        Factura encontrada = pilaFacturas.buscarPorId(idFactura);
+
+        if (encontrada == null) {
+            return Respuesta.error("No se encontró la factura #" + idFactura, 404);
+        }
+
+        if ("PAGADA".equalsIgnoreCase(encontrada.getEstado())) {
+            return Respuesta.error("La factura #00" + idFactura + " ya se encuentra PAGADA.", 400);
+        }
+
+        encontrada.setEstado("PAGADA");
+        return Respuesta.exito("Pago registrado correctamente para la factura #00" + idFactura + ".", encontrada);
     }
 
     // ================= PERSISTENCIA =================

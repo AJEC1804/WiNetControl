@@ -96,11 +96,16 @@ async function guardarPlanes(listaPlanes) {
     }
 
     try {
-        await fetch(API_PLANES + "/lote", {
+        const respuesta = await fetch(API_PLANES + "/lote", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ planes: listaPlanes })
         });
+        const json = await respuesta.json().catch(() => ({}));
+
+        if (!respuesta.ok || !json.exito) {
+            notificarPlanes(json.mensaje || "No se pudieron guardar los cambios en el servidor.", "error");
+        }
 
         // Se vuelve a leer del servidor para quedar sincronizados
         await inicializarPlanes();
@@ -494,6 +499,7 @@ function renderizarPlanActual(sesion) {
                 </p>
             </div>
             ${pieContacto()}`;
+        renderizarOtrosPlanes(sesion);
         return;
     }
 
@@ -528,6 +534,107 @@ function renderizarPlanActual(sesion) {
         <p class="detalle-descripcion">${plan.descripcion || "Sin descripción registrada."}</p>
 
         ${pieContacto()}`;
+    renderizarOtrosPlanes(sesion);
+}
+
+// Lista de otros planes activos para que el cliente pueda verlos y solicitar cambio
+function renderizarOtrosPlanes(sesion) {
+    const contenedor = document.getElementById("otrosPlanesDisponibles");
+    if (!contenedor) return;
+
+    const planActual = (sesion.planActual || "").trim().toLowerCase();
+    const otros = obtenerPlanes().filter(function (p) {
+        return p.activo && (p.nombre || "").trim().toLowerCase() !== planActual;
+    });
+
+    if (otros.length === 0) {
+        contenedor.innerHTML = "";
+        return;
+    }
+
+    const esc = function (t) {
+        const d = document.createElement("div");
+        d.textContent = t == null ? "" : String(t);
+        return d.innerHTML;
+    };
+
+    let filas = "";
+    otros.forEach(function (p) {
+        filas += `
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 14px; border:1px solid #e2e8f0; border-radius:10px; background:#fff; flex-wrap:wrap;">
+                <div>
+                    <strong style="color:#1e293b;">${esc(p.nombre)}</strong>
+                    <span style="margin-left:8px; font-size:12px; color:#2563eb; font-weight:600;">${esc(p.velocidad)}</span>
+                    <div style="font-size:12.5px; color:#64748b; margin-top:2px;">${esc(p.descripcion || "Plan de fibra óptica")}</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <strong style="color:#16a34a;">${formatearPrecio(p.precio)}/mes</strong>
+                    <button type="button" class="btn btn-primary btn-auto" onclick="solicitarCambioPlan(${Number(p.codigo)})">
+                        Solicitar cambio
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    contenedor.innerHTML = `
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px;">
+            <h4 style="margin:0 0 6px 0; color:#1e293b;">📡 Otros planes disponibles</h4>
+            <p style="margin:0 0 12px 0; font-size:13px; color:#64748b;">
+                Si deseas mejorar o cambiar tu servicio, envía una solicitud de cambio de plan y un asesor la atenderá.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                ${filas}
+            </div>
+        </div>
+    `;
+}
+
+async function solicitarCambioPlan(codigoPlan) {
+    const sesion = obtenerSesion();
+    if (!sesion || sesion.rol !== "CLIENTE") return;
+
+    const plan = obtenerPlanes().find(p => Number(p.codigo) === Number(codigoPlan));
+    if (!plan) {
+        notificarPlanes("No se encontró el plan seleccionado.", "error");
+        return;
+    }
+
+    const confirmado = await confirmarAccionPlanes({
+        titulo: "Solicitar cambio de plan",
+        mensaje: '¿Deseas enviar una solicitud para cambiar de "' + (sesion.planActual || "Sin plan")
+                 + '" al plan "' + plan.nombre + '" (' + plan.velocidad + ', ' + formatearPrecio(plan.precio) + '/mes)?',
+        textoAceptar: "Enviar solicitud",
+        textoCancelar: "Cancelar",
+        peligro: false
+    });
+    if (!confirmado) return;
+
+    const nombreCompleto = ((sesion.nombre || "") + " " + (sesion.apellido || "")).trim() || sesion.identificacion;
+
+    try {
+        const respuesta = await fetch(API_BASE + "/api/soporte", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                usuario: nombreCompleto,
+                correo: sesion.correo || "",
+                categoria: "Cambio de Plan",
+                asunto: "Solicitud de cambio a " + plan.nombre,
+                mensaje: "Cédula: " + sesion.identificacion
+                         + " | Plan actual: " + (sesion.planActual || "Sin plan")
+                         + " | Plan solicitado: " + plan.nombre + " (" + plan.velocidad + ")"
+            })
+        });
+        const json = await respuesta.json();
+        if (!respuesta.ok || !json.exito) {
+            notificarPlanes(json.mensaje || "No se pudo enviar la solicitud.", "error");
+            return;
+        }
+        notificarPlanes('¡Solicitud enviada! Puedes ver su estado en la sección de Soporte.', "ok");
+    } catch (error) {
+        notificarPlanes("No se pudo conectar con el servidor Java (ApiServer).", "error");
+    }
 }
 
 // Bloque final con el aviso resaltado y el botón de contacto

@@ -72,6 +72,13 @@ public class PlanModel {
      * Actualiza un plan existente.
      */
     public Respuesta<Plan> actualizarPlan(int idActual, Plan datosNuevos) {
+        return actualizarPlan(idActual, datosNuevos, null);
+    }
+
+    /**
+     * Actualiza un plan existente y propaga el cambio de nombre a los clientes afectados.
+     */
+    public Respuesta<Plan> actualizarPlan(int idActual, Plan datosNuevos, ClienteModel clienteModel) {
         Plan planExistente = listaPlanes.buscarPorId(idActual);
         if (planExistente == null) {
             return Respuesta.error("No se encontró ningún plan con el código: " + idActual, 404);
@@ -84,7 +91,12 @@ public class PlanModel {
             planExistente.setIdPlan(datosNuevos.getIdPlan());
         }
 
+        String nombreAnterior = planExistente.getNombrePlan();
         if (ValidadorTexto.esNoVacio(datosNuevos.getNombrePlan())) {
+            Plan otroConMismoNombre = listaPlanes.buscarPorNombre(datosNuevos.getNombrePlan());
+            if (otroConMismoNombre != null && otroConMismoNombre.getIdPlan() != planExistente.getIdPlan()) {
+                return Respuesta.error("Ya existe otro plan registrado con el nombre: " + datosNuevos.getNombrePlan());
+            }
             planExistente.setNombrePlan(datosNuevos.getNombrePlan());
         }
 
@@ -98,6 +110,17 @@ public class PlanModel {
 
         if (ValidadorTexto.esNoVacio(datosNuevos.getDescripcionPlan())) {
             planExistente.setDescripcionPlan(datosNuevos.getDescripcionPlan());
+        }
+
+        // Si cambió el nombre del plan, actualizar en cascada a los clientes que lo tenían
+        if (clienteModel != null && nombreAnterior != null
+                && !nombreAnterior.equalsIgnoreCase(planExistente.getNombrePlan())) {
+            List<Cliente> clientes = clienteModel.getListaClientes().listarATodos();
+            for (Cliente c : clientes) {
+                if (c.getPlanActual() != null && c.getPlanActual().equalsIgnoreCase(nombreAnterior)) {
+                    c.setPlanActual(planExistente.getNombrePlan());
+                }
+            }
         }
 
         return Respuesta.exito("Plan actualizado correctamente.", planExistente);

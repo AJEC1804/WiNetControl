@@ -144,7 +144,13 @@ public class ClienteModel {
         if (ValidadorTexto.esNoVacio(datosNuevos.getApellido())) actual.setApellido(datosNuevos.getApellido());
         if (ValidadorTexto.esNoVacio(datosNuevos.getTipo())) actual.setTipo(datosNuevos.getTipo());
         if (ValidadorTexto.esNoVacio(datosNuevos.getDireccion())) actual.setDireccion(datosNuevos.getDireccion());
-        if (ValidadorTexto.esNoVacio(datosNuevos.getPlanActual())) actual.setPlanActual(datosNuevos.getPlanActual());
+        if (datosNuevos.getPlanActual() != null) {
+            String nuevoPlan = datosNuevos.getPlanActual().trim();
+            if (nuevoPlan.equalsIgnoreCase("Sin plan")) {
+                nuevoPlan = "";
+            }
+            actual.setPlanActual(nuevoPlan);
+        }
 
         if (ValidadorTexto.esNoVacio(datosNuevos.getContrasena())) {
             if (!ValidadorTexto.validarPassword(datosNuevos.getContrasena())) {

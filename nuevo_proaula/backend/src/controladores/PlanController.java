@@ -79,13 +79,16 @@ public class PlanController {
             if (precNum == null) {
                 return Respuesta.error("El precio debe ser numérico.");
             }
+            if (precNum < 0) {
+                return Respuesta.error("El precio del plan no puede ser negativo.");
+            }
             datosNuevos.setPrecio(precNum);
         } else {
             datosNuevos.setPrecio(-1);
         }
 
         datosNuevos.setDescripcionPlan(descripcion);
-        return planModel.actualizarPlan(codActualNum, datosNuevos);
+        return planModel.actualizarPlan(codActualNum, datosNuevos, clienteModel);
     }
 
     /**

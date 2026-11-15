@@ -25,7 +25,7 @@ public class Plan implements Serializable {
         this.idPlan = idPlan;
         this.nombrePlan = nombrePlan != null ? nombrePlan.trim() : "";
         this.velocidadPlan = velocidadPlan != null ? velocidadPlan.trim() : "0 Mbps";
-        this.precio = Math.max(0, precio);
+        this.precio = precio;
         this.descripcionPlan = descripcionPlan != null ? descripcionPlan.trim() : "";
         this.fechaActivacion = "";
         this.activo = true;

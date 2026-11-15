@@ -104,9 +104,9 @@ function procesarRegistro(evento) {
         return;
     }
 
-    // 4. Mínimo 6 caracteres
-    if (contrasena.length < 6) {
-        mostrarAlerta(alertBox, "La contraseña debe tener mínimo 6 caracteres.", "error");
+    // 4. Mínimo 6 caracteres, con letras y números (regla de ValidadorTexto.validarPassword)
+    if (contrasena.length < 6 || !/[A-Za-z]/.test(contrasena) || !/\d/.test(contrasena)) {
+        mostrarAlerta(alertBox, "La contraseña debe tener mínimo 6 caracteres e incluir letras y números.", "error");
         return;
     }
 
@@ -330,11 +330,16 @@ async function traer(ruta) {
 async function reunirDatosInicio(usuario) {
     const esCliente = usuario.rol === "CLIENTE";
     const puedeVerEmpleados = usuario.rol === "ADMIN" || usuario.rol === "SUPERADMIN";
+    const cedulaEnc = encodeURIComponent(usuario.identificacion || "");
 
     const pedidos = [
-        traer("/api/clientes").catch(function () { return null; }),
+        esCliente
+            ? traer("/api/clientes/" + cedulaEnc).catch(function () { return null; })
+            : traer("/api/clientes").catch(function () { return null; }),
         traer("/api/planes").catch(function () { return null; }),
-        traer("/api/facturas").catch(function () { return null; }),
+        esCliente
+            ? traer("/api/facturas?usuario=" + cedulaEnc).catch(function () { return null; })
+            : traer("/api/facturas").catch(function () { return null; }),
         traer("/api/soporte").catch(function () { return null; }),
         puedeVerEmpleados ? traer("/api/empleados").catch(function () { return null; }) : Promise.resolve(null)
     ];
@@ -559,12 +564,6 @@ function adaptarVistasPorRol(usuario) {
     const enlaceFacturacion = document.getElementById("navLinkFacturacion");
     if (enlaceFacturacion) {
         enlaceFacturacion.style.display = "flex";
-    }
-
-    const enlaceConfig = document.getElementById("navLinkConfiguracion");
-    if (enlaceConfig) {
-        // La sección de configuración global solo es visible para SUPERADMIN
-        enlaceConfig.style.display = (usuario.rol === "SUPERADMIN") ? "flex" : "none";
     }
 
     const bannerAdminNotice = document.getElementById("clienteNoticeClientes");

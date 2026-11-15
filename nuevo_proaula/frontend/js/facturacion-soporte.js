@@ -5,9 +5,9 @@
    ========================================================================== */
 
 const API_FACTURAS = API_BASE + "/api/facturas";
-const API_SOPORTE  = API_BASE + "/api/soporte";
+const API_SOPORTE = API_BASE + "/api/soporte";
 const API_CLIENTES_FACT = API_BASE + "/api/clientes";
-const API_PLANES_FACT   = API_BASE + "/api/planes?estado=activos";
+const API_PLANES_FACT = API_BASE + "/api/planes?estado=activos";
 
 let facturasEnMemoria = [];
 let cimaFacturaEnMemoria = null;
@@ -21,6 +21,16 @@ function avisarToast(mensaje, tipo) {
     if (typeof notificar === "function") {
         notificar(mensaje, tipo || "exito");
     }
+}
+
+function escaparHtml(texto) {
+    if (texto === null || texto === undefined) return "";
+    return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 
@@ -99,15 +109,15 @@ async function cargarModuloFacturas() {
                     </div>
                     <div class="facturacion__dato">
                         <span class="facturacion__dato-etiqueta">Suscriptor</span>
-                        <span class="facturacion__dato-valor">${cima.nombreCliente}</span>
+                        <span class="facturacion__dato-valor">${escaparHtml(cima.nombreCliente)}</span>
                     </div>
                     <div class="facturacion__dato">
                         <span class="facturacion__dato-etiqueta">Plan Asignado</span>
-                        <span class="facturacion__dato-valor">${cima.nombrePlan}</span>
+                        <span class="facturacion__dato-valor">${escaparHtml(cima.nombrePlan)}</span>
                     </div>
                     <div class="facturacion__dato">
                         <span class="facturacion__dato-etiqueta">Fecha de Emisión</span>
-                        <span class="facturacion__dato-valor">${cima.fecha}</span>
+                        <span class="facturacion__dato-valor">${escaparHtml(cima.fecha)}</span>
                     </div>
                     <div class="facturacion__dato">
                         <span class="facturacion__dato-etiqueta">Monto Total</span>
@@ -218,7 +228,7 @@ async function cargarModuloFacturas() {
             <div id="modalEmitirFactura" class="modal-cli-fondo">
                 <div class="modal-cli-caja">
                     <h3>➕ Emitir Nueva Factura</h3>
-                    <p class="nota-obligatorio">Selecciona el cliente y el plan para generar el comprobante PDF y apilarlo en la cima.</p>
+                    <p class="nota-obligatorio">Se factura únicamente el plan contratado por el cliente para el mes y año seleccionados (máximo 1 factura por mes).</p>
 
                     <div class="form-row">
                         <div class="form-group" style="grid-column: 1 / -1;">
@@ -231,10 +241,33 @@ async function cargarModuloFacturas() {
 
                     <div class="form-row">
                         <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="factPlanSelect">Plan a facturar <span class="obligatorio">*</span></label>
-                            <select id="factPlanSelect">
-                                <option value="">Seleccione un plan...</option>
+                            <label for="factPlanTexto">Plan contratado del cliente</label>
+                            <input type="text" id="factPlanTexto" readonly style="background-color: #f8fafc; color: #334155; font-weight: 600;" value="Seleccione un cliente...">
+                            <small id="factInfoPlan" style="display: block; margin-top: 6px; color: #64748b; font-size: 12px;"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="factMesSelect">Mes <span class="obligatorio">*</span></label>
+                            <select id="factMesSelect">
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="factAnoInput">Año <span class="obligatorio">*</span></label>
+                            <input type="number" id="factAnoInput" min="2020" max="2100" required>
                         </div>
                     </div>
 
@@ -288,15 +321,15 @@ function renderizarFilasFacturas(lista, esPersonal) {
                 <td>
                     ${esTope ? '<span class="facturacion__badge--cima">CIMA</span>' : `#${pos}`}
                 </td>
-                <td>#00${fact.idFactura}</td>
-                <td><span class="cli-cedula">${fact.identificacionCliente || '-'}</span></td>
-                <td>${fact.nombreCliente}</td>
-                <td>${fact.nombrePlan}</td>
-                <td>${fact.fecha}</td>
+                <td>#00${Number(fact.idFactura)}</td>
+                <td><span class="cli-cedula">${escaparHtml(fact.identificacionCliente || '-')}</span></td>
+                <td>${escaparHtml(fact.nombreCliente)}</td>
+                <td>${escaparHtml(fact.nombrePlan)}</td>
+                <td>${escaparHtml(fact.fecha)}</td>
                 <td style="color: #16a34a; font-weight: 700;">$${monto.toLocaleString('es-CO')}</td>
                 <td>
                     <span class="badge ${pagada ? 'badge-activo' : 'badge-admin'}">
-                        ${fact.estado}
+                        ${escaparHtml(fact.estado)}
                     </span>
                 </td>
                 <td style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -408,8 +441,9 @@ async function abrirModalEmitirFactura() {
     }
 
     const selCliente = document.getElementById("factClienteSelect");
-    const selPlan = document.getElementById("factPlanSelect");
-    if (!selCliente || !selPlan) return;
+    const selMes = document.getElementById("factMesSelect");
+    const inpAno = document.getElementById("factAnoInput");
+    if (!selCliente) return;
 
     selCliente.innerHTML = '<option value="">Seleccione un cliente...</option>';
     clientesParaSelector.forEach(function (c) {
@@ -420,14 +454,9 @@ async function abrirModalEmitirFactura() {
         selCliente.appendChild(opt);
     });
 
-    selPlan.innerHTML = '<option value="">Seleccione un plan...</option>';
-    planesParaSelector.forEach(function (p) {
-        const precio = Number(p.precio || 0).toLocaleString("es-CO");
-        const opt = document.createElement("option");
-        opt.value = p.nombrePlan;
-        opt.textContent = p.nombrePlan + " (" + p.velocidadPlan + " — $" + precio + ")";
-        selPlan.appendChild(opt);
-    });
+    const hoy = new Date();
+    if (selMes) selMes.value = String(hoy.getMonth() + 1);
+    if (inpAno) inpAno.value = String(hoy.getFullYear());
 
     if (clientesParaSelector.length > 0) {
         selCliente.value = clientesParaSelector[0].identificacion;
@@ -440,14 +469,41 @@ async function abrirModalEmitirFactura() {
 
 function alCambiarClienteFactura() {
     const selCliente = document.getElementById("factClienteSelect");
-    const selPlan = document.getElementById("factPlanSelect");
-    if (!selCliente || !selPlan) return;
+    const txtPlan = document.getElementById("factPlanTexto");
+    const infoPlan = document.getElementById("factInfoPlan");
+    if (!selCliente || !txtPlan) return;
 
     const cliente = clientesParaSelector.find(c => c.identificacion === selCliente.value);
-    if (cliente && cliente.planActual) {
-        selPlan.value = cliente.planActual;
-    } else if (planesParaSelector.length > 0 && !selPlan.value) {
-        selPlan.value = planesParaSelector[0].nombrePlan;
+    if (!cliente) {
+        txtPlan.value = "Seleccione un cliente...";
+        if (infoPlan) infoPlan.textContent = "";
+        return;
+    }
+
+    const nombrePlan = (cliente.planActual || "").trim();
+    if (!nombrePlan || nombrePlan.toLowerCase() === "sin plan") {
+        txtPlan.value = "Sin plan contratado (no se puede facturar)";
+        if (infoPlan) infoPlan.textContent = "";
+        return;
+    }
+
+    const planObj = planesParaSelector.find(p =>
+        (p.nombre || "").trim().toLowerCase() === nombrePlan.toLowerCase()
+    );
+    if (planObj) {
+        const precio = Number(planObj.precio || 0).toLocaleString("es-CO");
+        txtPlan.value = planObj.nombre + " (" + planObj.velocidad + " — $" + precio + ")";
+    } else {
+        txtPlan.value = nombrePlan;
+    }
+
+    if (infoPlan) {
+        const activas = facturasEnMemoria.filter(f =>
+            f.identificacionCliente === cliente.identificacion &&
+            String(f.estado || "").toUpperCase() === "EMITIDA"
+        ).length;
+        const fechaInicio = cliente.fechaInicioPlan || cliente.fechaRegistro || "Sin fecha";
+        infoPlan.textContent = "Adquirido el: " + fechaInicio + " · Facturas activas (pendientes): " + activas;
     }
 }
 
@@ -458,10 +514,23 @@ function cerrarModalEmitirFactura() {
 
 async function guardarNuevaFactura() {
     const cedula = document.getElementById("factClienteSelect").value;
-    const plan = document.getElementById("factPlanSelect").value;
+    const mes = Number(document.getElementById("factMesSelect").value);
+    const ano = Number(document.getElementById("factAnoInput").value);
 
     if (!cedula) {
         avisarToast("Selecciona un cliente para emitir la factura.", "error");
+        return;
+    }
+
+    const cliente = clientesParaSelector.find(c => c.identificacion === cedula);
+    const nombrePlan = cliente && cliente.planActual ? cliente.planActual.trim() : "";
+    if (!nombrePlan || nombrePlan.toLowerCase() === "sin plan") {
+        avisarToast("El cliente seleccionado no tiene un plan contratado.", "error");
+        return;
+    }
+
+    if (!mes || mes < 1 || mes > 12 || !ano || ano < 2020 || ano > 2100) {
+        avisarToast("Selecciona un mes y año válidos.", "error");
         return;
     }
 
@@ -469,7 +538,7 @@ async function guardarNuevaFactura() {
         const resp = await fetch(API_FACTURAS, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ identificacion: cedula, plan: plan })
+            body: JSON.stringify({ identificacion: cedula, mes: mes, ano: ano })
         });
         const json = await resp.json();
         if (!json.exito) {
@@ -502,8 +571,8 @@ async function cargarModuloSoporte() {
         const respuesta = await fetch(API_SOPORTE);
         const json = await respuesta.json();
         ticketsPendientesEnMemoria = (json && Array.isArray(json.pendientes)) ? json.pendientes : [];
-        ticketsAtendidosEnMemoria  = (json && Array.isArray(json.atendidos))  ? json.atendidos  : [];
-        frenteTicketEnMemoria      = (json && json.frente) ? json.frente : (ticketsPendientesEnMemoria[0] || null);
+        ticketsAtendidosEnMemoria = (json && Array.isArray(json.atendidos)) ? json.atendidos : [];
+        frenteTicketEnMemoria = (json && json.frente) ? json.frente : (ticketsPendientesEnMemoria[0] || null);
     } catch (error) {
         contenedor.innerHTML = `
             <div class="soporte">
@@ -547,7 +616,7 @@ async function cargarModuloSoporte() {
 
                     <div class="soporte__cola-info">
                         <span><strong>Orden de atención:</strong> Desde el frente hacia atrás</span>
-                        <span><strong>Próximo a atender:</strong> ${frente ? '#' + frente.idTicket + ' (' + frente.usuario + ')' : 'Ninguno'}</span>
+                        <span><strong>Próximo a atender:</strong> ${frente ? '#' + Number(frente.idTicket) + ' (' + escaparHtml(frente.usuario) + ')' : 'Ninguno'}</span>
                     </div>
 
                     <div class="soporte__cola-lista">
@@ -572,11 +641,11 @@ async function cargarModuloSoporte() {
                                 Ticket #${ticket.idTicket}
                             </span>
                         </div>
-                        <div class="soporte__nodo-asunto">${ticket.asunto}</div>
-                        <div class="soporte__nodo-mensaje">${ticket.mensaje}</div>
+                        <div class="soporte__nodo-asunto">${escaparHtml(ticket.asunto)}</div>
+                        <div class="soporte__nodo-mensaje">${escaparHtml(ticket.mensaje)}</div>
                         <div class="soporte__nodo-footer">
-                            <span>👤 ${ticket.usuario} (${ticket.correo || 'Sin correo'})</span>
-                            <span>📅 ${ticket.fecha}</span>
+                            <span>👤 ${escaparHtml(ticket.usuario)} (${escaparHtml(ticket.correo || 'Sin correo')})</span>
+                            <span>📅 ${escaparHtml(ticket.fecha)}</span>
                         </div>
                     </div>
                 `;
@@ -622,11 +691,11 @@ async function cargarModuloSoporte() {
             atendidos.forEach(t => {
                 html += `
                     <tr class="fila-atendido">
-                        <td>#${t.idTicket}</td>
-                        <td>${t.usuario}</td>
-                        <td>${t.asunto}</td>
-                        <td>${t.correo || '-'}</td>
-                        <td>${t.fecha || 'Hoy'}</td>
+                        <td>#${Number(t.idTicket)}</td>
+                        <td>${escaparHtml(t.usuario)}</td>
+                        <td>${escaparHtml(t.asunto)}</td>
+                        <td>${escaparHtml(t.correo || '-')}</td>
+                        <td>${escaparHtml(t.fecha || 'Hoy')}</td>
                         <td><span class="badge badge-activo">RESUELTO ✅</span></td>
                     </tr>
                 `;
@@ -682,12 +751,12 @@ async function cargarModuloSoporte() {
                     <form id="formRadicarTicket" onsubmit="procesarRadicacionTicket(event)">
                         <div class="form-group">
                             <label for="soporteUsuario">Nombre del Solicitante:</label>
-                            <input type="text" id="soporteUsuario" value="${nombreSesion}" readonly style="background-color: #f8fafc;">
+                            <input type="text" id="soporteUsuario" value="${escaparHtml(nombreSesion)}" readonly style="background-color: #f8fafc;">
                         </div>
 
                         <div class="form-group">
                             <label for="soporteCorreo">Correo Electrónico de Contacto:</label>
-                            <input type="email" id="soporteCorreo" value="${sesion.correo || 'soporte@cliente.com'}" required>
+                            <input type="email" id="soporteCorreo" value="${escaparHtml(sesion.correo || 'soporte@cliente.com')}" required>
                         </div>
 
                         <div class="form-group">
@@ -753,11 +822,11 @@ async function cargarModuloSoporte() {
                             Ticket #${ticket.idTicket}
                         </span>
                     </div>
-                    <div class="soporte__nodo-asunto">${ticket.asunto}</div>
-                    <div class="soporte__nodo-mensaje">${ticket.mensaje}</div>
+                    <div class="soporte__nodo-asunto">${escaparHtml(ticket.asunto)}</div>
+                    <div class="soporte__nodo-mensaje">${escaparHtml(ticket.mensaje)}</div>
                     <div class="soporte__nodo-footer">
-                        <span>👤 ${ticket.usuario}</span>
-                        <span>📅 ${ticket.fecha}</span>
+                        <span>👤 ${escaparHtml(ticket.usuario)}</span>
+                        <span>📅 ${escaparHtml(ticket.fecha)}</span>
                     </div>
                 </div>
             `;
@@ -805,11 +874,11 @@ async function cargarModuloSoporte() {
         atendidos.forEach(t => {
             html += `
                 <tr>
-                    <td>#${t.idTicket}</td>
-                    <td>${t.usuario}</td>
-                    <td>${t.asunto}</td>
-                    <td>${t.correo || '-'}</td>
-                    <td>${t.fecha || 'Hoy'}</td>
+                    <td>#${Number(t.idTicket)}</td>
+                    <td>${escaparHtml(t.usuario)}</td>
+                    <td>${escaparHtml(t.asunto)}</td>
+                    <td>${escaparHtml(t.correo || '-')}</td>
+                    <td>${escaparHtml(t.fecha || 'Hoy')}</td>
                     <td><span class="badge badge-activo">RESUELTO ✅</span></td>
                 </tr>
             `;
@@ -916,7 +985,9 @@ function verComprobanteFactura(idFactura) {
     }
 
     const monto = Number(factura.monto || 0);
-    const urlPdfReal = `${API_FACTURAS}/pdf?id=${factura.idFactura}`;
+    const tokenPdf = (typeof window.obtenerTokenSesion === "function") ? window.obtenerTokenSesion() : "";
+    const urlPdfReal = `${API_FACTURAS}/pdf?id=${factura.idFactura}`
+        + (tokenPdf ? `&token=${encodeURIComponent(tokenPdf)}` : "");
 
     let modal = document.getElementById("comprobanteModal");
     if (!modal) {
@@ -944,19 +1015,19 @@ function verComprobanteFactura(idFactura) {
                         <div class="comprobante-papel__factura-id">
                             <h4>FACTURA DE VENTA</h4>
                             <p><strong>N° 00${factura.idFactura}</strong></p>
-                            <p style="margin-top: 4px;">Fecha: ${factura.fecha}</p>
+                            <p style="margin-top: 4px;">Fecha: ${escaparHtml(factura.fecha)}</p>
                             <span class="badge ${factura.estado === 'PAGADA' ? 'badge-activo' : 'badge-admin'}" style="margin-top: 6px;">
-                                ${factura.estado}
+                                ${escaparHtml(factura.estado)}
                             </span>
                         </div>
                     </div>
 
                     <div class="comprobante-papel__datos-cliente">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <div><strong>Suscriptor:</strong> ${factura.nombreCliente}</div>
-                            <div><strong>C.C. / NIT:</strong> ${factura.identificacionCliente}</div>
-                            <div><strong>Archivo PDF:</strong> <code>${factura.archivoPdf || '-'}</code></div>
-                            <div><strong>Plan:</strong> ${factura.nombrePlan}</div>
+                            <div><strong>Suscriptor:</strong> ${escaparHtml(factura.nombreCliente)}</div>
+                            <div><strong>C.C. / NIT:</strong> ${escaparHtml(factura.identificacionCliente)}</div>
+                            <div><strong>Archivo PDF:</strong> <code>${escaparHtml(factura.archivoPdf || '-')}</code></div>
+                            <div><strong>Plan:</strong> ${escaparHtml(factura.nombrePlan)}</div>
                         </div>
                     </div>
 
@@ -970,7 +1041,7 @@ function verComprobanteFactura(idFactura) {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Servicio de Internet Fibra Óptica - ${factura.nombrePlan}</td>
+                                <td>Servicio de Internet Fibra Óptica - ${escaparHtml(factura.nombrePlan)}</td>
                                 <td>Mes de Facturación</td>
                                 <td style="text-align: right;">$${monto.toLocaleString('es-CO')} COP</td>
                             </tr>

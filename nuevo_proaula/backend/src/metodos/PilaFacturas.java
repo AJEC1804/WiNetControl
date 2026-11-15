@@ -66,25 +66,38 @@ public class PilaFacturas implements Serializable {
         return (cima != null) ? cima.getDato() : null;
     }
 
+    // Búsqueda LIFO: desapila hacia una pila auxiliar y luego restaura el orden original
     public Factura buscarPorId(int idFactura) {
-        NodoFactura sapo = cima;
-        while (sapo != null) {
-            if (sapo.getDato() != null && sapo.getDato().getIdFactura() == idFactura) {
-                return sapo.getDato();
+        if (cima == null) return null;
+
+        PilaFacturas aux = new PilaFacturas();
+        Factura encontrada = null;
+
+        while (!estaVacia()) {
+            Factura actual = desapilar();
+            aux.apilar(actual);
+            if (actual != null && actual.getIdFactura() == idFactura) {
+                encontrada = actual;
+                break;
             }
-            sapo = sapo.getSiguiente();
         }
-        return null;
+
+        while (!aux.estaVacia()) {
+            apilar(aux.desapilar());
+        }
+        return encontrada;
     }
 
+    // Búsqueda LIFO por usuario o cédula usando pila auxiliar
     public List<Factura> obtenerFacturasUsuario(String usuarioOId) {
         List<Factura> lista = new ArrayList<>();
         if (usuarioOId == null || cima == null) return lista;
         String criterio = usuarioOId.trim();
 
-        NodoFactura sapo = cima;
-        while (sapo != null) {
-            Factura f = sapo.getDato();
+        PilaFacturas aux = new PilaFacturas();
+        while (!estaVacia()) {
+            Factura f = desapilar();
+            aux.apilar(f);
             if (f != null) {
                 boolean coincideUsuario = f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(criterio);
                 boolean coincideId = f.getIdentificacionCliente() != null && f.getIdentificacionCliente().equalsIgnoreCase(criterio);
@@ -92,28 +105,44 @@ public class PilaFacturas implements Serializable {
                     lista.add(f);
                 }
             }
-            sapo = sapo.getSiguiente();
+        }
+
+        while (!aux.estaVacia()) {
+            apilar(aux.desapilar());
         }
         return lista;
     }
 
-    public Factura buscarFacturaMes(String usuario, int mes, int ano) {
-        if (usuario == null || cima == null) return null;
+    // Búsqueda LIFO por usuario/cédula, mes y año usando pila auxiliar
+    public Factura buscarFacturaMes(String usuarioOId, int mes, int ano) {
+        if (usuarioOId == null || cima == null) return null;
+        String criterio = usuarioOId.trim();
         String token = "-" + mes + "-" + ano;
         String tokenSlash = String.format("/%02d/%d", mes, ano);
 
-        NodoFactura sapo = cima;
-        while (sapo != null) {
-            Factura f = sapo.getDato();
-            if (f != null && f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(usuario)) {
-                if ((f.getArchivoPDF() != null && f.getArchivoPDF().contains(token)) ||
-                    (f.getFecha() != null && f.getFecha().contains(tokenSlash))) {
-                    return f;
+        PilaFacturas aux = new PilaFacturas();
+        Factura encontrada = null;
+
+        while (!estaVacia()) {
+            Factura f = desapilar();
+            aux.apilar(f);
+            if (f != null) {
+                boolean coincideUsuario = f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(criterio);
+                boolean coincideId = f.getIdentificacionCliente() != null && f.getIdentificacionCliente().equalsIgnoreCase(criterio);
+                if (coincideUsuario || coincideId) {
+                    if ((f.getArchivoPDF() != null && f.getArchivoPDF().contains(token)) ||
+                        (f.getFecha() != null && f.getFecha().contains(tokenSlash))) {
+                        encontrada = f;
+                        break;
+                    }
                 }
             }
-            sapo = sapo.getSiguiente();
         }
-        return null;
+
+        while (!aux.estaVacia()) {
+            apilar(aux.desapilar());
+        }
+        return encontrada;
     }
 
     public List<Factura> listarTodas() {
