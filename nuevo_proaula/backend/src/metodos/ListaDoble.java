@@ -101,7 +101,11 @@ public class ListaDoble implements Serializable {
         } else {
             nuevo.setSiguiente(sapo.getSiguiente());
             nuevo.setAnterior(sapo);
-            sapo.getSiguiente().setAnterior(nuevo);
+            if (sapo.getSiguiente() != null) {
+                sapo.getSiguiente().setAnterior(nuevo);
+            } else {
+                ultimo = nuevo;
+            }
             sapo.setSiguiente(nuevo);
             return true;
         }

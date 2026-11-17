@@ -35,7 +35,9 @@ public class Cola implements Serializable {
 
     // Desencolar (Dequeue) del frente de la cola
     public Nodo desencolar() {
-        if (frente == null && final_ == null) {
+        if (frente == null) {
+            final_ = null;
+            tamano = 0;
             System.out.println("Cola vacía");
             return null;
         }
@@ -45,11 +47,15 @@ public class Cola implements Serializable {
             final_ = null;
         } else {
             frente = frente.getSiguiente();
-            frente.setAnterior(null);
+            if (frente != null) {
+                frente.setAnterior(null);
+            }
         }
         aux.setSiguiente(null);
         aux.setAnterior(null);
-        tamano--;
+        if (tamano > 0) {
+            tamano--;
+        }
         return aux;
     }
 
@@ -62,7 +68,7 @@ public class Cola implements Serializable {
     }
 
     public boolean estaVacia() {
-        return frente == null && final_ == null;
+        return frente == null;
     }
 
     public int getTamano() {

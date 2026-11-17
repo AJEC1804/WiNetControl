@@ -144,19 +144,22 @@
 
             return fetchOriginal(recurso, opciones).then(function (respuesta) {
                 if (!respuesta.ok) {
-                    // Se lee una copia para no consumir el cuerpo que espera el llamador
-                    respuesta.clone().json().then(function (json) {
-                        var mensaje = (json && (json.mensaje || json.message)) || "";
-                        alertarError(
-                            "Error " + respuesta.status + " en el servidor",
-                            (mensaje ? mensaje + " · " : "") + rutaDe(url)
-                        );
-                    }).catch(function () {
-                        alertarError(
-                            "Error " + respuesta.status + " en el servidor",
-                            "La operación no se pudo completar · " + rutaDe(url)
-                        );
-                    });
+                    var esLoginAuth = url.indexOf("/api/login") >= 0 && (respuesta.status === 401 || respuesta.status === 400);
+                    if (!esLoginAuth) {
+                        // Se lee una copia para no consumir el cuerpo que espera el llamador
+                        respuesta.clone().json().then(function (json) {
+                            var mensaje = (json && (json.mensaje || json.message)) || "";
+                            alertarError(
+                                "Error " + respuesta.status + " en el servidor",
+                                (mensaje ? mensaje + " · " : "") + rutaDe(url)
+                            );
+                        }).catch(function () {
+                            alertarError(
+                                "Error " + respuesta.status + " en el servidor",
+                                "La operación no se pudo completar · " + rutaDe(url)
+                            );
+                        });
+                    }
                 }
                 return respuesta;
             }, function (error) {

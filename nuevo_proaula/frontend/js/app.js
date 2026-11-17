@@ -253,6 +253,17 @@ async function renderizarEstadisticasPorRol(usuario) {
     contenedor.innerHTML = tarjetaCargando("Consultando datos…");
 
     const datos = await reunirDatosInicio(usuario);
+    if (datos.esCliente && datos.clientes && datos.clientes.datos) {
+        const cFresh = datos.clientes.datos;
+        usuario.activo = cFresh.activo;
+        if (cFresh.planActual !== undefined) usuario.planActual = cFresh.planActual;
+        if (cFresh.direccion !== undefined) usuario.direccion = cFresh.direccion;
+        try {
+            localStorage.setItem("sesionActiva", JSON.stringify(usuario));
+        } catch (e) {
+            // noop
+        }
+    }
     const tarjetas = tarjetasSegunRol(usuario, datos);
     contenedor.innerHTML = tarjetas.map(pintarTarjeta).join("");
     // La rejilla ajusta el número de columnas a las tarjetas que haya
@@ -623,8 +634,8 @@ function mostrarAlerta(elementoAlerta, mensaje, tipo) {
 // ==========================================================================
 // PERMISOS POR ROL
 // --------------------------------------------------------------------------
-// ADMIN y SUPERADMIN pueden todo. EMPLEADO puede ver, registrar y editar,
-// pero NO eliminar clientes ni cambiar el estado del servicio.
+// ADMIN y SUPERADMIN pueden todo. EMPLEADO puede ver, registrar, editar
+// y cambiar el estado del servicio (pero NO eliminar clientes).
 // ==========================================================================
 function sesionActual() {
     try {
@@ -1113,6 +1124,9 @@ async function abrirModal(identificacion) {
     document.getElementById("editApellido").value = cliente.apellido;
     document.getElementById("editCorreo").value = cliente.correo;
     document.getElementById("editTelefono").value = cliente.telefono;
+    if (document.getElementById("editDireccion")) {
+        document.getElementById("editDireccion").value = cliente.direccion || "";
+    }
     await cargarPlanesEnSelect(cliente.planActual);
     document.getElementById("editEstado").value = cliente.activo ? "Activo" : "Inactivo";
 
@@ -1130,6 +1144,9 @@ async function abrirModalNuevo() {
     document.getElementById("editApellido").value = "";
     document.getElementById("editCorreo").value = "";
     document.getElementById("editTelefono").value = "";
+    if (document.getElementById("editDireccion")) {
+        document.getElementById("editDireccion").value = "";
+    }
     await cargarPlanesEnSelect(null);
     document.getElementById("editEstado").value = "Activo";
 
@@ -1196,6 +1213,12 @@ function guardarClienteInterno() {
     }
 
 
+    const campoDir = document.getElementById("editDireccion");
+    const direccionValor = campoDir ? campoDir.value.trim() : "";
+    const direccionFinal = direccionValor !== ""
+        ? direccionValor
+        : (modoFormulario === "nuevo" ? "Sin dirección" : "");
+
     // Lo que se envía al servidor Java
     const datos = {
         identificacion: identificacion,
@@ -1204,8 +1227,8 @@ function guardarClienteInterno() {
         tipo: "CC",
         telefono: telefono,
         correo: correo,
-        direccion: "Sin dirección",
-        contrasena: "Clave123",
+        direccion: direccionFinal,
+        contrasena: (modoFormulario === "nuevo") ? "Clave123" : "",
         planActual: document.getElementById("editPlan").value,
         activo: document.getElementById("editEstado").value === "Activo" ? "true" : "false"
     };
@@ -1383,7 +1406,7 @@ function empMostrarPagina() {
             <td>
                 <button class="btn-icono" aria-label="Editar empleado" onclick="abrirModalEmpleado('${e.identificacion}')" title="Editar">✏️</button>
                 <button class="btn-icono peligro" aria-label="${e.activo ? "Desactivar" : "Activar"} empleado" onclick="cambiarEstadoEmpleado('${e.identificacion}')" title="${e.activo ? "Desactivar" : "Activar"}">${e.activo ? "⏻" : "▶"}</button>
-                ${puedeEliminarEmpleados() ? `<button class="btn-icono peligro" aria-label="Eliminar empleado" onclick="eliminarEmpleado('${e.identificacion}')" title="Eliminar empleado">🗑️</button>` : ""}
+                ${(puedeEliminarEmpleados() && (esSuperAdminActual() || (e.rol !== "SUPERADMIN" && e.identificacion !== "9999999999"))) ? `<button class="btn-icono peligro" aria-label="Eliminar empleado" onclick="eliminarEmpleado('${e.identificacion}')" title="Eliminar empleado">🗑️</button>` : ""}
             </td>
         </tr>`;
         }).join("");
@@ -1542,9 +1565,15 @@ function guardarEmpleado() {
         return;
     }
 
-    const rolElegido = esSuperAdminActual() ? document.getElementById("empRol").value : "EMPLEADO";
+    let rolElegido = "EMPLEADO";
+    if (esSuperAdminActual()) {
+        rolElegido = document.getElementById("empRol").value;
+    } else if (empModo === "editar") {
+        const empActual = empTodos.find(function (e) { return e.identificacion === identificacion; });
+        rolElegido = (empActual && empActual.rol) ? empActual.rol : "EMPLEADO";
+    }
     const cargoElegido = (rolElegido === "ADMIN")
-        ? "Administrador de sucursal"
+        ? (document.getElementById("empCargo").value || "Administrador de sucursal")
         : document.getElementById("empCargo").value;
 
     const datos = {
@@ -1593,7 +1622,7 @@ async function empEnviar(datos) {
     }
 }
 
-// ---------- ELIMINAR (solo SUPERADMIN) ----------
+// ---------- ELIMINAR (SUPERADMIN y ADMIN, excepto Superadmin) ----------
 async function eliminarEmpleado(identificacion) {
     if (!puedeEliminarEmpleados()) {
         notificar("Solo un administrador puede eliminar empleados.", "error");
@@ -1602,6 +1631,11 @@ async function eliminarEmpleado(identificacion) {
 
     const empleado = empTodos.find(function (e) { return e.identificacion === identificacion; });
     if (!empleado) return;
+
+    if (!esSuperAdminActual() && (empleado.rol === "SUPERADMIN" || empleado.identificacion === "9999999999")) {
+        notificar("Un Administrador no puede eliminar al Super Administrador.", "error");
+        return;
+    }
 
     const nombre = empleado.nombre + " " + empleado.apellido;
 

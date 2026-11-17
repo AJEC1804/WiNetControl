@@ -63,7 +63,7 @@ async function cargarModuloFacturas() {
         contenedor.innerHTML = `
             <div class="facturacion">
                 <div class="facturacion__tabla-card" style="text-align:center; padding:32px; color:#b91c1c;">
-                    ⚠️ No se pudo conectar con el servidor Java (<code>' + API_BASE + '</code>). Verifica que <strong>ApiServer</strong> esté encendido.
+                    ⚠️ No se pudo conectar con el servidor Java (<code>${API_BASE}</code>). Verifica que <strong>ApiServer</strong> esté encendido.
                 </div>
             </div>
         `;
@@ -577,7 +577,7 @@ async function cargarModuloSoporte() {
         contenedor.innerHTML = `
             <div class="soporte">
                 <div class="facturacion__tabla-card" style="text-align:center; padding:32px; color:#b91c1c;">
-                    ⚠️ No se pudo conectar con el servidor Java (<code>' + API_BASE + '</code>). Verifica que <strong>ApiServer</strong> esté encendido.
+                    ⚠️ No se pudo conectar con el servidor Java (<code>${API_BASE}</code>). Verifica que <strong>ApiServer</strong> esté encendido.
                 </div>
             </div>
         `;

@@ -78,13 +78,15 @@ public class ListaEmpleados implements Serializable {
     public boolean insertarAntesDe(Empleado nuevo, String identificacionReferencia) {
         if (nuevo == null || identificacionReferencia == null || primero == null) return false;
 
-        if (primero.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        if (primero.getDato() != null && primero.getDato().getIdentificacion() != null
+                && primero.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
             insertarInicio(nuevo);
             return true;
         }
 
         NodoEmpleado sapo = primero;
-        while (sapo != null && !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        while (sapo != null && (sapo.getDato() == null || sapo.getDato().getIdentificacion() == null
+                || !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia))) {
             sapo = sapo.getSiguiente();
         }
 
@@ -93,7 +95,11 @@ public class ListaEmpleados implements Serializable {
         NodoEmpleado nuevoNodo = new NodoEmpleado(nuevo);
         nuevoNodo.setAnterior(sapo.getAnterior());
         nuevoNodo.setSiguiente(sapo);
-        sapo.getAnterior().setSiguiente(nuevoNodo);
+        if (sapo.getAnterior() != null) {
+            sapo.getAnterior().setSiguiente(nuevoNodo);
+        } else {
+            primero = nuevoNodo;
+        }
         sapo.setAnterior(nuevoNodo);
         tamano++;
         return true;
@@ -103,7 +109,8 @@ public class ListaEmpleados implements Serializable {
         if (nuevo == null || identificacionReferencia == null || primero == null) return false;
 
         NodoEmpleado sapo = primero;
-        while (sapo != null && !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        while (sapo != null && (sapo.getDato() == null || sapo.getDato().getIdentificacion() == null
+                || !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia))) {
             sapo = sapo.getSiguiente();
         }
 

@@ -288,6 +288,10 @@
 
                             <div class="form-row">
                                 <div class="form-group">
+                                    <label for="editDireccion">Dirección de residencia</label>
+                                    <input type="text" id="editDireccion" placeholder="Ej. Calle 10 # 20-30">
+                                </div>
+                                <div class="form-group">
                                     <label for="editEstado">Estado del servicio <span class="obligatorio">*</span></label>
                                     <select id="editEstado" required>
                                         <option>Activo</option>
@@ -699,6 +703,13 @@
             const seccionAMostrar = document.getElementById('seccion-' + nombreSeccion);
             if (seccionAMostrar) {
                 seccionAMostrar.style.display = 'block';
+            }
+
+            if (nombreSeccion === "inicio") {
+                const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
+                if (sesion && typeof renderizarEstadisticasPorRol === "function") {
+                    renderizarEstadisticasPorRol(sesion);
+                }
             }
 
             if (nombreSeccion === "clientes") {

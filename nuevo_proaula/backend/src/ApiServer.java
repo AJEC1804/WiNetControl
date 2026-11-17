@@ -236,7 +236,7 @@ public class ApiServer {
 
             // PUT /api/clientes/{cedula}/estado
             if (metodo.equalsIgnoreCase("PUT") && ruta.endsWith("/estado")) {
-                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN")) return;
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN", "EMPLEADO")) return;
                 String cedula = segmentoAnterior(ruta);
                 cambiarEstado(ex, cedula);
                 return;
@@ -324,7 +324,7 @@ public class ApiServer {
                 datos.getOrDefault("tipo", "CC"),
                 datos.getOrDefault("telefono", ""),
                 datos.getOrDefault("correo", ""),
-                datos.getOrDefault("direccion", "Sin dirección"),
+                datos.getOrDefault("direccion", ""),
                 datos.getOrDefault("contrasena", ""),
                 datos.get("planActual")
         );
@@ -334,9 +334,9 @@ public class ApiServer {
             return;
         }
 
-        // Solo ADMIN / SUPERADMIN pueden cambiar el estado activo/inactivo
+        // SUPERADMIN, ADMIN y EMPLEADO pueden cambiar el estado activo/inactivo
         String activo = datos.get("activo");
-        if (activo != null && sesion != null && ("SUPERADMIN".equals(sesion.rol) || "ADMIN".equals(sesion.rol))) {
+        if (activo != null && sesion != null && ("SUPERADMIN".equals(sesion.rol) || "ADMIN".equals(sesion.rol) || "EMPLEADO".equals(sesion.rol))) {
             usuarioCtrl.cambiarEstadoCliente(cedula, Boolean.parseBoolean(activo));
         }
 
@@ -494,7 +494,7 @@ public class ApiServer {
             // PUT /api/planes/lote  ->  crearPlan / actualizarPlan / cambiarEstadoPlan / eliminarPlan
             if (metodo.equalsIgnoreCase("PUT")) {
                 if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN", "EMPLEADO")) return;
-                sincronizarPlanes(ex);
+                sincronizarPlanes(ex, sesion);
                 return;
             }
 
@@ -513,11 +513,27 @@ public class ApiServer {
      * métodos del PlanController: no se inventa nada, solo se decide qué
      * método usar para cada plan.
      */
-    private static void sincronizarPlanes(HttpExchange ex) throws IOException {
+    private static void sincronizarPlanes(HttpExchange ex, SesionToken sesion) throws IOException {
         List<Map<String, String>> entrantes = leerArrayDeObjetos(leerCuerpo(ex), "planes");
 
         List<Plan> actuales = planCtrl.listarPlanes().getDatos();
         int creados = 0, actualizados = 0, eliminados = 0;
+
+        // Si es EMPLEADO, solo puede alternar el estado activo/inactivo de planes existentes
+        if (sesion != null && "EMPLEADO".equalsIgnoreCase(sesion.rol)) {
+            for (Map<String, String> datos : entrantes) {
+                String codigo = datos.getOrDefault("codigo", "");
+                if (datos.containsKey("activo")) {
+                    boolean activo = Boolean.parseBoolean(datos.getOrDefault("activo", "true"));
+                    planCtrl.cambiarEstadoPlan(codigo, activo);
+                    actualizados++;
+                }
+            }
+            responder(ex, 200, "{\"exito\":true,\"mensaje\":\"Estados de planes actualizados por empleado.\","
+                    + "\"datos\":{\"creados\":0,\"actualizados\":" + actualizados
+                    + ",\"eliminados\":0}}");
+            return;
+        }
 
         // 1. Crear o actualizar los que llegan
         for (Map<String, String> datos : entrantes) {
@@ -645,11 +661,20 @@ public class ApiServer {
 
             // DELETE /api/empleados/{cedula}
             if (metodo.equalsIgnoreCase("DELETE") && ruta.startsWith(RUTA_EMPLEADOS + "/")) {
-                Respuesta<Boolean> respuesta = empleadoCtrl.eliminarEmpleado(ultimoSegmento(ruta));
+                String cedulaObjetivo = ultimoSegmento(ruta);
+                if (sesion != null && !"SUPERADMIN".equalsIgnoreCase(sesion.rol)) {
+                    Respuesta<Empleado> empTarget = empleadoCtrl.buscarEmpleado(cedulaObjetivo);
+                    if ("9999999999".equals(cedulaObjetivo) || (empTarget.isExito() && "SUPERADMIN".equalsIgnoreCase(empTarget.getDatos().getRol()))) {
+                        responderError(ex, 403, "Un Administrador no puede eliminar al Super Administrador.");
+                        return;
+                    }
+                }
+                Respuesta<Boolean> respuesta = empleadoCtrl.eliminarEmpleado(cedulaObjetivo);
                 if (!respuesta.isExito()) {
                     responderError(ex, 400, respuesta.getMensaje());
                     return;
                 }
+                persistirTodo();
                 responder(ex, 200, "{\"exito\":true,\"mensaje\":\""
                         + escapar(respuesta.getMensaje()) + "\"}");
                 return;
@@ -657,13 +682,13 @@ public class ApiServer {
 
             // PUT /api/empleados/{cedula}/estado
             if (metodo.equalsIgnoreCase("PUT") && ruta.endsWith("/estado")) {
-                cambiarEstadoEmpleado(ex, segmentoAnterior(ruta));
+                cambiarEstadoEmpleado(ex, sesion, segmentoAnterior(ruta));
                 return;
             }
 
             // PUT /api/empleados/{cedula}
             if (metodo.equalsIgnoreCase("PUT") && ruta.startsWith(RUTA_EMPLEADOS + "/")) {
-                actualizarEmpleado(ex, ultimoSegmento(ruta));
+                actualizarEmpleado(ex, sesion, ultimoSegmento(ruta));
                 return;
             }
 
@@ -768,7 +793,14 @@ public class ApiServer {
                 empleadoCtrl.buscarEmpleado(respuesta.getDatos().getIdentificacion())));
     }
 
-    private static void actualizarEmpleado(HttpExchange ex, String cedula) throws IOException {
+    private static void actualizarEmpleado(HttpExchange ex, SesionToken sesion, String cedula) throws IOException {
+        if (sesion != null && !"SUPERADMIN".equalsIgnoreCase(sesion.rol)) {
+            Respuesta<Empleado> empTarget = empleadoCtrl.buscarEmpleado(cedula);
+            if ("9999999999".equals(cedula) || (empTarget.isExito() && "SUPERADMIN".equalsIgnoreCase(empTarget.getDatos().getRol()))) {
+                responderError(ex, 403, "Un Administrador no puede modificar al Super Administrador.");
+                return;
+            }
+        }
         Map<String, String> datos = leerJson(leerCuerpo(ex));
 
         Respuesta<Empleado> respuesta = empleadoCtrl.actualizarEmpleado(
@@ -793,15 +825,24 @@ public class ApiServer {
             empleadoCtrl.cambiarEstadoEmpleado(cedula, Boolean.parseBoolean(activo));
         }
 
-        String rol = datos.get("rol");
-        if (rol != null && !rol.isEmpty()) {
-            empleadoCtrl.cambiarRolEmpleado(cedula, rol);
+        if (sesion != null && "SUPERADMIN".equalsIgnoreCase(sesion.rol)) {
+            String rol = datos.get("rol");
+            if (rol != null && !rol.isEmpty()) {
+                empleadoCtrl.cambiarRolEmpleado(cedula, rol);
+            }
         }
 
         responder(ex, 200, jsonDeRespuestaEmpleado(empleadoCtrl.buscarEmpleado(cedula)));
     }
 
-    private static void cambiarEstadoEmpleado(HttpExchange ex, String cedula) throws IOException {
+    private static void cambiarEstadoEmpleado(HttpExchange ex, SesionToken sesion, String cedula) throws IOException {
+        if (sesion != null && !"SUPERADMIN".equalsIgnoreCase(sesion.rol)) {
+            Respuesta<Empleado> empTarget = empleadoCtrl.buscarEmpleado(cedula);
+            if ("9999999999".equals(cedula) || (empTarget.isExito() && "SUPERADMIN".equalsIgnoreCase(empTarget.getDatos().getRol()))) {
+                responderError(ex, 403, "Un Administrador no puede cambiar el estado del Super Administrador.");
+                return;
+            }
+        }
         Map<String, String> datos = leerJson(leerCuerpo(ex));
         boolean activo = Boolean.parseBoolean(datos.getOrDefault("activo", "false"));
 
@@ -1030,6 +1071,23 @@ public class ApiServer {
                     return;
                 }
                 Respuesta<Factura> resp = facturaCtrl.pagarFactura(idBuscado);
+                int codigo = resp.isExito() ? 200 : resp.getCodigo();
+                responder(ex, codigo, "{\"exito\":" + resp.isExito()
+                        + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
+                        + ",\"datos\":" + jsonDeFactura(resp.getDatos()) + "}");
+                return;
+            }
+
+            // PUT /api/facturas/anular -> marcar una factura como ANULADA
+            if (metodo.equalsIgnoreCase("PUT") && ruta.equals(RUTA_FACTURAS + "/anular")) {
+                if (!requiereRol(ex, sesion, "SUPERADMIN", "ADMIN")) return;
+                Map<String, String> datos = leerJson(leerCuerpo(ex));
+                int idBuscado = 0;
+                try {
+                    idBuscado = Integer.parseInt(datos.getOrDefault("idFactura", "0").trim());
+                } catch (NumberFormatException ignored) {
+                }
+                Respuesta<Factura> resp = facturaCtrl.anularFactura(idBuscado);
                 int codigo = resp.isExito() ? 200 : resp.getCodigo();
                 responder(ex, codigo, "{\"exito\":" + resp.isExito()
                         + ",\"mensaje\":\"" + escapar(resp.getMensaje()) + "\""
@@ -1370,13 +1428,14 @@ public class ApiServer {
 
     private static List<Soporte> filtrarTicketsCliente(List<Soporte> origen, SesionToken sesion) {
         List<Soporte> filtrados = new ArrayList<>();
-        if (origen == null) return filtrados;
+        if (origen == null || sesion == null) return filtrados;
         for (Soporte t : origen) {
             if (t == null) continue;
+            boolean porId = t.getUsuario() != null && t.getUsuario().equalsIgnoreCase(sesion.identificacion);
             boolean porNombre = t.getUsuario() != null && t.getUsuario().equalsIgnoreCase(sesion.nombreCompleto);
             boolean porCorreo = t.getCorreo() != null && !sesion.correo.isEmpty()
                     && t.getCorreo().equalsIgnoreCase(sesion.correo);
-            if (porNombre || porCorreo) {
+            if (porId || porNombre || porCorreo) {
                 filtrados.add(t);
             }
         }

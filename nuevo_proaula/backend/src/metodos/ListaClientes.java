@@ -77,13 +77,15 @@ public class ListaClientes implements Serializable {
     public boolean insertarAntesDe(Cliente nuevo, String identificacionReferencia) {
         if (nuevo == null || identificacionReferencia == null || primero == null) return false;
 
-        if (primero.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        if (primero.getDato() != null && primero.getDato().getIdentificacion() != null
+                && primero.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
             insertarInicio(nuevo);
             return true;
         }
 
         NodoCliente sapo = primero;
-        while (sapo != null && !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        while (sapo != null && (sapo.getDato() == null || sapo.getDato().getIdentificacion() == null
+                || !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia))) {
             sapo = sapo.getSiguiente();
         }
 
@@ -92,7 +94,11 @@ public class ListaClientes implements Serializable {
         NodoCliente nuevoNodo = new NodoCliente(nuevo);
         nuevoNodo.setAnterior(sapo.getAnterior());
         nuevoNodo.setSiguiente(sapo);
-        sapo.getAnterior().setSiguiente(nuevoNodo);
+        if (sapo.getAnterior() != null) {
+            sapo.getAnterior().setSiguiente(nuevoNodo);
+        } else {
+            primero = nuevoNodo;
+        }
         sapo.setAnterior(nuevoNodo);
         tamano++;
         return true;
@@ -101,13 +107,15 @@ public class ListaClientes implements Serializable {
     public boolean insertarDespuesDe(Cliente nuevo, String identificacionReferencia) {
         if (nuevo == null || identificacionReferencia == null || primero == null) return false;
 
-        if (ultimo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        if (ultimo != null && ultimo.getDato() != null && ultimo.getDato().getIdentificacion() != null
+                && ultimo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
             insertarFinal(nuevo);
             return true;
         }
 
         NodoCliente sapo = primero;
-        while (sapo != null && !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia)) {
+        while (sapo != null && (sapo.getDato() == null || sapo.getDato().getIdentificacion() == null
+                || !sapo.getDato().getIdentificacion().equalsIgnoreCase(identificacionReferencia))) {
             sapo = sapo.getSiguiente();
         }
 
@@ -116,7 +124,13 @@ public class ListaClientes implements Serializable {
         NodoCliente nuevoNodo = new NodoCliente(nuevo);
         nuevoNodo.setSiguiente(sapo.getSiguiente());
         nuevoNodo.setAnterior(sapo);
-        sapo.getSiguiente().setAnterior(nuevoNodo);
+
+        if (sapo.getSiguiente() != null) {
+            sapo.getSiguiente().setAnterior(nuevoNodo);
+        } else {
+            ultimo = nuevoNodo;
+        }
+
         sapo.setSiguiente(nuevoNodo);
         tamano++;
         return true;

@@ -142,4 +142,11 @@ public class FacturaController {
     public Respuesta<Factura> pagarFactura(int idFactura) {
         return facturaModel.pagarFactura(idFactura);
     }
+
+    /**
+     * Anular una factura por su ID.
+     */
+    public Respuesta<Factura> anularFactura(int idFactura) {
+        return facturaModel.anularFactura(idFactura);
+    }
 }

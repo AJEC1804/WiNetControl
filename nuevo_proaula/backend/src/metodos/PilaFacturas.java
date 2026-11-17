@@ -73,17 +73,20 @@ public class PilaFacturas implements Serializable {
         PilaFacturas aux = new PilaFacturas();
         Factura encontrada = null;
 
-        while (!estaVacia()) {
-            Factura actual = desapilar();
-            aux.apilar(actual);
-            if (actual != null && actual.getIdFactura() == idFactura) {
-                encontrada = actual;
-                break;
+        try {
+            while (!estaVacia()) {
+                Factura actual = desapilar();
+                aux.apilar(actual);
+                if (actual != null && actual.getIdFactura() == idFactura) {
+                    encontrada = actual;
+                    break;
+                }
             }
-        }
-
-        while (!aux.estaVacia()) {
-            apilar(aux.desapilar());
+        } finally {
+            // Aseguramos que la pila siempre recupere sus facturas incluso si ocurre un error
+            while (!aux.estaVacia()) {
+                apilar(aux.desapilar());
+            }
         }
         return encontrada;
     }
@@ -95,20 +98,22 @@ public class PilaFacturas implements Serializable {
         String criterio = usuarioOId.trim();
 
         PilaFacturas aux = new PilaFacturas();
-        while (!estaVacia()) {
-            Factura f = desapilar();
-            aux.apilar(f);
-            if (f != null) {
-                boolean coincideUsuario = f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(criterio);
-                boolean coincideId = f.getIdentificacionCliente() != null && f.getIdentificacionCliente().equalsIgnoreCase(criterio);
-                if (coincideUsuario || coincideId) {
-                    lista.add(f);
+        try {
+            while (!estaVacia()) {
+                Factura f = desapilar();
+                aux.apilar(f);
+                if (f != null) {
+                    boolean coincideUsuario = f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(criterio);
+                    boolean coincideId = f.getIdentificacionCliente() != null && f.getIdentificacionCliente().equalsIgnoreCase(criterio);
+                    if (coincideUsuario || coincideId) {
+                        lista.add(f);
+                    }
                 }
             }
-        }
-
-        while (!aux.estaVacia()) {
-            apilar(aux.desapilar());
+        } finally {
+            while (!aux.estaVacia()) {
+                apilar(aux.desapilar());
+            }
         }
         return lista;
     }
@@ -123,24 +128,26 @@ public class PilaFacturas implements Serializable {
         PilaFacturas aux = new PilaFacturas();
         Factura encontrada = null;
 
-        while (!estaVacia()) {
-            Factura f = desapilar();
-            aux.apilar(f);
-            if (f != null) {
-                boolean coincideUsuario = f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(criterio);
-                boolean coincideId = f.getIdentificacionCliente() != null && f.getIdentificacionCliente().equalsIgnoreCase(criterio);
-                if (coincideUsuario || coincideId) {
-                    if ((f.getArchivoPDF() != null && f.getArchivoPDF().contains(token)) ||
-                        (f.getFecha() != null && f.getFecha().contains(tokenSlash))) {
-                        encontrada = f;
-                        break;
+        try {
+            while (!estaVacia()) {
+                Factura f = desapilar();
+                aux.apilar(f);
+                if (f != null) {
+                    boolean coincideUsuario = f.getUsuario() != null && f.getUsuario().equalsIgnoreCase(criterio);
+                    boolean coincideId = f.getIdentificacionCliente() != null && f.getIdentificacionCliente().equalsIgnoreCase(criterio);
+                    if (coincideUsuario || coincideId) {
+                        if ((f.getArchivoPDF() != null && f.getArchivoPDF().contains(token)) ||
+                            (f.getFecha() != null && (f.getFecha().endsWith(tokenSlash) || f.getFecha().contains(tokenSlash)))) {
+                            encontrada = f;
+                            break;
+                        }
                     }
                 }
             }
-        }
-
-        while (!aux.estaVacia()) {
-            apilar(aux.desapilar());
+        } finally {
+            while (!aux.estaVacia()) {
+                apilar(aux.desapilar());
+            }
         }
         return encontrada;
     }

@@ -206,8 +206,38 @@ public class FacturaModel {
             return Respuesta.error("La factura #00" + idFactura + " ya se encuentra PAGADA.", 400);
         }
 
+        if ("ANULADA".equalsIgnoreCase(encontrada.getEstado())) {
+            return Respuesta.error("La factura #00" + idFactura + " está ANULADA y no puede ser pagada.", 400);
+        }
+
         encontrada.setEstado("PAGADA");
         return Respuesta.exito("Pago registrado correctamente para la factura #00" + idFactura + ".", encontrada);
+    }
+
+    /**
+     * Anula una factura existente si no ha sido pagada.
+     */
+    public Respuesta<Factura> anularFactura(int idFactura) {
+        if (idFactura <= 0) {
+            return Respuesta.error("Número de factura inválido.", 400);
+        }
+
+        Factura encontrada = pilaFacturas.buscarPorId(idFactura);
+
+        if (encontrada == null) {
+            return Respuesta.error("No se encontró la factura #" + idFactura, 404);
+        }
+
+        if ("PAGADA".equalsIgnoreCase(encontrada.getEstado())) {
+            return Respuesta.error("No se puede anular la factura #00" + idFactura + " porque ya fue PAGADA.", 400);
+        }
+
+        if ("ANULADA".equalsIgnoreCase(encontrada.getEstado())) {
+            return Respuesta.error("La factura #00" + idFactura + " ya se encuentra ANULADA.", 400);
+        }
+
+        encontrada.setEstado("ANULADA");
+        return Respuesta.exito("Factura #00" + idFactura + " anulada correctamente.", encontrada);
     }
 
     // ================= PERSISTENCIA =================

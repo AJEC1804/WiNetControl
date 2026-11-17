@@ -24,15 +24,15 @@ public class GeneradorPdfUtil {
      */
     public static boolean generarFacturaPdf(String rutaDestino, int idFactura, String nombreCliente,
                                            String nombrePlan, String velocidadPlan, double total, String fecha) {
-        try {
-            File archivo = new File(rutaDestino);
-            File directorio = archivo.getParentFile();
-            if (directorio != null && !directorio.exists()) {
-                directorio.mkdirs();
-            }
+        File archivo = new File(rutaDestino);
+        File directorio = archivo.getParentFile();
+        if (directorio != null && !directorio.exists()) {
+            directorio.mkdirs();
+        }
 
+        try (FileOutputStream fos = new FileOutputStream(archivo)) {
             Document documento = new Document(PageSize.A4, 40, 40, 40, 40);
-            PdfWriter.getInstance(documento, new FileOutputStream(archivo));
+            PdfWriter.getInstance(documento, fos);
             documento.open();
 
             // Título

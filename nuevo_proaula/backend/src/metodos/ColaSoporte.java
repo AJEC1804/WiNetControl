@@ -61,7 +61,9 @@ public class ColaSoporte implements Serializable {
 
     // Desencolar (Dequeue)
     public Soporte desencolar() {
-        if (frente == null && final_ == null) {
+        if (frente == null) {
+            final_ = null;
+            tamano = 0;
             return null;
         }
         NodoSoporte aux = frente;
@@ -70,11 +72,15 @@ public class ColaSoporte implements Serializable {
             final_ = null;
         } else {
             frente = frente.getSiguiente();
-            frente.setAnterior(null);
+            if (frente != null) {
+                frente.setAnterior(null);
+            }
         }
         aux.setSiguiente(null);
         aux.setAnterior(null);
-        tamano--;
+        if (tamano > 0) {
+            tamano--;
+        }
         return aux.getDato();
     }
 
@@ -99,7 +105,7 @@ public class ColaSoporte implements Serializable {
     }
 
     public boolean estaVacia() {
-        return frente == null && final_ == null;
+        return frente == null;
     }
 
     public int getTamano() {
