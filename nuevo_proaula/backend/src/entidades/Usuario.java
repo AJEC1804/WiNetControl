@@ -4,26 +4,18 @@ import java.io.Serializable;
 
 import utils.ValidadorTexto;
 
-/**
- * Entidad base para todos los usuarios del sistema WiNet Control.
- * Representa los datos personales, credenciales de acceso, estado y rol del usuario.
- * Roles soportados:
- * - SUPERADMIN: Acceso total al sistema y administración global.
- * - ADMIN: Administrador local de sucursal.
- * - CLIENTE: Suscriptor de servicios de telecomunicaciones.
- */
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected String nombre;
     protected String apellido;
-    protected String tipo; // Tipo de documento (CC, TI, CE, NIT, etc.)
+    protected String tipo;
     protected String identificacion;
     protected String telefono;
     protected String correo;
     protected String direccion;
     protected String contrasena;
-    protected String rol; // SUPERADMIN, ADMIN, CLIENTE
+    protected String rol;
     protected boolean activo;
 
     public Usuario() {

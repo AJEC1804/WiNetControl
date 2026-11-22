@@ -5,18 +5,11 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-/**
- * Utilidad desacoplada para envío de notificaciones y correos de soporte vía SMTP.
- */
 public class EmailUtil {
 
     private static final String REMITENTE_DEFAULT = "naviavasquezjuanesteban@gmail.com";
     private static final String CLAVE_DEFAULT = "rvxq kmpq hiej bggm";
 
-    /**
-     * Envía un correo electrónico mediante el servidor SMTP configurado.
-     * Retorna true si fue enviado exitosamente o false si ocurrió algún error de conexión.
-     */
     public static boolean enviarCorreo(String destinatario, String asunto, String mensaje) {
         if (!ValidadorTexto.esNoVacio(destinatario)) {
             System.err.println("[EmailUtil] Destinatario no válido.");

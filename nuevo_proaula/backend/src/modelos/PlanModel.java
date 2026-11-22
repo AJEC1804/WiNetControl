@@ -9,10 +9,6 @@ import utils.ValidadorTexto;
 import utils.Respuesta;
 import java.util.List;
 
-/**
- * Modelo de Negocio para Planes de Internet.
- * Reglas de validación comercial, tarifas y actualización en cascada.
- */
 public class PlanModel {
 
     private ListaPlanes listaPlanes;
@@ -32,9 +28,6 @@ public class PlanModel {
         return listaPlanes;
     }
 
-    /**
-     * Crea un nuevo plan en el catálogo validando reglas de negocio.
-     */
     public Respuesta<Plan> crearPlan(Plan plan) {
         if (plan == null) {
             return Respuesta.error("Los datos del plan no pueden ser nulos.");
@@ -68,16 +61,10 @@ public class PlanModel {
         return Respuesta.exito("Plan creado exitosamente en el catálogo.", plan);
     }
 
-    /**
-     * Actualiza un plan existente.
-     */
     public Respuesta<Plan> actualizarPlan(int idActual, Plan datosNuevos) {
         return actualizarPlan(idActual, datosNuevos, null);
     }
 
-    /**
-     * Actualiza un plan existente y propaga el cambio de nombre a los clientes afectados.
-     */
     public Respuesta<Plan> actualizarPlan(int idActual, Plan datosNuevos, ClienteModel clienteModel) {
         Plan planExistente = listaPlanes.buscarPorId(idActual);
         if (planExistente == null) {
@@ -112,7 +99,6 @@ public class PlanModel {
             planExistente.setDescripcionPlan(datosNuevos.getDescripcionPlan());
         }
 
-        // Si cambió el nombre del plan, actualizar en cascada a los clientes que lo tenían
         if (clienteModel != null && nombreAnterior != null
                 && !nombreAnterior.equalsIgnoreCase(planExistente.getNombrePlan())) {
             List<Cliente> clientes = clienteModel.getListaClientes().listarATodos();
@@ -126,9 +112,6 @@ public class PlanModel {
         return Respuesta.exito("Plan actualizado correctamente.", planExistente);
     }
 
-    /**
-     * Elimina un plan y actualiza en cascada a los clientes que lo tenían contratado.
-     */
     public Respuesta<Boolean> eliminarPlan(int idPlan, ClienteModel clienteModel) {
         Plan planAEliminar = listaPlanes.buscarPorId(idPlan);
         if (planAEliminar == null) {
@@ -139,7 +122,7 @@ public class PlanModel {
         boolean eliminado = listaPlanes.eliminarPorId(idPlan);
 
         if (eliminado) {
-            // Regla de negocio: reasignar plan sustituto a clientes afectados
+
             if (clienteModel != null) {
                 Plan sustituto = listaPlanes.obtenerPrimerPlanDisponible();
                 String nombreSustituto = (sustituto != null) ? sustituto.getNombrePlan() : "Sin plan";
@@ -177,23 +160,14 @@ public class PlanModel {
         return Respuesta.exito("Catálogo de planes obtenido (" + planes.size() + ").", planes);
     }
 
-    /**
-     * Activa un plan en el catálogo comercial.
-     */
     public Respuesta<Plan> activarPlan(int idPlan) {
         return cambiarEstadoPlan(idPlan, true);
     }
 
-    /**
-     * Desactiva un plan en el catálogo comercial.
-     */
     public Respuesta<Plan> desactivarPlan(int idPlan) {
         return cambiarEstadoPlan(idPlan, false);
     }
 
-    /**
-     * Cambia el estado activo/inactivo de un plan.
-     */
     public Respuesta<Plan> cambiarEstadoPlan(int idPlan, boolean nuevoEstado) {
         Plan plan = listaPlanes.buscarPorId(idPlan);
         if (plan == null) {
@@ -204,17 +178,11 @@ public class PlanModel {
         return Respuesta.exito("Plan " + estadoTxt + " correctamente.", plan);
     }
 
-    /**
-     * Lista únicamente los planes activos disponibles para contratación.
-     */
     public Respuesta<List<Plan>> listarPlanesActivos() {
         List<Plan> activos = listaPlanes.listarPorEstado(true);
         return Respuesta.exito("Planes activos disponibles: " + activos.size(), activos);
     }
 
-    /**
-     * Lista planes filtrados por estado.
-     */
     public Respuesta<List<Plan>> listarPlanesPorEstado(boolean activo) {
         List<Plan> filtrados = listaPlanes.listarPorEstado(activo);
         String estadoTxt = activo ? "activos" : "inactivos";
@@ -229,13 +197,10 @@ public class PlanModel {
         return new Plan(1, "Plan Básico", "50 Mbps", 45000, "Plan residencial estándar");
     }
 
-    // ================= PERSISTENCIA =================
-    /** Vuelca el catálogo de planes al archivo datos/planes.dat. */
     public void guardarEstado() {
         PersistenciaUtil.guardar(listaPlanes, ARCHIVO);
     }
 
-    /** Recupera el catálogo desde disco, si existe. */
     private void cargarEstado() {
         ListaPlanes cargada = PersistenciaUtil.cargar(ARCHIVO, ListaPlanes.class);
         if (cargada != null) {

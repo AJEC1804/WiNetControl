@@ -1,32 +1,11 @@
-/* ==========================================================================
-   ALERTAS DE ERROR  (WiNet Control)
-   Archivo: js/errores.js  ·  Se carga antes que app.js y planes.js.
-   --------------------------------------------------------------------------
-   Red de seguridad global: avisa al usuario de cualquier error posible sin
-   tener que repetir el manejo en cada llamada.
-
-   Cubre los tres tipos de fallo:
-     1. La API no responde (servidor apagado, cable, IP equivocada).
-     2. La API responde con error (400, 401, 403, 404, 500...): se muestra el
-        mensaje que devuelve el backend, que es el que explica la regla rota.
-     3. Excepción de JavaScript no capturada (un fallo de programación).
-
-   Además expone window.alertarError(titulo, detalle) para usarlo a mano desde
-   cualquier módulo.
-   ========================================================================== */
-
 (function () {
     "use strict";
 
     var CONTENEDOR_ID = "alertasGlobales";
-    var DURACION_MS = 9000;      // tiempo que queda visible una alerta
-    var REPETICION_MS = 4000;    // ventana para no repetir la misma alerta
-    var ultimas = {};            // clave -> instante del último aviso
+    var DURACION_MS = 9000;
+    var REPETICION_MS = 4000;
+    var ultimas = {};
 
-    // ------------------------------------------------------------------
-    // 1. CONTENEDOR (creado por JS con estilos propios, para que funcione
-    //    también en el login, que no carga planes.css)
-    // ------------------------------------------------------------------
     function obtenerContenedor() {
         var caja = document.getElementById(CONTENEDOR_ID);
         if (caja) {
@@ -45,14 +24,11 @@
         return caja;
     }
 
-    // ------------------------------------------------------------------
-    // 2. ALERTA VISIBLE
-    // ------------------------------------------------------------------
     function alertarError(titulo, detalle) {
         var clave = titulo + "|" + detalle;
         var ahora = Date.now();
         if (ultimas[clave] && (ahora - ultimas[clave]) < REPETICION_MS) {
-            return;   // se evita repetir el mismo aviso en ráfaga
+            return;
         }
         ultimas[clave] = ahora;
 
@@ -109,7 +85,6 @@
         });
         setTimeout(salir, DURACION_MS);
 
-        // Queda también en consola para poder revisarlo después
         console.error("[alerta] " + titulo + " — " + detalle);
     }
 
@@ -119,7 +94,6 @@
         return d.innerHTML;
     }
 
-    // Texto corto de la ruta, para no llenar la alerta con la URL completa
     function rutaDe(url) {
         if (!url) {
             return "petición";
@@ -132,10 +106,6 @@
         }
     }
 
-    // ------------------------------------------------------------------
-    // 3. INTERCEPTOR DE fetch
-    //    No hay que modificar las llamadas existentes: todas pasan por aquí.
-    // ------------------------------------------------------------------
     var fetchOriginal = window.fetch ? window.fetch.bind(window) : null;
 
     if (fetchOriginal) {
@@ -146,7 +116,7 @@
                 if (!respuesta.ok) {
                     var esLoginAuth = url.indexOf("/api/login") >= 0 && (respuesta.status === 401 || respuesta.status === 400);
                     if (!esLoginAuth) {
-                        // Se lee una copia para no consumir el cuerpo que espera el llamador
+
                         respuesta.clone().json().then(function (json) {
                             var mensaje = (json && (json.mensaje || json.message)) || "";
                             alertarError(
@@ -168,15 +138,12 @@
                     "No hubo respuesta de " + (window.API_BASE || "el servidor") +
                     ". Verifica que la API esté en ejecución (INICIAR_API.bat) · " + rutaDe(url)
                 );
-                error.__yaAlertado = true;   // evita el aviso duplicado de unhandledrejection
+                error.__yaAlertado = true;
                 throw error;
             });
         };
     }
 
-    // ------------------------------------------------------------------
-    // 4. ERRORES NO CAPTURADOS
-    // ------------------------------------------------------------------
     window.addEventListener("error", function (evento) {
         var origen = evento.filename ? " (" + String(evento.filename).split("/").pop() + ":" + evento.lineno + ")" : "";
         alertarError("Error de JavaScript", (evento.message || "Fallo inesperado") + origen);
@@ -185,12 +152,11 @@
     window.addEventListener("unhandledrejection", function (evento) {
         var motivo = evento.reason;
         if (motivo && motivo.__yaAlertado) {
-            return;   // ya se avisó desde el interceptor de fetch
+            return;
         }
         var detalle = (motivo && (motivo.message || motivo)) || "Promesa rechazada sin detalle";
         alertarError("Operación interrumpida", String(detalle));
     });
 
-    // Disponible para los módulos
     window.alertarError = alertarError;
 })();

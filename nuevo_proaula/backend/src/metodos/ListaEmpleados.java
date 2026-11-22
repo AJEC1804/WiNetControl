@@ -6,15 +6,9 @@ import entidades.Empleado;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lista Doblemente Enlazada para la gestión CRUD de Empleados.
- * Estructura de datos autosuficiente mediante nodos con punteros hacia adelante y hacia atrás.
- * (Misma estructura y mismo estilo que ListaClientes y ListaPlanes.)
- */
 public class ListaEmpleados implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Nodo doblemente enlazado para Empleados
     public static class NodoEmpleado implements Serializable {
         private static final long serialVersionUID = 1L;
         private Empleado dato;
@@ -44,8 +38,6 @@ public class ListaEmpleados implements Serializable {
         this.ultimo = null;
         this.tamano = 0;
     }
-
-    // --- CREATE (Insertar) ---
 
     public void insertarInicio(Empleado nuevo) {
         if (nuevo == null) return;
@@ -131,8 +123,6 @@ public class ListaEmpleados implements Serializable {
         return true;
     }
 
-    // --- READ (Buscar y Listar) ---
-
     public NodoEmpleado buscarNodoPorIdentificacion(String identificacion) {
         if (identificacion == null || primero == null) return null;
         String idBuscada = identificacion.trim();
@@ -164,11 +154,6 @@ public class ListaEmpleados implements Serializable {
         return null;
     }
 
-    /**
-     * Búsqueda parcial: recorre la lista y devuelve los empleados cuya
-     * identificación O nombre completo contenga el texto buscado.
-     * Ejemplo: "lucia" encuentra a "Lucia Ramirez"; "1020" encuentra a "1020304050".
-     */
     public ListaEmpleados buscarPorIdentificacionParcial(String fragmento) {
         ListaEmpleados encontrados = new ListaEmpleados();
         if (fragmento == null || primero == null) return encontrados;
@@ -223,7 +208,6 @@ public class ListaEmpleados implements Serializable {
         return lista;
     }
 
-    /** Recorrido hacia atrás: demuestra que la lista es doblemente enlazada. */
     public List<Empleado> listarAlReves() {
         List<Empleado> lista = new ArrayList<>();
         NodoEmpleado sapo = ultimo;
@@ -236,7 +220,34 @@ public class ListaEmpleados implements Serializable {
         return lista;
     }
 
-    // --- UPDATE (Actualizar y cambiar estado) ---
+    public List<Empleado> listarPorEmpresa(String empresaId) {
+        List<Empleado> lista = new ArrayList<>();
+        if (empresaId == null || primero == null) return lista;
+        String buscada = empresaId.trim();
+        NodoEmpleado sapo = primero;
+        while (sapo != null) {
+            if (sapo.getDato() != null && buscada.equalsIgnoreCase(sapo.getDato().getEmpresaId())) {
+                lista.add(sapo.getDato());
+            }
+            sapo = sapo.getSiguiente();
+        }
+        return lista;
+    }
+
+    public List<Empleado> listarPorEmpresaYEstado(String empresaId, boolean activo) {
+        List<Empleado> lista = new ArrayList<>();
+        if (empresaId == null || primero == null) return lista;
+        String buscada = empresaId.trim();
+        NodoEmpleado sapo = primero;
+        while (sapo != null) {
+            if (sapo.getDato() != null && buscada.equalsIgnoreCase(sapo.getDato().getEmpresaId())
+                    && sapo.getDato().isActivo() == activo) {
+                lista.add(sapo.getDato());
+            }
+            sapo = sapo.getSiguiente();
+        }
+        return lista;
+    }
 
     public boolean actualizarEmpleado(String identificacion, Empleado eActualizado) {
         if (identificacion == null || eActualizado == null) return false;
@@ -279,8 +290,6 @@ public class ListaEmpleados implements Serializable {
         }
         return false;
     }
-
-    // --- DELETE (Eliminar) ---
 
     public boolean eliminarEmpleado(String identificacion) {
         if (identificacion == null || primero == null) return false;

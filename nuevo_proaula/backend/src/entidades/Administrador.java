@@ -2,31 +2,47 @@ package entidades;
 
 import java.io.Serializable;
 
-/**
- * Entidad que representa a un Administrador del sistema WiNet Control.
- * Admite dos niveles según el rol heredado de Usuario:
- * 1. SUPERADMIN: Superusuario con acceso global a todas las sedes, módulos y auditoría.
- * 2. ADMIN: Administrador local encargado de la gestión de clientes, servicios y soporte de su sucursal.
- */
 public class Administrador extends Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String sucursal;
-    private String nivelAcceso; // "GLOBAL" o "LOCAL"
+    private String nivelAcceso;
+    private String empresaId;
 
     public Administrador() {
         super();
         this.rol = "ADMIN";
         this.sucursal = "Sucursal Principal";
         this.nivelAcceso = "LOCAL";
+        this.empresaId = "EMP-001";
     }
 
     public Administrador(String nombre, String apellido, String tipo, String identificacion,
                          String telefono, String correo, String direccion, String contrasena,
                          String rol, String sucursal) {
+        this(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena,
+             rol, sucursal, "SUPERADMIN".equalsIgnoreCase(rol) ? "PLATAFORMA" : "EMP-001");
+    }
+
+    public Administrador(String nombre, String apellido, String tipo, String identificacion,
+                         String telefono, String correo, String direccion, String contrasena,
+                         String rol, String sucursal, String empresaId) {
         super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, rol, true);
         this.sucursal = (sucursal != null && !sucursal.trim().isEmpty()) ? sucursal.trim() : "Sucursal Principal";
         this.nivelAcceso = "SUPERADMIN".equalsIgnoreCase(rol) ? "GLOBAL" : "LOCAL";
+        this.empresaId = (empresaId != null && !empresaId.trim().isEmpty())
+                ? empresaId.trim()
+                : ("SUPERADMIN".equalsIgnoreCase(rol) ? "PLATAFORMA" : "EMP-001");
+    }
+
+    public String getEmpresaId() {
+        return (empresaId != null && !empresaId.trim().isEmpty())
+                ? empresaId
+                : (esSuperAdmin() ? "PLATAFORMA" : "EMP-001");
+    }
+
+    public void setEmpresaId(String empresaId) {
+        this.empresaId = (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId.trim() : "EMP-001";
     }
 
     public String getSucursal() {

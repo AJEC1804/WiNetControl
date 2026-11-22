@@ -1,12 +1,5 @@
 package utils;
 
-/**
- * Contenedor genérico de respuesta para la capa de Controladores.
- * Permite desacoplar el backend del frontend (Swing, Web, JavaFX, etc.),
- * devolviendo el estado de la operación, un mensaje y los datos resultantes.
- *
- * @param <T> Tipo de dato devuelto en la respuesta
- */
 public class Respuesta<T> {
 
     private boolean exito;

@@ -6,14 +6,9 @@ import entidades.Factura;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Pila (LIFO) especializada para Facturación.
- * Estructura de datos autosuficiente mediante nodos enlazados desde la cima.
- */
 public class PilaFacturas implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Nodo simplemente enlazado para Pila de Facturas
     public static class NodoFactura implements Serializable {
         private static final long serialVersionUID = 1L;
         private Factura dato;
@@ -38,7 +33,6 @@ public class PilaFacturas implements Serializable {
         this.tamano = 0;
     }
 
-    // Apilar (Push)
     public void apilar(Factura nueva) {
         if (nueva == null) return;
         NodoFactura nuevoNodo = new NodoFactura(nueva);
@@ -51,7 +45,6 @@ public class PilaFacturas implements Serializable {
         tamano++;
     }
 
-    // Desapilar (Pop)
     public Factura desapilar() {
         if (cima == null) return null;
         NodoFactura aux = cima;
@@ -61,12 +54,10 @@ public class PilaFacturas implements Serializable {
         return aux.getDato();
     }
 
-    // Consultar Cima (Peek)
     public Factura getCima() {
         return (cima != null) ? cima.getDato() : null;
     }
 
-    // Búsqueda LIFO: desapila hacia una pila auxiliar y luego restaura el orden original
     public Factura buscarPorId(int idFactura) {
         if (cima == null) return null;
 
@@ -83,7 +74,7 @@ public class PilaFacturas implements Serializable {
                 }
             }
         } finally {
-            // Aseguramos que la pila siempre recupere sus facturas incluso si ocurre un error
+
             while (!aux.estaVacia()) {
                 apilar(aux.desapilar());
             }
@@ -91,7 +82,6 @@ public class PilaFacturas implements Serializable {
         return encontrada;
     }
 
-    // Búsqueda LIFO por usuario o cédula usando pila auxiliar
     public List<Factura> obtenerFacturasUsuario(String usuarioOId) {
         List<Factura> lista = new ArrayList<>();
         if (usuarioOId == null || cima == null) return lista;
@@ -118,7 +108,6 @@ public class PilaFacturas implements Serializable {
         return lista;
     }
 
-    // Búsqueda LIFO por usuario/cédula, mes y año usando pila auxiliar
     public Factura buscarFacturaMes(String usuarioOId, int mes, int ano) {
         if (usuarioOId == null || cima == null) return null;
         String criterio = usuarioOId.trim();

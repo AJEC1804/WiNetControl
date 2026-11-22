@@ -1,25 +1,5 @@
-/* ==========================================================================
-   LÓGICA JAVASCRIPT - WINET CONTROL (HTML & CSS PARA PRINCIPIANTES)
-   Autor: Alejandro Escudero
-   Explicación: Este archivo maneja la autenticación por roles (Superusuario,
-   Administrador Local y Cliente), registro de clientes, permisos en el 
-   dashboard y cierre de sesión.
-   ========================================================================== */
-
-// ==========================================================================
-// 1. AUTENTICACIÓN
-// --------------------------------------------------------------------------
-// Ya NO hay usuarios guardados en el navegador. El login pregunta al servidor
-// Java (POST /api/login), que valida en:
-//   UsuarioController.autenticarUsuario()  -> superadmin, admin y clientes
-//   EmpleadoController.autenticar()        -> empleados
-// La contraseña se compara con su hash SHA-256 y se verifica que esté activo.
-// ==========================================================================
 const API_LOGIN = API_BASE + "/api/login";
 
-// ==========================================================================
-// 2. FUNCIÓN DE INICIO DE SESIÓN (LOGIN UNIVERSAL CON ROLES)
-// ==========================================================================
 async function procesarLogin(evento) {
     evento.preventDefault();
 
@@ -50,11 +30,15 @@ async function procesarLogin(evento) {
     }
 
     if (!json.exito) {
+        if (json.empresaSuspendida) {
+            sessionStorage.setItem("empresaSuspendidaInfo", JSON.stringify(json));
+            window.location.href = "empresa-suspendida.html";
+            return;
+        }
         mostrarAlerta(alertBox, json.mensaje, "error");
         return;
     }
 
-    // Sesión: los datos vienen del servidor (identificación, nombre, rol, plan...)
     const usuario = json.datos;
     localStorage.setItem("sesionActiva", JSON.stringify(usuario));
     sessionStorage.removeItem("seccionAbierta");
@@ -86,25 +70,21 @@ function procesarRegistro(evento) {
     const contrasena = document.getElementById("regContrasena").value;
     const confContrasena = document.getElementById("regConfContrasena").value;
 
-    // 1. Campos obligatorios
     if (!nombres || !apellidos || !identificacion || !telefono || !correo || !direccion || !contrasena) {
         mostrarAlerta(alertBox, "Todos los campos marcados son obligatorios.", "error");
         return;
     }
 
-    // 2. Validación de identificación numérica (8 a 10 dígitos)
     if (!/^\d{8,10}$/.test(identificacion)) {
         mostrarAlerta(alertBox, "La identificación debe tener entre 8 y 10 dígitos numéricos.", "error");
         return;
     }
 
-    // 3. Validación de celular
     if (!/^\d{10}$/.test(telefono)) {
         mostrarAlerta(alertBox, "El teléfono celular debe contener exactamente 10 dígitos.", "error");
         return;
     }
 
-    // 4. Mínimo 6 caracteres, con letras y números (regla de ValidadorTexto.validarPassword)
     if (contrasena.length < 6 || !/[A-Za-z]/.test(contrasena) || !/\d/.test(contrasena)) {
         mostrarAlerta(alertBox, "La contraseña debe tener mínimo 6 caracteres e incluir letras y números.", "error");
         return;
@@ -115,7 +95,6 @@ function procesarRegistro(evento) {
         return;
     }
 
-    // Nuevo cliente con rol CLIENTE
     const nuevoCliente = {
         identificacion: identificacion,
         usuario: identificacion,
@@ -132,7 +111,6 @@ function procesarRegistro(evento) {
         activo: true
     };
 
-    // 1) Se guarda en el servidor Java: así aparece en la tabla de Gestión de Clientes
     fetch(API_CLIENTES, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,9 +144,6 @@ function procesarRegistro(evento) {
     });
 }
 
-// ==========================================================================
-// 4. CARGAR DASHBOARD Y ADAPTAR SEGÚN EL ROL
-// ==========================================================================
 function cargarDashboard() {
     const sesion = localStorage.getItem("sesionActiva");
 
@@ -180,7 +155,6 @@ function cargarDashboard() {
     const usuario = JSON.parse(sesion);
     const nombreCompleto = (usuario.nombre || usuario.nombres) + " " + (usuario.apellido || usuario.apellidos);
 
-    // 1. Datos del Encabezado
     if (document.getElementById("dashNombreHeader")) {
         document.getElementById("dashNombreHeader").textContent = nombreCompleto;
     }
@@ -194,7 +168,6 @@ function cargarDashboard() {
         document.getElementById("dashAvatar").textContent = (usuario.nombre || usuario.nombres || "U").charAt(0).toUpperCase();
     }
 
-    // 2. Badge de Rol
     const badgeRol = document.getElementById("dashRolBadge");
     if (badgeRol) {
         if (usuario.rol === "SUPERADMIN") {
@@ -212,13 +185,11 @@ function cargarDashboard() {
         }
     }
 
-    // Badge de Sucursal / Ámbito
     const badgeSucursal = document.getElementById("dashSucursalBadge");
     if (badgeSucursal) {
         badgeSucursal.textContent = usuario.sucursal || "Sede WiNet";
     }
 
-    // 3. Descripción del Banner según Rol
     const descBienvenida = document.getElementById("dashDescBienvenida");
     if (descBienvenida) {
         if (usuario.rol === "SUPERADMIN") {
@@ -232,17 +203,10 @@ function cargarDashboard() {
         }
     }
 
-    // 4. Adaptar Tarjetas KPI (Stats) según Rol
     renderizarEstadisticasPorRol(usuario);
 
-    // 5. Control de Permisos en la Navegación y Secciones
     adaptarVistasPorRol(usuario);
 }
-
-// ==========================================================================
-// PANEL DE INICIO
-// Bienvenida y tarjetas de resumen con datos reales de la API.
-// ==========================================================================
 
 async function renderizarEstadisticasPorRol(usuario) {
     pintarBienvenida(usuario);
@@ -261,12 +225,12 @@ async function renderizarEstadisticasPorRol(usuario) {
         try {
             localStorage.setItem("sesionActiva", JSON.stringify(usuario));
         } catch (e) {
-            // noop
+
         }
     }
     const tarjetas = tarjetasSegunRol(usuario, datos);
     contenedor.innerHTML = tarjetas.map(pintarTarjeta).join("");
-    // La rejilla ajusta el número de columnas a las tarjetas que haya
+
     contenedor.setAttribute("data-cantidad", String(tarjetas.length));
 
     const sello = document.getElementById("kpiActualizado");
@@ -276,7 +240,6 @@ async function renderizarEstadisticasPorRol(usuario) {
 
 }
 
-// ---------- Bienvenida ----------
 function pintarBienvenida(usuario) {
     const hora = new Date().getHours();
     let saludo = "Buenas noches";
@@ -332,7 +295,6 @@ function pintarBienvenida(usuario) {
     }
 }
 
-// ---------- Lectura de datos ----------
 async function traer(ruta) {
     const respuesta = await fetch(API_BASE + ruta);
     return respuesta.json();
@@ -340,17 +302,25 @@ async function traer(ruta) {
 
 async function reunirDatosInicio(usuario) {
     const esCliente = usuario.rol === "CLIENTE";
-    const puedeVerEmpleados = usuario.rol === "ADMIN" || usuario.rol === "SUPERADMIN";
+    const esSuper = usuario.rol === "SUPERADMIN";
+    const esEmpPlataforma = usuario.rol === "EMPLEADO" && usuario.empresaId === "PLATAFORMA";
+    const puedeVerEmpleados = usuario.rol === "ADMIN" || esSuper;
     const cedulaEnc = encodeURIComponent(usuario.identificacion || "");
 
     const pedidos = [
-        esCliente
-            ? traer("/api/clientes/" + cedulaEnc).catch(function () { return null; })
-            : traer("/api/clientes").catch(function () { return null; }),
-        traer("/api/planes").catch(function () { return null; }),
-        esCliente
-            ? traer("/api/facturas?usuario=" + cedulaEnc).catch(function () { return null; })
-            : traer("/api/facturas").catch(function () { return null; }),
+        esSuper
+            ? traer("/api/empresas").catch(function () { return null; })
+            : (esEmpPlataforma
+                ? Promise.resolve(null)
+                : (esCliente
+                    ? traer("/api/clientes/" + cedulaEnc).catch(function () { return null; })
+                    : traer("/api/clientes").catch(function () { return null; }))),
+        esEmpPlataforma ? Promise.resolve(null) : traer("/api/planes").catch(function () { return null; }),
+        esEmpPlataforma
+            ? Promise.resolve(null)
+            : (esCliente
+                ? traer("/api/facturas?usuario=" + cedulaEnc).catch(function () { return null; })
+                : traer("/api/facturas").catch(function () { return null; })),
         traer("/api/soporte").catch(function () { return null; }),
         puedeVerEmpleados ? traer("/api/empleados").catch(function () { return null; }) : Promise.resolve(null)
     ];
@@ -358,7 +328,10 @@ async function reunirDatosInicio(usuario) {
     const resultados = await Promise.all(pedidos);
     return {
         esCliente: esCliente,
-        clientes: resultados[0],
+        esSuper: esSuper,
+        esEmpPlataforma: esEmpPlataforma,
+        empresas: esSuper ? resultados[0] : null,
+        clientes: esSuper ? null : resultados[0],
         planes: resultados[1],
         facturas: resultados[2],
         soporte: resultados[3],
@@ -366,14 +339,11 @@ async function reunirDatosInicio(usuario) {
     };
 }
 
-// ---------- Construcción de tarjetas ----------
 function porcentaje(parte, total) {
     if (!total) return 0;
     return Math.round((parte / total) * 100);
 }
 
-// 0 pendientes -> verde (todo al día) · 1-2 -> ambar · 3 o más -> rojo
-// Texto en singular o plural según la cantidad
 function plural(n, singular, pluralForma) {
     return n + " " + (n === 1 ? singular : pluralForma);
 }
@@ -385,18 +355,62 @@ function semaforo(pendientes) {
 }
 
 function tarjetasSegunRol(usuario, d) {
+    const empresas = (d.empresas && d.empresas.datos) || [];
     const clientes = (d.clientes && d.clientes.datos) || [];
     const planes = (d.planes && d.planes.datos) || [];
     const facturas = (d.facturas && d.facturas.datos) || [];
     const pendientes = (d.soporte && d.soporte.pendientes) || [];
+    const enProceso = (d.soporte && d.soporte.enProceso) || [];
     const atendidos = (d.soporte && d.soporte.atendidos) || [];
     const empleados = (d.empleados && d.empleados.datos) || [];
 
-    // ---------- CLIENTE ----------
+    if (d.esSuper) {
+        const empActivas = empresas.filter(function (e) { return e.activo; }).length;
+        const empInactivas = empresas.length - empActivas;
+        const empleadosActivos = empleados.filter(function (e) { return e.activo; }).length;
+        const planesActivos = planes.filter(function (p) { return p.activo; }).length;
+        return [
+            { icono: "🏢", etiqueta: "Empresas clientes", valor: String(empresas.length),
+              pie: empActivas + " activas · " + empInactivas + " suspendidas",
+              extra: empInactivas ? plural(empInactivas, "empresa bloqueada por pago", "empresas bloqueadas por pago")
+                                  : "Todas las empresas al día",
+              tono: empInactivas > 0 ? "ambar" : "verde", ir: "empresas" },
+            { icono: "👔", etiqueta: "Empleados plataforma", valor: String(empleados.length),
+              pie: plural(empleadosActivos, "activo", "activos") + " de " + empleados.length,
+              extra: "Equipo propio de soporte SaaS",
+              tono: "azul", ir: "empleados" },
+            { icono: "🎧", etiqueta: "Tickets de admins", valor: String(pendientes.length + enProceso.length),
+              pie: pendientes.length + " en cola · " + enProceso.length + " en proceso",
+              extra: atendidos.length + " resueltos históricamente",
+              tono: semaforo(pendientes.length), ir: "soporte" },
+            { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
+              pie: "Catálogo comercial del sistema",
+              extra: plural(planes.length - planesActivos, "inactivo", "inactivos"),
+              tono: "violeta", ir: "planes" }
+        ];
+    }
+
+    if (d.esEmpPlataforma) {
+        return [
+            { icono: "🎧", etiqueta: "Tickets de admins", valor: String(pendientes.length),
+              pie: pendientes.length === 0 ? "Sin tickets en espera" : "Orden FIFO por atender",
+              extra: enProceso.length + " en proceso actualmente",
+              tono: semaforo(pendientes.length), ir: "soporte" },
+            { icono: "🛠️", etiqueta: "En atención", valor: String(enProceso.length),
+              pie: "Tickets iniciados esperando cierre",
+              extra: "Escribe la solución para notificar al admin",
+              tono: enProceso.length > 0 ? "ambar" : "azul", ir: "soporte" },
+            { icono: "✅", etiqueta: "Tickets cerrados", valor: String(atendidos.length),
+              pie: "Resueltos en plataforma",
+              extra: "Notificados por correo y web",
+              tono: "verde", ir: "soporte" }
+        ];
+    }
+
     if (d.esCliente) {
         const mias = facturas.filter(function (f) { return f.identificacionCliente === usuario.identificacion; });
         const pagadas = mias.filter(function (f) { return f.estado === "PAGADA"; }).length;
-        const porPagar = mias.length - pagadas;
+        const porPagar = mias.filter(function (f) { return f.estado !== "PAGADA" && f.estado !== "ANULADA"; }).length;
         const alDia = porcentaje(pagadas, mias.length);
         const misTickets = pendientes.filter(function (t) { return t.correo === usuario.correo; }).length;
         const miPlan = planes.find(function (p) {
@@ -429,11 +443,10 @@ function tarjetasSegunRol(usuario, d) {
     const inactivos = clientes.length - activos;
     const planesActivos = planes.filter(function (p) { return p.activo; }).length;
     const pagadas = facturas.filter(function (f) { return f.estado === "PAGADA"; }).length;
-    const porCobrar = facturas.length - pagadas;
+    const porCobrar = facturas.filter(function (f) { return f.estado !== "PAGADA" && f.estado !== "ANULADA"; }).length;
     const alDia = porcentaje(pagadas, facturas.length);
     const empleadosActivos = empleados.filter(function (e) { return e.activo; }).length;
 
-    // ---------- EMPLEADO ----------
     if (usuario.rol === "EMPLEADO") {
         return [
             { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
@@ -457,7 +470,6 @@ function tarjetasSegunRol(usuario, d) {
         ];
     }
 
-    // ---------- ADMIN y SUPERADMIN ----------
     const tarjetas = [
         { icono: "👥", etiqueta: "Clientes", valor: String(clientes.length),
           pie: activos + " activos · " + inactivos + " inactivos",
@@ -469,23 +481,19 @@ function tarjetasSegunRol(usuario, d) {
           extra: facturas.length ? alDia + "% al día en pago" : "Sin facturas emitidas",
           barra: facturas.length ? alDia : null,
           tono: semaforo(porCobrar), ir: "facturas" },
-        { icono: "🎧", etiqueta: "Tickets en cola", valor: String(pendientes.length),
-          pie: pendientes.length === 0 ? "Sin tickets pendientes" : "Esperando atención (FIFO)",
+        { icono: "🎧", etiqueta: "Tickets clientes", valor: String(pendientes.length + enProceso.length),
+          pie: pendientes.length + " en cola · " + enProceso.length + " en proceso",
           extra: atendidos.length + " atendidos hasta hoy",
           tono: semaforo(pendientes.length), ir: "soporte" },
         { icono: "📡", etiqueta: "Planes activos", valor: String(planesActivos),
           pie: "En el catálogo comercial",
           extra: plural(planes.length - planesActivos, "inactivo", "inactivos"),
-          tono: "violeta", ir: "planes" }
+          tono: "violeta", ir: "planes" },
+        { icono: "👔", etiqueta: "Empleados empresa", valor: String(empleados.length),
+          pie: plural(empleadosActivos, "activo", "activos") + " de " + empleados.length,
+          extra: "Personal de tu empresa",
+          tono: "azul", ir: "empleados" }
     ];
-
-    // Personal: solo tiene sentido para quien administra empleados
-    if (d.empleados) {
-        tarjetas.push({ icono: "👔", etiqueta: "Empleados", valor: String(empleados.length),
-                        pie: plural(empleadosActivos, "activo", "activos") + " de " + empleados.length,
-                        extra: "Personal de la sucursal",
-                        tono: "azul", ir: "empleados" });
-    }
 
     return tarjetas;
 }
@@ -528,98 +536,103 @@ function tarjetaCargando(texto) {
            '</div>';
 }
 
-// Adaptar la visibilidad de enlaces y secciones según rol
 function adaptarVistasPorRol(usuario) {
-    // Gestión de Empleados: solo ADMIN y SUPERADMIN
+    const esSuper = (usuario.rol === "SUPERADMIN");
+    const esAdmin = (usuario.rol === "ADMIN");
+    const esCliente = (usuario.rol === "CLIENTE");
+    const esEmpPlataforma = (usuario.rol === "EMPLEADO" && usuario.empresaId === "PLATAFORMA");
+
     const enlaceEmpleados = document.getElementById("navLinkEmpleados");
     if (enlaceEmpleados) {
-        const puedeGestionar = (usuario.rol === "ADMIN" || usuario.rol === "SUPERADMIN");
-        enlaceEmpleados.style.display = puedeGestionar ? "flex" : "none";
+        enlaceEmpleados.style.display = (esAdmin || esSuper) ? "flex" : "none";
+        enlaceEmpleados.innerHTML = esSuper
+            ? '<span>👔</span> Empleados Plataforma'
+            : '<span>👔</span> Empleados Empresa';
     }
 
-    const esCliente = (usuario.rol === "CLIENTE");
+    const enlaceEmpresas = document.getElementById("navLinkEmpresas");
+    if (enlaceEmpresas) {
+        enlaceEmpresas.style.display = esSuper ? "flex" : "none";
+    }
 
-    // El cliente no administra la lista de clientes: ve solo sus propios datos
     const enlaceClientes = document.getElementById("navLinkClientes");
     if (enlaceClientes) {
-        enlaceClientes.style.display = esCliente ? "none" : "flex";
+        enlaceClientes.style.display = (esCliente || esSuper || esEmpPlataforma) ? "none" : "flex";
     }
 
-    // "Mi perfil" solo existe para el cliente
     const enlacePerfil = document.getElementById("navLinkPerfil");
     if (enlacePerfil) {
         enlacePerfil.style.display = esCliente ? "flex" : "none";
     }
 
-    // Al cliente, "Catálogo de Planes" se le presenta como "Mi plan"
-    const enlacePlanesTexto = document.getElementById("navLinkPlanes");
-    if (enlacePlanesTexto) {
-        enlacePlanesTexto.innerHTML = esCliente
-            ? '<span>📡</span> Mi plan'
-            : '<span>📡</span> Catálogo de Planes';
+    const enlaceSoportePlat = document.getElementById("navLinkSoportePlataforma");
+    if (enlaceSoportePlat) {
+        enlaceSoportePlat.style.display = esAdmin ? "flex" : "none";
     }
-
-    // Catálogo de Planes y Facturación: ADMIN, SUPERADMIN y EMPLEADO
-    // (el empleado los consulta, pero no crea ni elimina)
-    const puedeVerOperacion = (usuario.rol === "ADMIN" || usuario.rol === "SUPERADMIN"
-                               || usuario.rol === "EMPLEADO");
 
     const enlacePlanes = document.getElementById("navLinkPlanes");
     if (enlacePlanes) {
-        // El cliente SÍ lo ve (es "Mi plan"), pero no puede administrar
-        enlacePlanes.style.display = "flex";
+        enlacePlanes.innerHTML = esCliente
+            ? '<span>📡</span> Mi plan'
+            : '<span>📡</span> Catálogo de Planes';
+        enlacePlanes.style.display = esEmpPlataforma ? "none" : "flex";
     }
 
-    // Facturación: todos la ven. El cliente ve SUS facturas;
-    // admin y empleado ven la facturación completa.
     const enlaceFacturacion = document.getElementById("navLinkFacturacion");
     if (enlaceFacturacion) {
-        enlaceFacturacion.style.display = "flex";
+        enlaceFacturacion.style.display = esEmpPlataforma ? "none" : "flex";
     }
 
-    const bannerAdminNotice = document.getElementById("clienteNoticeClientes");
-    if (bannerAdminNotice) {
-        // En la sección clientes, si es un cliente normal mostramos aviso
-        bannerAdminNotice.style.display = (usuario.rol === "CLIENTE") ? "block" : "none";
+    const enlaceSoporte = document.getElementById("navLinkSoporte");
+    if (enlaceSoporte) {
+        enlaceSoporte.innerHTML = (esSuper || esEmpPlataforma)
+            ? '<span>🎧</span> Tickets de Admins'
+            : '<span>🎧</span> Mesa de Ayuda';
     }
 
-    const contenidoClientesAdmin = document.getElementById("adminContenidoClientes");
-    if (contenidoClientesAdmin) {
-        contenidoClientesAdmin.style.display = (usuario.rol === "CLIENTE") ? "none" : "block";
+    const empTitulo = document.querySelector("#seccion-empleados .cli-titulo h3");
+    const empSub = document.querySelector("#seccion-empleados .modulo-subtitulo");
+    if (empTitulo && empSub) {
+        if (esSuper) {
+            empTitulo.textContent = "Gestión de Empleados de Plataforma";
+            empSub.textContent = "Tu equipo propio de soporte para atender tickets y ayudas de los administradores.";
+        } else {
+            empTitulo.textContent = "Gestión de Empleados de Mi Empresa";
+            empSub.textContent = "Personal propio de tu empresa: cargos, atención al cliente y técnicos.";
+        }
     }
 }
 
-// ==========================================================================
-// 5. CERRAR SESIÓN
-// ==========================================================================
 function cerrarSesion() {
     localStorage.removeItem("sesionActiva");
 
-    // Se olvida la sección donde estaba: al volver a entrar arranca en Inicio
     sessionStorage.removeItem("seccionAbierta");
 
     window.location.href = "login.html";
 }
 
-// ¿Este rol puede ver esta sección?
 function seccionPermitida(seccion, rol) {
+    const sesion = sesionActual();
+    const esEmpPlataforma = (rol === "EMPLEADO" && sesion && sesion.empresaId === "PLATAFORMA");
+    if (esEmpPlataforma) {
+        return seccion === "inicio" || seccion === "soporte";
+    }
     const permisos = {
-        inicio:    ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
-        clientes:  ["SUPERADMIN", "ADMIN", "EMPLEADO"],
-        perfil:    ["CLIENTE"],
-        empleados: ["SUPERADMIN", "ADMIN"],
-        planes:    ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
-        facturas:  ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
-        soporte:   ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"]
+        inicio:               ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
+        clientes:             ["ADMIN", "EMPLEADO"],
+        empresas:             ["SUPERADMIN"],
+        perfil:               ["CLIENTE"],
+        empleados:            ["SUPERADMIN", "ADMIN"],
+        planes:               ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
+        facturas:             ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
+        soporte:              ["SUPERADMIN", "ADMIN", "EMPLEADO", "CLIENTE"],
+        "soporte-plataforma": ["ADMIN"]
     };
 
     if (!permisos[seccion]) return false;
     return permisos[seccion].indexOf(rol) !== -1;
 }
 
-// ==========================================================================
-// 6. UTILIDAD PARA MOSTRAR ALERTAS
-// ==========================================================================
 function mostrarAlerta(elementoAlerta, mensaje, tipo) {
     elementoAlerta.textContent = mensaje;
     elementoAlerta.style.display = "block";
@@ -630,13 +643,6 @@ function mostrarAlerta(elementoAlerta, mensaje, tipo) {
     }
 }
 
-
-// ==========================================================================
-// PERMISOS POR ROL
-// --------------------------------------------------------------------------
-// ADMIN y SUPERADMIN pueden todo. EMPLEADO puede ver, registrar, editar
-// y cambiar el estado del servicio (pero NO eliminar clientes).
-// ==========================================================================
 function sesionActual() {
     try {
         return JSON.parse(localStorage.getItem("sesionActiva"));
@@ -650,7 +656,6 @@ function esSuperAdminActual() {
     return !!sesion && sesion.rol === "SUPERADMIN";
 }
 
-// Eliminar empleados: ADMIN y SUPERADMIN
 function puedeEliminarEmpleados() {
     const sesion = sesionActual();
     return !!sesion && (sesion.rol === "ADMIN" || sesion.rol === "SUPERADMIN");
@@ -661,21 +666,13 @@ function puedeAdministrarClientes() {
     return !!sesion && (sesion.rol === "ADMIN" || sesion.rol === "SUPERADMIN");
 }
 
-// ==========================================================================
-// 7. GESTIÓN DE CLIENTES  ->  LLAMA A LOS MÉTODOS DE JAVA
-// --------------------------------------------------------------------------
-// La página no guarda ni calcula nada por su cuenta: pide los datos a
-// ApiServer (que corre en localhost:8080) y ese servidor llama a los métodos
-// de controladores.UsuarioController. Así las estructuras de datos
-// (ListaClientes, ListaDoble, Pila, Cola) son las que hacen el trabajo.
-// ==========================================================================
 const API_CLIENTES = API_BASE + "/api/clientes";
 const API_PLANES_CATALOGO = API_BASE + "/api/planes";
 
-const FILAS_POR_PAGINA = 5;   // cuántos clientes se ven por página
-let paginaActual = 1;         // en qué página estamos
-let clientesFiltrados = [];   // resultado actual (lo que se dibuja)
-let clientesTodos = [];       // copia de TODOS los clientes del servidor
+const FILAS_POR_PAGINA = 5;
+let paginaActual = 1;
+let clientesFiltrados = [];
+let clientesTodos = [];
 let temporizadorBusqueda = null;
 
 function pintarTabla(lista) {
@@ -716,8 +713,6 @@ function pintarTabla(lista) {
     }
 }
 
-// Rehace la lista visible a partir de clientesTodos (sin pedir nada al servidor).
-// Se usa después de guardar o eliminar, para que la tabla refleje el cambio.
 function refrescarListaClientesLocal() {
     const texto = document.getElementById("buscarCliente").value.trim();
     const estado = document.getElementById("filtroEstado").value;
@@ -740,7 +735,6 @@ function refrescarListaClientesLocal() {
     mostrarPaginaSinSaltos();
 }
 
-// Dibuja sin que la página "salte": guarda y restaura la posición del scroll
 function mostrarPaginaSinSaltos() {
     const area = document.querySelector(".content-area");
     const posicion = area ? area.scrollTop : 0;
@@ -751,7 +745,7 @@ function mostrarPaginaSinSaltos() {
 }
 
 function mostrarPagina() {
-    // Se recuerda dónde estaba el scroll para que el repintado no lo mueva
+
     const areaScroll = document.querySelector(".content-area");
     const posicionScroll = areaScroll ? areaScroll.scrollTop : 0;
     const posicionLateral = areaScroll ? areaScroll.scrollLeft : 0;
@@ -771,14 +765,11 @@ function mostrarPagina() {
 
     document.getElementById("totalClientes").textContent = clientesFiltrados.length;
 
-    // Chips de colores con el resumen
     const activos = clientesFiltrados.filter(c => c.activo).length;
     document.getElementById("chipTotal").textContent = clientesFiltrados.length;
     document.getElementById("chipActivos").textContent = activos;
     document.getElementById("chipInactivos").textContent = clientesFiltrados.length - activos;
 
-    // Se devuelve el scroll a su sitio en varios momentos, porque el navegador
-    // puede reajustarlo mientras recalcula la altura de la tabla.
     function fijarScroll() {
         if (areaScroll) {
             areaScroll.scrollTop = posicionScroll;
@@ -823,11 +814,6 @@ function pintarPaginacion(totalPaginas) {
     contenedor.innerHTML = html;
 }
 
-// --------------------------------------------------------------------------
-// MENSAJES EMERGENTES (TOASTS)
-// Muestran un aviso abajo a la derecha en vez de una ventana molesta.
-// tipo: "exito" (verde), "error" (rojo) o "info" (azul)
-// --------------------------------------------------------------------------
 function notificar(mensaje, tipo) {
     let contenedor = document.getElementById("toastCliContenedor");
 
@@ -859,7 +845,6 @@ function cerrarToast(toast) {
     setTimeout(function () { toast.remove(); }, 200);
 }
 
-// Aviso cuando el servidor Java no está arrancado
 function mostrarErrorServidor() {
     document.getElementById("tablaClientes").innerHTML = `
         <tr>
@@ -873,7 +858,6 @@ function mostrarErrorServidor() {
     notificar("No se pudo conectar con el servidor Java.", "error");
 }
 
-// Listar clientes  ->  UsuarioController.listarClientes()
 async function cargarClientes(mantenerPagina) {
     try {
         const respuesta = await fetch(API_CLIENTES);
@@ -881,37 +865,31 @@ async function cargarClientes(mantenerPagina) {
         clientesTodos = json.datos || [];
         clientesFiltrados = clientesTodos;
 
-        // Al abrir la sección se vuelve a la página 1;
-        // después de guardar o eliminar, se queda en la página donde estaba.
         if (mantenerPagina !== true) {
             paginaActual = 1;
         }
 
         mostrarPagina();
 
-        // Se dejan los planes listos en memoria para que el modal abra sin esperar
         obtenerPlanesActivos();
     } catch (error) {
         mostrarErrorServidor();
     }
 }
 
-// Espera a que dejes de escribir (300 ms) antes de buscar
 function alEscribirBusqueda() {
     clearTimeout(temporizadorBusqueda);
     temporizadorBusqueda = setTimeout(filtrarClientes, 300);
 }
 
-// Buscar y filtrar  ->  UsuarioController.buscarCliente()
-//                      UsuarioController.listarClientesPorEstado()
 async function filtrarClientes() {
     const texto = document.getElementById("buscarCliente").value.trim();
     const estado = document.getElementById("filtroEstado").value;
 
     try {
-        // ---------- CASO 1: hay texto en el buscador ----------
+
         if (texto !== "") {
-            // 1a. Coincidencias parciales con lo que ya tenemos cargado
+
             const parciales = clientesTodos.filter(c =>
                 c.identificacion.includes(texto) ||
                 (c.nombre + " " + c.apellido).toLowerCase().includes(texto.toLowerCase())
@@ -924,8 +902,6 @@ async function filtrarClientes() {
                 return;
             }
 
-            // 1b. Si parece una cédula completa, se pregunta al servidor
-            //     con el método buscarCliente(identificacion)
             if (texto.length >= 8) {
                 const respuesta = await fetch(API_CLIENTES + "/" + encodeURIComponent(texto));
                 const json = await respuesta.json();
@@ -939,11 +915,10 @@ async function filtrarClientes() {
             return;
         }
 
-        // ---------- CASO 2: sin texto, se filtra por estado ----------
         let url = API_CLIENTES;
 
         if (estado === "activos" || estado === "inactivos") {
-            // listarClientesPorEstado(true / false)
+
             url = API_CLIENTES + "?estado=" + estado;
         }
 
@@ -952,7 +927,6 @@ async function filtrarClientes() {
 
         clientesFiltrados = json.datos || [];
 
-        // Si se pidió la lista completa, se refresca también la copia local
         if (texto === "" && estado === "todos") {
             clientesTodos = json.datos || [];
         }
@@ -964,11 +938,6 @@ async function filtrarClientes() {
     }
 }
 
-// --------------------------------------------------------------------------
-// VENTANA DE CONFIRMACIÓN PROPIA
-// Sustituye al confirm() del navegador (ese que dice "127.0.0.1:5500 dice").
-// Devuelve una promesa: true si el usuario acepta, false si cancela.
-// --------------------------------------------------------------------------
 let respuestaConfirmacion = null;
 
 function confirmarAccion(titulo, mensaje, textoAceptar) {
@@ -995,7 +964,6 @@ function responderConfirmacion(acepto) {
     }
 }
 
-// Eliminar  ->  UsuarioController.eliminarCliente()
 async function eliminarCliente(identificacion) {
     const cliente = clientesFiltrados.find(p => p.identificacion === identificacion);
     const nombre = cliente ? cliente.nombre + " " + cliente.apellido : identificacion;
@@ -1021,28 +989,17 @@ async function eliminarCliente(identificacion) {
 
         notificar("Cliente " + nombre + " eliminado correctamente.", "exito");
 
-        // Se vuelve a pedir la lista, manteniéndose en la misma página
         cargarClientes(true);
     } catch (error) {
         mostrarErrorServidor();
     }
 }
 
-// ==========================================================================
-// 8. MODAL DE CLIENTES (SIRVE PARA REGISTRAR Y PARA ACTUALIZAR)
-// ==========================================================================
-// Guarda en qué modo está abierto el formulario: "nuevo" o "editar".
-// Se usa para no sobrescribir un cliente existente por accidente.
 let modoFormulario = "nuevo";
 
-// Llena el desplegable de planes con los planes ACTIVOS del servidor.
-// Si el cliente tiene un plan que ya está inactivo, se conserva (marcado)
-// para no perderlo sin querer.
-// Los planes activos se guardan en memoria un rato, para que el modal
-// abra al instante (antes se pedían al servidor cada vez que se abría).
 let planesActivosCache = null;
 let planesActivosCacheHora = 0;
-const PLANES_CACHE_MS = 300000;   // 5 minutos
+const PLANES_CACHE_MS = 300000;
 
 async function obtenerPlanesActivos() {
     const ahora = Date.now();
@@ -1058,12 +1015,11 @@ async function obtenerPlanesActivos() {
         planesActivosCacheHora = ahora;
         return planesActivosCache;
     } catch (error) {
-        // Si falla, se devuelve lo que hubiera en memoria (aunque esté viejo)
+
         return planesActivosCache || [];
     }
 }
 
-// Dibuja las opciones del desplegable
 function pintarOpcionesDePlan(planes, planActual) {
     const select = document.getElementById("editPlan");
     if (!select) return;
@@ -1077,7 +1033,6 @@ function pintarOpcionesDePlan(planes, planActual) {
         select.appendChild(opcion);
     });
 
-    // El plan que ya tiene el cliente, si está inactivo, se agrega igual
     if (planActual && !planes.some(function (p) { return p.nombre === planActual; })) {
         const opcion = document.createElement("option");
         opcion.value = planActual;
@@ -1094,10 +1049,8 @@ async function cargarPlanesEnSelect(planActual) {
     const select = document.getElementById("editPlan");
     if (!select) return;
 
-    // 1) Se dibuja al instante con lo que ya está en memoria (sin esperar a la red)
     pintarOpcionesDePlan(planesActivosCache || [], planActual);
 
-    // 2) Y por detrás se refrescan los planes, por si alguien los cambió
     const planes = await obtenerPlanesActivos();
 
     if (planes.length > 0) {
@@ -1108,7 +1061,6 @@ async function cargarPlanesEnSelect(planActual) {
 async function abrirModal(identificacion) {
     modoFormulario = "editar";
 
-    // El cliente ya viene del servidor Java (está en la tabla que se ve)
     const cliente = clientesFiltrados.find(p => p.identificacion === identificacion);
 
     if (!cliente) {
@@ -1154,21 +1106,17 @@ async function abrirModalNuevo() {
 }
 
 function cerrarModal() {
-    // Se quita el foco ANTES de ocultar: si el botón pulsado sigue enfocado,
-    // el navegador desplaza la vista al desaparecer (el "salto" al guardar).
+
     if (document.activeElement && document.activeElement.blur) {
         document.activeElement.blur();
     }
     document.getElementById("modalCliente").style.display = "none";
 }
 
-// Red de seguridad: si algún formulario intenta enviarse (y recargar la
-// página), se cancela. Nuestro módulo trabaja con fetch, no con formularios.
 document.addEventListener("submit", function (evento) {
     evento.preventDefault();
 });
 
-// Deja solo dígitos en un campo (para cédula y teléfono)
 function soloNumeros(campo) {
     campo.value = campo.value.replace(/[^0-9]/g, "");
 }
@@ -1191,14 +1139,11 @@ function guardarClienteInterno() {
     const correo = valor("editCorreo");
     const telefono = valor("editTelefono");
 
-    // ---------------- VALIDACIONES (antes de llamar al servidor) ----------------
-    // 1. Que ningún campo quede vacío
     if (identificacion === "" || nombre === "" || apellido === "" || correo === "" || telefono === "") {
         notificar("Todos los campos son obligatorios. Completa la información.", "error");
         return;
     }
 
-    // 2. Formatos
     if (!/^\d{8,10}$/.test(identificacion)) {
         notificar("La cédula debe tener entre 8 y 10 dígitos numéricos.", "error");
         return;
@@ -1212,14 +1157,12 @@ function guardarClienteInterno() {
         return;
     }
 
-
     const campoDir = document.getElementById("editDireccion");
     const direccionValor = campoDir ? campoDir.value.trim() : "";
     const direccionFinal = direccionValor !== ""
         ? direccionValor
         : (modoFormulario === "nuevo" ? "Sin dirección" : "");
 
-    // Lo que se envía al servidor Java
     const datos = {
         identificacion: identificacion,
         nombre: nombre,
@@ -1236,8 +1179,6 @@ function guardarClienteInterno() {
     enviarCliente(datos);
 }
 
-// Registrar  ->  UsuarioController.registrarCliente()
-// Actualizar ->  UsuarioController.actualizarCliente()
 async function enviarCliente(datos) {
     const esNuevo = (modoFormulario === "nuevo");
 
@@ -1256,7 +1197,6 @@ async function enviarCliente(datos) {
 
         const json = await respuesta.json();
 
-        // Si el backend rechaza algo, se muestra SU mensaje
         if (!json.exito) {
             notificar(json.mensaje, "error");
             return;
@@ -1265,7 +1205,6 @@ async function enviarCliente(datos) {
         cerrarModal();
         notificar(esNuevo ? "Cliente registrado correctamente." : "Cliente actualizado correctamente.", "exito");
 
-        // Se vuelve a pedir la lista, manteniéndose en la misma página
         cargarClientes(true);
 
     } catch (error) {
@@ -1273,12 +1212,6 @@ async function enviarCliente(datos) {
     }
 }
 
-
-
-// --------------------------------------------------------------------------
-// BOTONES DE RECARGAR
-// Vuelven a pedir la lista al servidor (por si alguien más cambió los datos)
-// --------------------------------------------------------------------------
 async function recargarClientes(boton) {
     if (boton) boton.classList.add("girando");
 
@@ -1297,23 +1230,15 @@ async function recargarEmpleados(boton) {
     notificar("Lista de empleados actualizada.", "info");
 }
 
-// ==========================================================================
-// 9. GESTIÓN DE EMPLEADOS (ISSUE #13)
-// --------------------------------------------------------------------------
-// Igual que clientes: la página no guarda nada, todo se pide al servidor Java
-// (ApiServer -> EmpleadoController -> EmpleadoModel -> ListaEmpleados).
-// Los nombres llevan prefijo EMP_ para no chocar con los de otros módulos.
-// ==========================================================================
 const EMP_API = API_BASE + "/api/empleados";
-const EMP_FILAS_POR_PAGINA = 4;   // 4 por página: la tabla no se hace eterna
+const EMP_FILAS_POR_PAGINA = 4;
 
 let empTodos = [];
 let empFiltrados = [];
 let empPagina = 1;
-let empModo = "nuevo";          // "nuevo" o "editar"
+let empModo = "nuevo";
 let empTemporizador = null;
 
-// ---------- LISTAR ----------
 async function cargarEmpleados(mantenerPagina) {
     try {
         const respuesta = await fetch(EMP_API);
@@ -1321,8 +1246,6 @@ async function cargarEmpleados(mantenerPagina) {
         empTodos = json.datos || [];
         empFiltrados = empTodos;
 
-        // Al abrir la sección se vuelve a la página 1;
-        // después de guardar, cambiar estado o eliminar, se queda en la página donde estaba.
         if (mantenerPagina !== true) {
             empPagina = 1;
         }
@@ -1333,7 +1256,6 @@ async function cargarEmpleados(mantenerPagina) {
     }
 }
 
-// ---------- FILTRAR (en el navegador, sobre lo ya cargado) ----------
 function filtrarEmpleados() {
     clearTimeout(empTemporizador);
     empTemporizador = setTimeout(function () { empAplicarFiltro(false); }, 250);
@@ -1365,7 +1287,6 @@ function empAplicarFiltro(mantenerPagina) {
     empMostrarPagina();
 }
 
-// ---------- DIBUJAR ----------
 function empMostrarPagina() {
     const totalPaginas = Math.max(1, Math.ceil(empFiltrados.length / EMP_FILAS_POR_PAGINA));
 
@@ -1456,9 +1377,6 @@ function empErrorServidor() {
     notificar("No se pudo conectar con el servidor Java.", "error");
 }
 
-// ---------- MODAL ----------
-// Si el SUPERADMIN elige "Administrador", se oculta la lista de cargos de empleado
-// y queda como "Administrador de sucursal". Si elige "Empleado", escoge su cargo.
 function alCambiarRolEmpleado() {
     const selectRol = document.getElementById("empRol");
     const grupoCargo = document.getElementById("grupoEmpCargo");
@@ -1468,6 +1386,33 @@ function alCambiarRolEmpleado() {
         grupoCargo.style.display = "none";
     } else {
         grupoCargo.style.display = "block";
+    }
+}
+
+function prepararSelectoresModalEmpleado(sucursalValor, cargoValor) {
+    const selSuc = document.getElementById("empSucursal");
+    const selCargo = document.getElementById("empCargo");
+    const sesion = sesionActual() || {};
+
+    if (selSuc) {
+        if (esSuperAdminActual()) {
+            selSuc.innerHTML = '<option value="Plataforma Central">Plataforma Central</option>';
+            selSuc.value = "Plataforma Central";
+        } else {
+            const sedeEmp = sesion.sucursal || "Mi Empresa";
+            selSuc.innerHTML = `<option value="${sedeEmp}">${sedeEmp}</option>`;
+            selSuc.value = sucursalValor || sedeEmp;
+        }
+    }
+
+    if (selCargo) {
+        const opciones = esSuperAdminActual()
+            ? ["Soporte Plataforma", "Especialista Nivel 2", "Atención a Empresas", "Supervisor Plataforma"]
+            : ["Técnico de campo", "Técnico de red", "Atención al cliente", "Supervisor", "Administrativo"];
+        selCargo.innerHTML = opciones.map(c => `<option value="${c}">${c}</option>`).join("");
+        if (cargoValor && opciones.includes(cargoValor)) {
+            selCargo.value = cargoValor;
+        }
     }
 }
 
@@ -1489,15 +1434,13 @@ async function abrirModalEmpleado(identificacion) {
     document.getElementById("empApellido").value = empleado.apellido;
     document.getElementById("empCorreo").value = empleado.correo;
     document.getElementById("empTelefono").value = empleado.telefono;
-    document.getElementById("empCargo").value = empleado.cargo;
-    document.getElementById("empSucursal").value = empleado.sucursal;
+    prepararSelectoresModalEmpleado(empleado.sucursal, empleado.cargo);
     document.getElementById("empEstado").value = empleado.activo ? "Activo" : "Inactivo";
 
-    // Solo el SUPERADMIN puede elegir si es ADMIN o EMPLEADO
     const filaRol = document.getElementById("filaEmpRol");
     if (filaRol) {
-        filaRol.style.display = esSuperAdminActual() ? "block" : "none";
-        document.getElementById("empRol").value = (empleado.rol === "ADMIN") ? "ADMIN" : "EMPLEADO";
+        filaRol.style.display = "none";
+        document.getElementById("empRol").value = "EMPLEADO";
         alCambiarRolEmpleado();
     }
 
@@ -1507,7 +1450,9 @@ async function abrirModalEmpleado(identificacion) {
 function abrirModalEmpleadoNuevo() {
     empModo = "nuevo";
 
-    document.getElementById("modalEmpleadoTitulo").textContent = "➕ Registrar Nuevo Empleado";
+    document.getElementById("modalEmpleadoTitulo").textContent = esSuperAdminActual()
+        ? "➕ Nuevo Empleado de Plataforma"
+        : "➕ Registrar Nuevo Empleado";
 
     document.getElementById("empIdentificacion").value = "";
     document.getElementById("empIdentificacion").readOnly = false;
@@ -1515,14 +1460,12 @@ function abrirModalEmpleadoNuevo() {
     document.getElementById("empApellido").value = "";
     document.getElementById("empCorreo").value = "";
     document.getElementById("empTelefono").value = "";
-    document.getElementById("empCargo").selectedIndex = 0;
-    document.getElementById("empSucursal").selectedIndex = 0;
+    prepararSelectoresModalEmpleado(null, null);
     document.getElementById("empEstado").value = "Activo";
 
-    // Solo el SUPERADMIN puede elegir si el nuevo empleado será ADMIN o EMPLEADO
     const filaRol = document.getElementById("filaEmpRol");
     if (filaRol) {
-        filaRol.style.display = esSuperAdminActual() ? "block" : "none";
+        filaRol.style.display = "none";
         document.getElementById("empRol").value = "EMPLEADO";
         alCambiarRolEmpleado();
     }
@@ -1537,7 +1480,6 @@ function cerrarModalEmpleado() {
     document.getElementById("modalEmpleado").style.display = "none";
 }
 
-// ---------- GUARDAR ----------
 function guardarEmpleado() {
     const valor = function (id) { return document.getElementById(id).value.trim(); };
 
@@ -1622,7 +1564,6 @@ async function empEnviar(datos) {
     }
 }
 
-// ---------- ELIMINAR (SUPERADMIN y ADMIN, excepto Superadmin) ----------
 async function eliminarEmpleado(identificacion) {
     if (!puedeEliminarEmpleados()) {
         notificar("Solo un administrador puede eliminar empleados.", "error");
@@ -1666,7 +1607,6 @@ async function eliminarEmpleado(identificacion) {
     }
 }
 
-// ---------- ACTIVAR / DESACTIVAR ----------
 async function cambiarEstadoEmpleado(identificacion) {
     const empleado = empTodos.find(function (e) { return e.identificacion === identificacion; });
     if (!empleado) return;
@@ -1704,14 +1644,6 @@ async function cambiarEstadoEmpleado(identificacion) {
     }
 }
 
-
-// ==========================================================================
-// 10. MI PERFIL (SOLO ROL CLIENTE)
-// --------------------------------------------------------------------------
-// El cliente no ve la lista de clientes: ve y edita SOLO sus propios datos.
-// Se lee con UsuarioController.buscarCliente() y se guarda con
-// UsuarioController.actualizarCliente().
-// ==========================================================================
 async function cargarPerfil() {
     const sesion = sesionActual();
     if (!sesion) return;
@@ -1766,7 +1698,6 @@ async function guardarPerfil() {
         return;
     }
 
-    // Contraseña: solo si el cliente escribió una nueva
     if (contrasena !== "" || contrasena2 !== "") {
         if (contrasena.length < 6) {
             notificar("La contraseña debe tener mínimo 6 caracteres.", "error");
@@ -1782,10 +1713,8 @@ async function guardarPerfil() {
         }
     }
 
-
     try {
-        // UsuarioController.actualizarCliente(identificacion, nombre, apellido, tipo,
-        //                                     telefono, correo, direccion, contrasena, plan)
+
         const respuesta = await fetch(API_CLIENTES + "/" + encodeURIComponent(sesion.identificacion), {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -1796,7 +1725,7 @@ async function guardarPerfil() {
                 telefono: telefono,
                 correo: correo,
                 direccion: direccion === "" ? "Sin dirección" : direccion,
-                contrasena: contrasena          // vacía = se conserva la actual
+                contrasena: contrasena
             })
         });
 
@@ -1807,7 +1736,6 @@ async function guardarPerfil() {
             return;
         }
 
-        // Se actualiza también la sesión del navegador
         sesion.nombre = nombre;
         sesion.apellido = apellido;
         sesion.correo = correo;
@@ -1818,7 +1746,6 @@ async function guardarPerfil() {
             ? "Tus datos y tu contraseña se actualizaron correctamente."
             : "Tus datos se actualizaron correctamente.", "exito");
 
-        // Se limpian los campos de contraseña
         document.getElementById("perfilContrasena").value = "";
         document.getElementById("perfilContrasena2").value = "";
         cargarDashboard();

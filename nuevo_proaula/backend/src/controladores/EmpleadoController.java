@@ -6,18 +6,10 @@ import utils.Respuesta;
 
 import java.util.List;
 
-/**
- * Controlador del módulo de Empleados (Issue #13).
- * Es el intermediario entre la vista (página web / ApiServer) y el modelo,
- * exactamente igual que UsuarioController con los clientes.
- *
- * Los métodos de este controlador son los que llama el puente HTTP.
- */
 public class EmpleadoController {
 
     private final EmpleadoModel empleadoModel;
 
-    // Modelo compartido: así todos los controladores ven los mismos empleados
     private static final EmpleadoModel sharedEmpleadoModel = new EmpleadoModel();
 
     public EmpleadoController() {
@@ -32,18 +24,24 @@ public class EmpleadoController {
         return sharedEmpleadoModel;
     }
 
-    /**
-     * Registro con parámetros individuales (es lo que usa el formulario).
-     */
     public Respuesta<Empleado> registrarEmpleado(String nombre, String apellido, String tipo,
                                                  String identificacion, String telefono,
                                                  String correo, String direccion,
                                                  String cargo, String sucursal, String contrasena) {
+        return registrarEmpleado(nombre, apellido, tipo, identificacion, telefono, correo,
+                direccion, cargo, sucursal, contrasena, "EMP-001");
+    }
+
+    public Respuesta<Empleado> registrarEmpleado(String nombre, String apellido, String tipo,
+                                                 String identificacion, String telefono,
+                                                 String correo, String direccion,
+                                                 String cargo, String sucursal, String contrasena,
+                                                 String empresaId) {
 
         Empleado nuevo = new Empleado(
                 nombre, apellido, tipo, identificacion,
                 telefono, correo, direccion, contrasena,
-                cargo, sucursal, ""
+                cargo, sucursal, "", empresaId
         );
 
         return empleadoModel.registrarEmpleado(nuevo);
@@ -63,6 +61,14 @@ public class EmpleadoController {
 
     public Respuesta<List<Empleado>> listarEmpleadosPorSucursal(String sucursal) {
         return empleadoModel.listarEmpleadosPorSucursal(sucursal);
+    }
+
+    public Respuesta<List<Empleado>> listarEmpleadosPorEmpresa(String empresaId) {
+        return empleadoModel.listarEmpleadosPorEmpresa(empresaId);
+    }
+
+    public Respuesta<List<Empleado>> listarEmpleadosPorEmpresaYEstado(String empresaId, boolean activo) {
+        return empleadoModel.listarEmpleadosPorEmpresaYEstado(empresaId, activo);
     }
 
     public Respuesta<metodos.ListaEmpleados> buscarEmpleados(String fragmento) {
@@ -95,12 +101,10 @@ public class EmpleadoController {
         return empleadoModel.actualizarEmpleado(identificacionActual, datos);
     }
 
-    /** Elimina el registro del empleado (solo para SUPERADMIN). */
     public Respuesta<Boolean> eliminarEmpleado(String identificacion) {
         return empleadoModel.eliminarEmpleado(identificacion);
     }
 
-    /** Login del empleado: valida cédula + contraseña (SHA-256) y que esté activo. */
     public Respuesta<Empleado> autenticar(String identificacion, String contrasena) {
         return empleadoModel.autenticar(identificacion, contrasena);
     }

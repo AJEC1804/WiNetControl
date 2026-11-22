@@ -2,25 +2,13 @@ package entidades;
 
 import java.io.Serializable;
 
-/**
- * Entidad que representa a un Empleado (trabajador) del sistema WiNet Control.
- * Hereda de Usuario igual que Cliente y Administrador: la clase base aporta
- * los datos personales, las credenciales y el rol; aquí se agregan los datos
- * propios de un trabajador (cargo, sucursal y fecha de ingreso).
- *
- * Rol: EMPLEADO.
- * Permisos (definidos en la matriz de la capa de vista):
- * - Ver, buscar y registrar clientes.
- * - Editar datos de contacto de un cliente.
- * - Atender tickets de soporte.
- * NO puede eliminar clientes ni cambiar el estado del servicio.
- */
 public class Empleado extends Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String cargo;         // Técnico, Atención al cliente, Supervisor, etc.
-    private String sucursal;      // Sede donde trabaja
-    private String fechaIngreso;  // dd/MM/yyyy
+    private String cargo;
+    private String sucursal;
+    private String fechaIngreso;
+    private String empresaId;
 
     public Empleado() {
         super();
@@ -28,11 +16,19 @@ public class Empleado extends Usuario implements Serializable {
         this.cargo = "Atención al cliente";
         this.sucursal = "Sucursal Local Norte";
         this.fechaIngreso = "";
+        this.empresaId = "EMP-001";
     }
 
     public Empleado(String nombre, String apellido, String tipo, String identificacion,
                     String telefono, String correo, String direccion, String contrasena,
                     String cargo, String sucursal, String fechaIngreso) {
+        this(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena,
+             cargo, sucursal, fechaIngreso, "EMP-001");
+    }
+
+    public Empleado(String nombre, String apellido, String tipo, String identificacion,
+                    String telefono, String correo, String direccion, String contrasena,
+                    String cargo, String sucursal, String fechaIngreso, String empresaId) {
 
         super(nombre, apellido, tipo, identificacion, telefono, correo, direccion,
               contrasena, "EMPLEADO", true);
@@ -40,6 +36,15 @@ public class Empleado extends Usuario implements Serializable {
         this.cargo = (cargo != null && !cargo.trim().isEmpty()) ? cargo.trim() : "Atención al cliente";
         this.sucursal = (sucursal != null && !sucursal.trim().isEmpty()) ? sucursal.trim() : "Sucursal Local Norte";
         this.fechaIngreso = (fechaIngreso != null) ? fechaIngreso.trim() : "";
+        this.empresaId = (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId.trim() : "EMP-001";
+    }
+
+    public String getEmpresaId() {
+        return (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId : "EMP-001";
+    }
+
+    public void setEmpresaId(String empresaId) {
+        this.empresaId = (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId.trim() : "EMP-001";
     }
 
     public String getCargo() {

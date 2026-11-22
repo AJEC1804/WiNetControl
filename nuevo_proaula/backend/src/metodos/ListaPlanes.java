@@ -6,14 +6,9 @@ import entidades.Plan;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lista Doblemente Enlazada para la gestión CRUD de Planes de Internet.
- * Estructura de datos autosuficiente mediante nodos con punteros hacia adelante y hacia atrás.
- */
 public class ListaPlanes implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Nodo doblemente enlazado para Planes
     public static class NodoPlan implements Serializable {
         private static final long serialVersionUID = 1L;
         private Plan dato;
@@ -44,8 +39,6 @@ public class ListaPlanes implements Serializable {
         this.tamano = 0;
     }
 
-    // --- CREATE (Insertar) ---
-
     public void insertarInicio(Plan nuevo) {
         if (nuevo == null) return;
         NodoPlan nuevoNodo = new NodoPlan(nuevo);
@@ -73,8 +66,6 @@ public class ListaPlanes implements Serializable {
         }
         tamano++;
     }
-
-    // --- READ (Buscar y Listar) ---
 
     public NodoPlan buscarNodoPorId(int idPlan) {
         NodoPlan sapo = primero;
@@ -149,8 +140,6 @@ public class ListaPlanes implements Serializable {
         return filtrados;
     }
 
-    // --- UPDATE (Actualizar) ---
-
     public boolean actualizarPlan(int idPlan, Plan planActualizado) {
         if (planActualizado == null) return false;
         NodoPlan nodo = buscarNodoPorId(idPlan);
@@ -166,8 +155,6 @@ public class ListaPlanes implements Serializable {
         p.setActivo(planActualizado.isActivo());
         return true;
     }
-
-    // --- DELETE (Eliminar) ---
 
     public boolean eliminarPorId(int idPlan) {
         NodoPlan nodoEliminar = buscarNodoPorId(idPlan);
@@ -194,8 +181,6 @@ public class ListaPlanes implements Serializable {
         return true;
     }
 
-    // --- VALIDACIONES DE DUPLICADOS ---
-
     public boolean existeIdPlan(int idPlan) {
         return buscarPorId(idPlan) != null;
     }
@@ -210,8 +195,6 @@ public class ListaPlanes implements Serializable {
         }
         return false;
     }
-
-    // --- RECORRIDOS ---
 
     public void recorrer() {
         if (primero == null) {

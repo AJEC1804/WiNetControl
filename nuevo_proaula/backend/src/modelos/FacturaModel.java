@@ -13,11 +13,6 @@ import utils.ValidadorTexto;
 import java.io.File;
 import java.util.List;
 
-/**
- * Modelo de Negocio para Facturación.
- * Gestiona la emisión y registro de facturas en la Pila LIFO,
- * así como la generación de comprobantes en PDF.
- */
 public class FacturaModel {
 
     private PilaFacturas pilaFacturas;
@@ -50,16 +45,10 @@ public class FacturaModel {
         return pilaFacturas;
     }
 
-    /**
-     * Emite una factura para un cliente dado según su plan contratado y la apila (mes actual).
-     */
     public Respuesta<Factura> emitirFactura(Cliente cliente, Plan plan) {
         return emitirFactura(cliente, plan, FormateadorFecha.getMesActual(), FormateadorFecha.getAnoActual());
     }
 
-    /**
-     * Emite una factura para un cliente dado en un mes y año específicos y la apila.
-     */
     public Respuesta<Factura> emitirFactura(Cliente cliente, Plan plan, int mes, int ano) {
         if (cliente == null || plan == null) {
             return Respuesta.error("Cliente y plan son requeridos para facturar.");
@@ -74,7 +63,6 @@ public class FacturaModel {
             return Respuesta.error("No se puede emitir factura para un mes futuro (" + String.format("%02d/%d", mes, ano) + ").", 400);
         }
 
-        // Validar que no se facture un mes anterior a la fecha en que el cliente adquirió su plan
         String fechaPlan = cliente.getFechaEfectivaPlan();
         if (fechaPlan != null && fechaPlan.contains("/")) {
             String[] partes = fechaPlan.split("/");
@@ -97,7 +85,6 @@ public class FacturaModel {
                 ? FormateadorFecha.fechaActualTexto()
                 : String.format("01/%02d/%d", mes, ano);
 
-        // No permitir emitir más de una factura por cliente en el mismo mes (búsqueda LIFO)
         if (pilaFacturas.buscarFacturaMes(cliente.getIdentificacion(), mes, ano) != null) {
             return Respuesta.error("Ya se emitió una factura para este cliente en el mes " + mes + "/" + ano + ".", 400);
         }
@@ -121,8 +108,8 @@ public class FacturaModel {
                 nombreArchivo,
                 "EMITIDA"
         );
+        factura.setEmpresaId(cliente.getEmpresaId());
 
-        // Generar archivo PDF en disco
         GeneradorPdfUtil.generarFacturaPdf(
                 nombreArchivo,
                 factura.getIdFactura(),
@@ -133,15 +120,11 @@ public class FacturaModel {
                 fechaActual
         );
 
-        // Apilar en la estructura de datos LIFO
         pilaFacturas.apilar(factura);
 
         return Respuesta.exito("Factura emitida y apilada correctamente.", factura);
     }
 
-    /**
-     * Consulta el historial de facturas emitidas a un cliente.
-     */
     public Respuesta<List<Factura>> consultarFacturasUsuario(String criterioUsuarioOId) {
         if (!ValidadorTexto.esNoVacio(criterioUsuarioOId)) {
             return Respuesta.error("Identificación o nombre de usuario requerido.");
@@ -150,9 +133,6 @@ public class FacturaModel {
         return Respuesta.exito("Facturas encontradas: " + facturas.size(), facturas);
     }
 
-    /**
-     * Busca la factura emitida a un usuario en un mes y año determinados.
-     */
     public Respuesta<Factura> buscarFacturaPorPeriodo(String usuario, int mes, int ano) {
         Factura f = pilaFacturas.buscarFacturaMes(usuario, mes, ano);
         if (f != null) {
@@ -161,9 +141,6 @@ public class FacturaModel {
         return Respuesta.error("No se encontró factura para el usuario en el periodo " + mes + "/" + ano, 404);
     }
 
-    /**
-     * Desapila la última factura emitida (tope de la pila).
-     */
     public Respuesta<Factura> desapilarUltimaFactura() {
         Factura f = pilaFacturas.desapilar();
         if (f != null) {
@@ -172,9 +149,6 @@ public class FacturaModel {
         return Respuesta.error("No hay facturas en la pila para desapilar.", 404);
     }
 
-    /**
-     * Consulta la factura en la cima sin desapilarla.
-     */
     public Respuesta<Factura> consultarCima() {
         Factura f = pilaFacturas.getCima();
         if (f != null) {
@@ -188,9 +162,6 @@ public class FacturaModel {
         return Respuesta.exito("Historial total de facturas obtenido (" + todas.size() + ").", todas);
     }
 
-    /**
-     * Registra el pago de una factura existente en la pila.
-     */
     public Respuesta<Factura> pagarFactura(int idFactura) {
         if (idFactura <= 0) {
             return Respuesta.error("Número de factura inválido.", 400);
@@ -214,9 +185,6 @@ public class FacturaModel {
         return Respuesta.exito("Pago registrado correctamente para la factura #00" + idFactura + ".", encontrada);
     }
 
-    /**
-     * Anula una factura existente si no ha sido pagada.
-     */
     public Respuesta<Factura> anularFactura(int idFactura) {
         if (idFactura <= 0) {
             return Respuesta.error("Número de factura inválido.", 400);
@@ -240,17 +208,39 @@ public class FacturaModel {
         return Respuesta.exito("Factura #00" + idFactura + " anulada correctamente.", encontrada);
     }
 
-    // ================= PERSISTENCIA =================
-    /**
-     * Vuelca la pila de facturas y el consecutivo de numeración.
-     * Se guarda un arreglo de dos posiciones porque el consecutivo no es parte
-     * de la estructura de datos.
-     */
+    public Respuesta<Factura> cambiarEstadoFactura(int idFactura, String nuevoEstado) {
+        if (idFactura <= 0) {
+            return Respuesta.error("Número de factura inválido.", 400);
+        }
+        if (!ValidadorTexto.esNoVacio(nuevoEstado)) {
+            return Respuesta.error("El nuevo estado es obligatorio.", 400);
+        }
+
+        String estadoNormalizado = nuevoEstado.trim().toUpperCase();
+        if (!"PENDIENTE".equals(estadoNormalizado)
+                && !"EMITIDA".equals(estadoNormalizado)
+                && !"PAGADA".equals(estadoNormalizado)
+                && !"ANULADA".equals(estadoNormalizado)) {
+            return Respuesta.error("Estado de factura no válido: " + nuevoEstado, 400);
+        }
+
+        Factura encontrada = pilaFacturas.buscarPorId(idFactura);
+        if (encontrada == null) {
+            return Respuesta.error("No se encontró la factura #" + idFactura, 404);
+        }
+
+        if (estadoNormalizado.equalsIgnoreCase(encontrada.getEstado())) {
+            return Respuesta.error("La factura #00" + idFactura + " ya se encuentra en estado " + estadoNormalizado + ".", 400);
+        }
+
+        encontrada.setEstado(estadoNormalizado);
+        return Respuesta.exito("Estado de la factura #00" + idFactura + " actualizado a " + estadoNormalizado + ".", encontrada);
+    }
+
     public void guardarEstado() {
         PersistenciaUtil.guardar(new Object[]{pilaFacturas, Integer.valueOf(consecutivoFactura)}, ARCHIVO);
     }
 
-    /** Recupera la pila y el consecutivo desde disco, si existen. */
     private void cargarEstado() {
         Object[] estado = PersistenciaUtil.cargar(ARCHIVO, Object[].class);
         if (estado == null || estado.length < 2) {

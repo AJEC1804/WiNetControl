@@ -2,24 +2,23 @@ package entidades;
 
 import java.io.Serializable;
 
-/**
- * Entidad que representa la factura emitida a un cliente por la prestación del servicio.
- */
 public class Factura implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int idFactura;
     private String identificacionCliente;
-    private String usuario; // Nombre o identificación del titular
+    private String usuario;
     private int idPlan;
     private String nombrePlan;
     private String fecha;
     private double total;
     private String archivoPDF;
-    private String estado; // PENDIENTE, PAGADA, ANULADA
+    private String estado;
+    private String empresaId;
 
     public Factura() {
         this.estado = "PENDIENTE";
+        this.empresaId = "EMP-001";
     }
 
     public Factura(int idFactura, String usuario, int idPlan, String fecha, double total, String archivoPDF) {
@@ -30,6 +29,7 @@ public class Factura implements Serializable {
         this.total = Math.max(0, total);
         this.archivoPDF = archivoPDF != null ? archivoPDF.trim() : "";
         this.estado = "PENDIENTE";
+        this.empresaId = "EMP-001";
     }
 
     public Factura(int idFactura, String identificacionCliente, String usuario, int idPlan,
@@ -43,6 +43,15 @@ public class Factura implements Serializable {
         this.total = Math.max(0, total);
         this.archivoPDF = archivoPDF != null ? archivoPDF.trim() : "";
         this.estado = estado != null ? estado.trim() : "PENDIENTE";
+        this.empresaId = "EMP-001";
+    }
+
+    public String getEmpresaId() {
+        return (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId : "EMP-001";
+    }
+
+    public void setEmpresaId(String empresaId) {
+        this.empresaId = (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId.trim() : "EMP-001";
     }
 
     public int getIdFactura() {

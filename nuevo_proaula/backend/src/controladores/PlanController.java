@@ -7,10 +7,6 @@ import utils.Respuesta;
 import utils.ValidadorTexto;
 import java.util.List;
 
-/**
- * Controlador para la gestión comercial de Planes de Internet.
- * Recibe peticiones de la vista, valida las entradas y delega en PlanModel.
- */
 public class PlanController {
 
     private final PlanModel planModel;
@@ -25,9 +21,6 @@ public class PlanController {
         this.clienteModel = (clienteModel != null) ? clienteModel : UsuarioController.getSharedClienteModel();
     }
 
-    /**
-     * Crear un plan a partir de parámetros individuales.
-     */
     public Respuesta<Plan> crearPlan(String codigo, String nombre, String velocidad, String precio, String descripcion) {
         Integer codNum = ValidadorTexto.parseEntero(codigo);
         if (codNum == null) {
@@ -43,16 +36,10 @@ public class PlanController {
         return planModel.crearPlan(nuevo);
     }
 
-    /**
-     * Crear un plan pasando el objeto Plan directamente.
-     */
     public Respuesta<Plan> crearPlan(Plan plan) {
         return planModel.crearPlan(plan);
     }
 
-    /**
-     * Actualizar plan con parámetros individuales.
-     */
     public Respuesta<Plan> actualizarPlan(String codigoActual, String nuevoCodigo, String nombre,
                                          String velocidad, String precio, String descripcion) {
         Integer codActualNum = ValidadorTexto.parseEntero(codigoActual);
@@ -91,9 +78,6 @@ public class PlanController {
         return planModel.actualizarPlan(codActualNum, datosNuevos, clienteModel);
     }
 
-    /**
-     * Eliminar plan por código.
-     */
     public Respuesta<Boolean> eliminarPlan(String codigo) {
         Integer codNum = ValidadorTexto.parseEntero(codigo);
         if (codNum == null) {
@@ -102,9 +86,6 @@ public class PlanController {
         return planModel.eliminarPlan(codNum, clienteModel);
     }
 
-    /**
-     * Buscar plan por código numérico.
-     */
     public Respuesta<Plan> buscarPlanPorCodigo(String codigo) {
         Integer codNum = ValidadorTexto.parseEntero(codigo);
         if (codNum == null) {
@@ -113,16 +94,10 @@ public class PlanController {
         return planModel.consultarPlanPorId(codNum);
     }
 
-    /**
-     * Buscar plan por nombre.
-     */
     public Respuesta<Plan> buscarPlanPorNombre(String nombre) {
         return planModel.consultarPlanPorNombre(nombre);
     }
 
-    /**
-     * Activar un plan en el catálogo.
-     */
     public Respuesta<Plan> activarPlan(String codigo) {
         Integer codNum = ValidadorTexto.parseEntero(codigo);
         if (codNum == null) {
@@ -131,9 +106,6 @@ public class PlanController {
         return planModel.activarPlan(codNum);
     }
 
-    /**
-     * Desactivar un plan en el catálogo.
-     */
     public Respuesta<Plan> desactivarPlan(String codigo) {
         Integer codNum = ValidadorTexto.parseEntero(codigo);
         if (codNum == null) {
@@ -142,9 +114,6 @@ public class PlanController {
         return planModel.desactivarPlan(codNum);
     }
 
-    /**
-     * Cambiar estado activo/inactivo de un plan.
-     */
     public Respuesta<Plan> cambiarEstadoPlan(String codigo, boolean activo) {
         Integer codNum = ValidadorTexto.parseEntero(codigo);
         if (codNum == null) {
@@ -153,16 +122,10 @@ public class PlanController {
         return planModel.cambiarEstadoPlan(codNum, activo);
     }
 
-    /**
-     * Listar únicamente planes activos disponibles para contratación.
-     */
     public Respuesta<List<Plan>> listarPlanesActivos() {
         return planModel.listarPlanesActivos();
     }
 
-    /**
-     * Listar todos los planes del catálogo.
-     */
     public Respuesta<List<Plan>> listarPlanes() {
         return planModel.listarPlanes();
     }

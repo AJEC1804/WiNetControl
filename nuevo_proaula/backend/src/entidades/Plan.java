@@ -2,10 +2,6 @@ package entidades;
 
 import java.io.Serializable;
 
-/**
- * Entidad que representa un plan de conectividad o internet ofrecido por la empresa.
- * Incluye estado (activo/inactivo) para permitir o suspender su contratación comercial.
- */
 public class Plan implements Serializable {
     private static final long serialVersionUID = 1L;
 

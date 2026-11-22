@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Principal - WiNet Control</title>
     <script>
-        // Evita que Live Server recargue la página cuando el servidor Java
-        // genera un archivo PDF de factura en la carpeta backend/facturas/.
         (function () {
             window.__ignorarLiveReloadHasta = 0;
 
@@ -66,32 +64,33 @@
                 window.WebSocket.CLOSED = WSOriginal.CLOSED;
             }
         })();
-    </script>
+</script>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/planes.css?v=51">
     <link rel="stylesheet" href="css/inicio.css?v=10">
-    <link rel="stylesheet" href="css/facturacion-soporte.css?v=45">
-    <link rel="stylesheet" href="css/consistencia.css?v=5">
+    <link rel="stylesheet" href="css/facturacion-soporte.css?v=46">
+    <link rel="stylesheet" href="css/consistencia.css?v=6">
 </head>
 <body onload="cargarDashboard()">
 
     <div class="dashboard-container">
-        
-        <!-- 1. BARRA LATERAL (SIDEBAR DE NAVEGACIÓN - ALEJANDRO ESCUDERO) -->
+
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <span style="font-size: 24px;">🌐</span>
                 <h2>WiNet Control</h2>
             </div>
 
-            <!-- Menú de Navegación Modular -->
             <nav class="sidebar-nav">
                 <a href="#inicio" class="nav-link active" onclick="mostrarSeccion('inicio', this)">
                     <span>🏠</span> Inicio / Resumen
                 </a>
                 <a href="#clientes" class="nav-link" id="navLinkClientes" onclick="mostrarSeccion('clientes', this)">
                     <span>👥</span> Gestión de Clientes
+                </a>
+                <a href="#empresas" class="nav-link" id="navLinkEmpresas" onclick="mostrarSeccion('empresas', this)" style="display: none;">
+                    <span>🏢</span> Empresas Clientes
                 </a>
                 <a href="#perfil" class="nav-link" id="navLinkPerfil" onclick="mostrarSeccion('perfil', this)">
                     <span>🙋</span> Mi perfil
@@ -105,12 +104,14 @@
                 <a href="#facturas" class="nav-link" id="navLinkFacturacion" onclick="mostrarSeccion('facturas', this)">
                     <span>📄</span> Facturación
                 </a>
-                <a href="#soporte" class="nav-link" onclick="mostrarSeccion('soporte', this)">
+                <a href="#soporte" class="nav-link" id="navLinkSoporte" onclick="mostrarSeccion('soporte', this)">
                     <span>🎧</span> Mesa de Ayuda
+                </a>
+                <a href="#soporte-plataforma" class="nav-link" id="navLinkSoportePlataforma" onclick="mostrarSeccion('soporte-plataforma', this)" style="display: none;">
+                    <span>🛠️</span> Reportar Problema
                 </a>
             </nav>
 
-            <!-- Botón Cerrar Sesión en el pie del Sidebar -->
             <div class="sidebar-footer">
                 <button onclick="cerrarSesion()" class="btn btn-danger">
                     Cerrar Sesión
@@ -118,10 +119,8 @@
             </div>
         </aside>
 
-        <!-- 2. CONTENEDOR PRINCIPAL -->
         <div class="main-wrapper">
-            
-            <!-- BARRA SUPERIOR (TOPBAR CON DATOS DE SESIÓN) -->
+
             <header class="topbar">
                 <div class="topbar-titulo">
                     <span class="topbar-icono">📡</span>
@@ -131,31 +130,41 @@
                     </div>
                     <span id="dashSucursalBadge" class="badge-scope topbar-sede">Sede Principal</span>
                 </div>
-                
-                <!-- Perfil del usuario activo y badge de rol -->
-                <div class="user-badge">
-                    <div id="dashAvatar" class="user-avatar">U</div>
-                    <div class="user-details">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <h4 id="dashNombreHeader">Usuario Conectado</h4>
-                            <span id="dashRolBadge" class="badge badge-cliente">CLIENTE</span>
+
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div id="notifContenedor" class="notif-contenedor">
+                        <button type="button" class="notif-btn" onclick="alternarPanelNotificaciones(event)" title="Notificaciones">
+                            <span>🔔</span>
+                            <span id="notifBadge" class="notif-badge" style="display: none;">0</span>
+                        </button>
+                        <div id="notifDropdown" class="notif-dropdown" style="display: none;">
+                            <div class="notif-dropdown-header">
+                                <strong>Notificaciones</strong>
+                                <button type="button" class="notif-leer-todas" onclick="marcarTodasNotificacionesLeidas()">Marcar todas leídas</button>
+                            </div>
+                            <div id="notifLista" class="notif-lista">
+                                <div class="notif-vacia">No tienes notificaciones por ahora.</div>
+                            </div>
                         </div>
-                        <span id="dashCorreoHeader">cargando correo...</span>
+                    </div>
+
+                    <div class="user-badge">
+                        <div id="dashAvatar" class="user-avatar">U</div>
+                        <div class="user-details">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <h4 id="dashNombreHeader">Usuario Conectado</h4>
+                                <span id="dashRolBadge" class="badge badge-cliente">CLIENTE</span>
+                            </div>
+                            <span id="dashCorreoHeader">cargando correo...</span>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <!-- ÁREA DE CONTENIDO DINÁMICO -->
             <main class="content-area">
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 1: INICIO / RESUMEN (ALEJANDRO ESCUDERO - #7)   -->
-                <!-- ======================================================= -->
                 <div id="seccion-inicio" class="seccion-modulo">
-                    
-                    <!-- =============================================== -->
-                    <!-- BIENVENIDA (saludo, rol, sucursal y fecha)      -->
-                    <!-- =============================================== -->
+
                     <div class="inicio-hero">
                         <div class="inicio-hero-contenido">
                             <div class="inicio-hero-icono" id="inicioIcono">👋</div>
@@ -178,20 +187,16 @@
                         </div>
                     </div>
 
-                    <!-- Tarjetas de resumen con datos reales de la API -->
                     <div class="kpi-titulo">
                         <h3>Resumen de tu operación</h3>
                         <span id="kpiActualizado"></span>
                     </div>
                     <div id="dashStatsGrid" class="kpi-grid">
-                        <!-- Se generan según el rol de la sesión -->
+
                     </div>
 
                 </div>
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 2: GESTIÓN DE CLIENTES (GYANELA MEZA - #8)      -->
-                <!-- ======================================================= -->
                 <div id="seccion-clientes" class="seccion-modulo" style="display: none;">
                     <div class="modulo-cabecera">
                         <div class="cli-titulo">
@@ -239,12 +244,8 @@
                         <tbody id="tablaClientes"></tbody>
                     </table>
 
-                    <!-- Aquí JavaScript dibuja los botones Anterior / 1 2 / Siguiente -->
                     <div id="paginacion" class="paginacion"></div>
 
-                    <!-- ================================================================= -->
-                    <!-- MODAL: UN SOLO FORMULARIO PARA REGISTRAR Y PARA ACTUALIZAR      -->
-                    <!-- ================================================================= -->
                     <div id="modalCliente" class="modal-cli-fondo">
                         <div class="modal-cli-caja">
 
@@ -281,7 +282,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="editPlan">Plan asignado <span class="obligatorio">*</span></label>
-                                    <!-- Las opciones se cargan desde el servidor (solo planes activos) -->
+
                                     <select id="editPlan" required></select>
                                 </div>
                             </div>
@@ -308,14 +309,8 @@
                         </div>
                     </div>
 
-                    <!-- ============================================================= -->
-                    <!-- VENTANA DE CONFIRMACIÓN (reemplaza al dialogo del navegador)   -->
-                    
                 </div>
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 1b: MI PERFIL (SOLO ROL CLIENTE)                -->
-                <!-- ======================================================= -->
                 <div id="seccion-perfil" class="seccion-modulo" style="display: none;">
 
                     <div class="modulo-cabecera">
@@ -385,9 +380,6 @@
                     </div>
                 </div>
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 2b: GESTIÓN DE EMPLEADOS (ISSUE #13)            -->
-                <!-- ======================================================= -->
                 <div id="seccion-empleados" class="seccion-modulo" style="display: none;">
 
                     <div class="modulo-cabecera">
@@ -441,7 +433,6 @@
 
                     <div id="empPaginacion" class="paginacion"></div>
 
-                    <!-- MODAL DE EMPLEADO -->
                     <div id="modalEmpleado" class="modal-cli-fondo">
                         <div class="modal-cli-caja">
 
@@ -524,15 +515,8 @@
                     </div>
                 </div>
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 3: CATÁLOGO DE PLANES (YEINI ÁLVAREZ - #9)       -->
-                <!-- ======================================================= -->
                 <div id="seccion-planes" class="seccion-modulo" style="display: none;">
 
-                    <!-- =================================================== -->
-                    <!-- MÓDULO DE PLANES - YEINI ÁLVAREZ (Issue #9)          -->
-                    <!-- Tabla del catálogo comercial de planes de internet. -->
-                    <!-- =================================================== -->
                     <div class="modulo-planes">
 
                         <div class="modulo-cabecera">
@@ -546,16 +530,14 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- Barra de administración (solo ADMIN / SUPERADMIN) -->
+
                             <div id="barraAdminPlanes" class="plan-barra-admin" style="display: none;">
                                 <button type="button" class="btn btn-primary btn-auto" onclick="abrirFormularioNuevo()">➕ Nuevo plan</button>
                             </div>
                         </div>
 
-                        <!-- Contadores del catálogo (chips) -->
                         <div class="plan-resumen" id="resumenPlanes"></div>
 
-                        <!-- Buscador, filtro y recarga (mismo patrón que Clientes) -->
                         <div class="modulo-toolbar" id="toolbarPlanes">
                             <input type="text" id="buscarPlan" class="campo-busqueda"
                                    placeholder="🔍  Buscar por código, nombre o velocidad..." oninput="filtrarPlanes()">
@@ -572,7 +554,6 @@
                             <span class="contador-clientes">Mostrando <strong id="planMostrando">0</strong></span>
                         </div>
 
-                        <!-- Formulario de creación / edición en ventana modal (solo administradores) -->
                         <div id="modalPlan" class="modal-cli-fondo" onclick="if(event.target===this){cerrarFormularioPlan();}">
                             <div class="modal-cli-caja">
 
@@ -640,7 +621,6 @@
                             </table>
                         </div>
 
-                        <!-- Contratación: solo para CLIENTE sin plan asignado -->
                         <div id="panelContratacion" class="plan-contratacion" style="display: none;">
                             <h4>🎯 Contrata tu plan</h4>
                             <p>Todavía no tienes un plan asignado. Elige uno de los planes activos y actívalo al instante.</p>
@@ -650,7 +630,6 @@
                             </div>
                         </div>
 
-                        <!-- Cliente que ya tiene plan contratado o asignado por un administrador -->
                         <div id="panelPlanActual" class="plan-tarjeta-contenedor" style="display: none;">
                             <div id="detallePlanActual" class="plan-tarjeta"></div>
                             <div id="otrosPlanesDisponibles" style="margin-top: 20px;"></div>
@@ -659,37 +638,178 @@
                     </div>
                 </div>
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 4: FACTURACIÓN (JUAN ESTEBAN NAVIA - #10)       -->
-                <!-- ======================================================= -->
                 <div id="seccion-facturas" class="seccion-modulo" style="display: none;">
-                    <!-- El contenido lo genera js/facturacion-soporte.js -->
+
                 </div>
 
-                <!-- ======================================================= -->
-                <!-- SECCIÓN 5: SOPORTE TÉCNICO (JUAN ESTEBAN NAVIA - #10)   -->
-                <!-- ======================================================= -->
                 <div id="seccion-soporte" class="seccion-modulo" style="display: none;">
-                    <!-- El contenido lo genera js/facturacion-soporte.js -->
+
+                </div>
+
+                <div id="seccion-empresas" class="seccion-modulo" style="display: none;">
+                    <div class="modulo-cabecera">
+                        <div class="cli-titulo">
+                            <span class="cli-icono">🏢</span>
+                            <div>
+                                <h3>Empresas Clientes (SaaS)</h3>
+                                <p class="modulo-subtitulo">Empresas a las que vendes la plataforma WiNet Control. Si desactivas una empresa, su administrador será bloqueado por pago pendiente.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-auto" onclick="abrirModalNuevaEmpresa()">➕ Nueva empresa</button>
+                    </div>
+
+                    <div class="cli-chips">
+                        <span class="chip chip-total">🏢 Total: <strong id="empChipEmpresasTotal">0</strong></span>
+                        <span class="chip chip-activos">✅ Activas: <strong id="empChipEmpresasActivas">0</strong></span>
+                        <span class="chip chip-inactivos">⛔ Suspendidas: <strong id="empChipEmpresasInactivas">0</strong></span>
+                    </div>
+
+                    <div class="modulo-toolbar">
+                        <input type="text" id="buscarEmpresa" class="campo-busqueda"
+                               placeholder="🔍  Buscar por nombre, NIT, ID o administrador..." oninput="filtrarEmpresas()">
+
+                        <select id="filtroEstadoEmpresa" onchange="filtrarEmpresas()">
+                            <option value="todos">Todos los estados</option>
+                            <option value="activos">Solo activas</option>
+                            <option value="inactivos">Solo suspendidas</option>
+                        </select>
+
+                        <button type="button" class="btn btn-secondary btn-auto" onclick="cargarEmpresas()">🔄 Recargar</button>
+                        <span class="contador-clientes">Mostrando <strong id="totalEmpresasMostradas">0</strong></span>
+                    </div>
+
+                    <table class="tabla-clientes">
+                        <thead>
+                            <tr>
+                                <th>ID / NIT</th>
+                                <th>Empresa Cliente</th>
+                                <th>Administrador</th>
+                                <th>Plan SaaS</th>
+                                <th>Operación</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaEmpresas"></tbody>
+                    </table>
+
+                    <div id="modalEmpresa" class="modal-cli-fondo">
+                        <div class="modal-cli-caja" style="max-width: 680px;">
+                            <h3 id="modalEmpresaTitulo">🏢 Registrar Nueva Empresa Cliente</h3>
+                            <p class="nota-obligatorio">Campos marcados con * son obligatorios.</p>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empCliNombre">Nombre de la Empresa <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empCliNombre" placeholder="Ej. FibraCosta Telecom S.A.S.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="empCliNit">NIT <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empCliNit" placeholder="Ej. 901555444-1">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empCliCorreo">Correo Empresarial <span class="obligatorio">*</span></label>
+                                    <input type="email" id="empCliCorreo" placeholder="contacto@empresa.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="empCliTelefono">Teléfono <span class="obligatorio">*</span></label>
+                                    <input type="text" id="empCliTelefono" maxlength="10" oninput="soloNumeros(this)" placeholder="3001234567">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empCliDireccion">Dirección</label>
+                                    <input type="text" id="empCliDireccion" placeholder="Dirección sede principal">
+                                </div>
+                                <div class="form-group">
+                                    <label for="empCliPlan">Plan SaaS Vendido</label>
+                                    <select id="empCliPlan">
+                                        <option>Plan SaaS Básico</option>
+                                        <option>Plan SaaS Pro</option>
+                                        <option selected>Plan SaaS Empresarial</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="empCliPrecio">Mensualidad ($ COP)</label>
+                                    <input type="number" id="empCliPrecio" value="250000" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="empCliEstado">Estado del Servicio</label>
+                                    <select id="empCliEstado">
+                                        <option>Activo</option>
+                                        <option>Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="bloqueAdminNuevaEmpresa" style="margin-top: 10px; padding-top: 12px; border-top: 1px dashed #cbd5e1;">
+                                <h4 style="font-size: 14px; color: #1d4ed8; margin-bottom: 10px;">👤 Cuenta de Administrador de la Empresa</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="empAdminId">Cédula / Usuario Admin <span class="obligatorio">*</span></label>
+                                        <input type="text" id="empAdminId" maxlength="10" oninput="soloNumeros(this)" placeholder="Ej. 1000000003">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="empAdminClave">Contraseña Inicial <span class="obligatorio">*</span></label>
+                                        <input type="password" id="empAdminClave" placeholder="Mín. 6 caracteres (letras y números)">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="empAdminNombre">Nombre Admin <span class="obligatorio">*</span></label>
+                                        <input type="text" id="empAdminNombre" placeholder="Nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="empAdminApellido">Apellido Admin <span class="obligatorio">*</span></label>
+                                        <input type="text" id="empAdminApellido" placeholder="Apellido">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="empAdminCorreo">Correo Admin <span class="obligatorio">*</span></label>
+                                        <input type="email" id="empAdminCorreo" placeholder="admin@empresa.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="empAdminTelefono">Teléfono Admin</label>
+                                        <input type="text" id="empAdminTelefono" maxlength="10" oninput="soloNumeros(this)" placeholder="3001112233">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-cli-acciones">
+                                <button type="button" class="btn btn-secondary btn-auto" onclick="cerrarModalEmpresa()">Cancelar</button>
+                                <button type="button" class="btn btn-primary btn-auto" onclick="guardarEmpresa()">Guardar Empresa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="seccion-soporte-plataforma" class="seccion-modulo" style="display: none;">
+
                 </div>
 
             </main>
         </div>
     </div>
 
-    <!-- Modal de Comprobante Imprimible (Facturación) -->
     <div id="comprobanteModal" class="comprobante-modal"></div>
 
-    <!-- Script de lógica JavaScript -->
-    <script src="js/config.js?v=48"></script>
+    <script src="js/config.js?v=49"></script>
     <script src="js/errores.js?v=1"></script>
-    <script src="js/app.js?v=68"></script>
+    <script src="js/app.js?v=69"></script>
+    <script src="js/empresas.js?v=1"></script>
     <script src="js/planes.js?v=52"></script>
-    <script src="js/facturacion-soporte.js?v=49"></script>
+    <script src="js/facturacion-soporte.js?v=50"></script>
     <script>
-        // Función sencilla para cambiar entre pestañas desde el menú lateral
         function mostrarSeccion(nombreSeccion, enlaceClickeado) {
-            // Se comprueba el permiso del rol antes de mostrar nada
+
             const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
             if (sesion && typeof seccionPermitida === "function"
                 && !seccionPermitida(nombreSeccion, sesion.rol)) {
@@ -713,13 +833,21 @@
             }
 
             if (nombreSeccion === "clientes") {
-                // Un cliente no tiene permiso sobre la lista de clientes
+
                 const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
                 if (sesion && sesion.rol === "CLIENTE") {
                     mostrarSeccion("perfil", document.querySelector('.nav-link[href="#perfil"]'));
                     return;
                 }
+                if (sesion && sesion.rol === "SUPERADMIN") {
+                    mostrarSeccion("empresas", document.querySelector('.nav-link[href="#empresas"]'));
+                    return;
+                }
                 cargarClientes();
+            }
+
+            if (nombreSeccion === "empresas" && typeof cargarEmpresas === "function") {
+                cargarEmpresas();
             }
 
             if (nombreSeccion === "perfil" && typeof cargarPerfil === "function") {
@@ -730,7 +858,6 @@
                 cargarEmpleados();
             }
 
-            // Igual que Clientes: cada vez que se abre la sección se piden los datos
             if (nombreSeccion === "planes" && typeof cargarPlanes === "function") {
                 cargarPlanes();
             }
@@ -743,25 +870,28 @@
                 cargarModuloSoporte();
             }
 
+            if (nombreSeccion === "soporte-plataforma" && typeof cargarModuloSoportePlataforma === "function") {
+                cargarModuloSoportePlataforma();
+            }
+
+            if (typeof cargarNotificacionesWeb === "function") {
+                cargarNotificacionesWeb();
+            }
+
             const enlaces = document.querySelectorAll('.nav-link');
             enlaces.forEach(link => link.classList.remove('active'));
             if (enlaceClickeado) {
                 enlaceClickeado.classList.add('active');
             }
 
-            // Se recuerda la sección abierta, para volver a ella aunque la
-            // página se recargue y la URL pierda el #hash.
             sessionStorage.setItem("seccionAbierta", nombreSeccion);
         }
 
-        // Al cargar (o recargar) la pagina, se abre la seccion que dice la URL.
-        // Asi no te devuelve a "Inicio" despues de guardar, actualizar o eliminar.
         document.addEventListener("DOMContentLoaded", function () {
             const delHash = (window.location.hash || "").replace("#", "");
             const guardada = sessionStorage.getItem("seccionAbierta") || "";
             let seccion = delHash !== "" ? delHash : (guardada !== "" ? guardada : "inicio");
 
-            // Si el rol no tiene permiso sobre esa sección, va a Inicio
             const sesion = JSON.parse(localStorage.getItem("sesionActiva") || "null");
             if (sesion && typeof seccionPermitida === "function"
                 && !seccionPermitida(seccion, sesion.rol)) {
@@ -771,12 +901,8 @@
             const enlace = document.querySelector('.nav-link[href="#' + seccion + '"]');
             mostrarSeccion(seccion, enlace);
         });
-    </script>
+</script>
 
-    <!-- ============================================================= -->
-    <!-- VENTANA DE CONFIRMACIÓN (global: se usa desde cualquier sección) -->
-    <!-- ============================================================= -->
-<!-- ============================================================= -->
                     <div id="modalConfirmar" class="confirma-cli-fondo">
                         <div class="confirma-cli-caja">
 

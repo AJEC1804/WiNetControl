@@ -2,10 +2,6 @@ package metodos;
 
 import java.io.Serializable;
 
-/**
- * Estructura de datos Cola (FIFO - First In, First Out) implementada con punteros mediante Nodos.
- * Utilizada para encolar solicitudes y tickets en orden de llegada.
- */
 public class Cola implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -19,7 +15,6 @@ public class Cola implements Serializable {
         this.tamano = 0;
     }
 
-    // Encolar (Enqueue) al final de la cola
     public void encolar(Nodo nuevo) {
         if (nuevo == null) return;
         if (frente == null && final_ == null) {
@@ -33,7 +28,6 @@ public class Cola implements Serializable {
         tamano++;
     }
 
-    // Desencolar (Dequeue) del frente de la cola
     public Nodo desencolar() {
         if (frente == null) {
             final_ = null;

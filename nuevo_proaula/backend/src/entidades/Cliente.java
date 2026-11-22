@@ -4,17 +4,13 @@ import java.io.Serializable;
 
 import utils.FormateadorFecha;
 
-/**
- * Entidad que representa a un cliente suscriptor del servicio de telecomunicaciones.
- * Hereda de Usuario (rol = "CLIENTE") e incluye estado (activo/inactivo),
- * plan suscrito y fecha de registro.
- */
 public class Cliente extends Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String planActual;
     private String fechaRegistro;
     private String fechaInicioPlan;
+    private String empresaId;
 
     public Cliente() {
         super();
@@ -23,6 +19,7 @@ public class Cliente extends Usuario implements Serializable {
         this.fechaRegistro = FormateadorFecha.fechaActualTexto();
         this.fechaInicioPlan = "";
         this.activo = true;
+        this.empresaId = "EMP-001";
     }
 
     public Cliente(String nombre, String apellido, String tipo, String identificacion,
@@ -30,7 +27,8 @@ public class Cliente extends Usuario implements Serializable {
                    String planActual) {
         super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, "CLIENTE", true);
         this.fechaRegistro = FormateadorFecha.fechaActualTexto();
-        setPlanActual(planActual);
+        this.empresaId = "EMP-001";
+        asignarPlanInterno(planActual);
     }
 
     public Cliente(String nombre, String apellido, String tipo, String identificacion,
@@ -38,10 +36,19 @@ public class Cliente extends Usuario implements Serializable {
                    String planActual, String fechaRegistro, boolean activo) {
         super(nombre, apellido, tipo, identificacion, telefono, correo, direccion, contrasena, "CLIENTE", activo);
         this.fechaRegistro = (fechaRegistro != null && !fechaRegistro.trim().isEmpty()) ? fechaRegistro : FormateadorFecha.fechaActualTexto();
-        setPlanActual(planActual);
+        this.empresaId = "EMP-001";
+        asignarPlanInterno(planActual);
         if (!"Sin plan".equalsIgnoreCase(this.planActual)) {
             this.fechaInicioPlan = this.fechaRegistro;
         }
+    }
+
+    public String getEmpresaId() {
+        return (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId : "EMP-001";
+    }
+
+    public void setEmpresaId(String empresaId) {
+        this.empresaId = (empresaId != null && !empresaId.trim().isEmpty()) ? empresaId.trim() : "EMP-001";
     }
 
     public String getPlanActual() {
@@ -49,6 +56,10 @@ public class Cliente extends Usuario implements Serializable {
     }
 
     public void setPlanActual(String planActual) {
+        asignarPlanInterno(planActual);
+    }
+
+    private void asignarPlanInterno(String planActual) {
         String nuevo = (planActual != null && !planActual.trim().isEmpty()) ? planActual.trim() : "Sin plan";
         if ("Sin plan".equalsIgnoreCase(nuevo)) {
             this.planActual = "Sin plan";

@@ -2,12 +2,6 @@ package metodos;
 
 import java.io.Serializable;
 
-/**
- * Implementación de Lista Simplemente Enlazada.
- * Estructurada siguiendo la metodología y lógica del docente y estudiantes
- * (recorridos con punteros auxiliares sapo, sapa y sapito), completando
- * todos los métodos faltantes para un CRUD y manipulación total de la estructura.
- */
 public class ListaSimple implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +11,6 @@ public class ListaSimple implements Serializable {
         this.primero = null;
     }
 
-    // 1. Insertar al inicio
     public void insertar_inicio(Nodo nuevo) {
         if (nuevo == null) return;
         if (primero == null) {
@@ -28,7 +21,6 @@ public class ListaSimple implements Serializable {
         }
     }
 
-    // 2. Insertar al final
     public void insertar_final(Nodo nuevo) {
         if (nuevo == null) return;
         if (primero == null) {
@@ -42,7 +34,6 @@ public class ListaSimple implements Serializable {
         }
     }
 
-    // 3. Insertar antes de un nodo de referencia
     public boolean insertar_antes_nodo_ref_simple(Nodo nuevo, String ref) {
         if (nuevo == null || ref == null) return false;
         if (primero == null) {
@@ -50,15 +41,14 @@ public class ListaSimple implements Serializable {
             return false;
         }
 
-        // Si el referente es el primero
         if (primero.getDato().equalsIgnoreCase(ref)) {
             nuevo.setSiguiente(primero);
             this.primero = nuevo;
             return true;
         }
 
-        Nodo sapo = primero; // Puntero explorador
-        Nodo sapa = null;    // Puntero que sigue a sapo
+        Nodo sapo = primero;
+        Nodo sapa = null;
 
         while (sapo != null && !sapo.getDato().equalsIgnoreCase(ref)) {
             sapa = sapo;
@@ -75,7 +65,6 @@ public class ListaSimple implements Serializable {
         }
     }
 
-    // 4. Insertar después de un nodo de referencia
     public boolean insertar_despues_nodo_ref_simple(Nodo nuevo, String ref) {
         if (nuevo == null || ref == null) return false;
         if (primero == null) {
@@ -101,7 +90,6 @@ public class ListaSimple implements Serializable {
         }
     }
 
-    // 5. Eliminar al inicio
     public Nodo eliminar_inicio_lista_simple() {
         if (primero == null) {
             System.out.println("Lista vacía");
@@ -113,7 +101,6 @@ public class ListaSimple implements Serializable {
         return sapo;
     }
 
-    // 6. Eliminar al final
     public Nodo eliminar_final_lista_simple() {
         if (primero == null) {
             System.out.println("Lista vacía");
@@ -135,7 +122,6 @@ public class ListaSimple implements Serializable {
         return ultimo;
     }
 
-    // 7. Eliminar el nodo referente
     public boolean eliminar_nodo_referente_simple(String ref) {
         if (primero == null || ref == null) {
             System.out.println("Lista vacía o referencia nula");
@@ -165,20 +151,18 @@ public class ListaSimple implements Serializable {
         }
     }
 
-    // 8. Eliminar antes del nodo de referencia
     public boolean eliminar_antes_nodo_ref_simple(String ref) {
         if (primero == null || primero.getSiguiente() == null || ref == null) {
             System.out.println("No hay suficientes nodos para eliminar antes del referente");
             return false;
         }
 
-        // Si el referente es el segundo, eliminamos el primero
         if (primero.getSiguiente().getDato().equalsIgnoreCase(ref)) {
             eliminar_inicio_lista_simple();
             return true;
         }
 
-        Nodo sapito = null; // Antecesor de sapa
+        Nodo sapito = null;
         Nodo sapa = primero;
         Nodo sapo = primero.getSiguiente();
 
@@ -198,7 +182,6 @@ public class ListaSimple implements Serializable {
         }
     }
 
-    // 9. [COMPLETADO] Eliminar después del nodo de referencia
     public boolean eliminar_despues_nodo_ref_simple(String ref) {
         if (primero == null || ref == null) {
             System.out.println("Lista vacía");
@@ -226,7 +209,6 @@ public class ListaSimple implements Serializable {
         return true;
     }
 
-    // 10. [COMPLETADO - BUSCAR CRUD] Buscar nodo por referencia
     public Nodo buscar_nodo_simple(String ref) {
         if (primero == null || ref == null) return null;
         Nodo sapo = primero;
@@ -239,7 +221,6 @@ public class ListaSimple implements Serializable {
         return null;
     }
 
-    // 11. [COMPLETADO - ACTUALIZAR CRUD] Modificar dato de un nodo
     public boolean actualizar_nodo_simple(String ref, String nuevoDato) {
         Nodo encontrado = buscar_nodo_simple(ref);
         if (encontrado != null) {
@@ -249,7 +230,6 @@ public class ListaSimple implements Serializable {
         return false;
     }
 
-    // 12. Recorrer hacia adelante e imprimir
     public void recorrer() {
         if (this.primero == null) {
             System.out.println("Lista vacía");

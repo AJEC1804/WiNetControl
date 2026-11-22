@@ -56,28 +56,25 @@
                 window.WebSocket.prototype = WSOriginal.prototype;
             }
         })();
-    </script>
+</script>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
     <div class="auth-container">
-        <!-- Tarjeta amplia para formulario de registro -->
+
         <div class="auth-card registro-card">
-            
+
             <div class="auth-header">
                 <h1>Registro de Cliente</h1>
                 <p>Crea tu cuenta para contratar servicios de internet de alta velocidad</p>
             </div>
 
-            <!-- Caja de mensajes de error o éxito -->
             <div id="registroAlert" class="alert"></div>
 
-            <!-- Formulario de Registro -->
             <form id="registroForm" onsubmit="procesarRegistro(event)">
-                
-                <!-- Fila 1: Nombres y Apellidos -->
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="regNombres">Nombres:</label>
@@ -89,7 +86,6 @@
                     </div>
                 </div>
 
-                <!-- Fila 2: Tipo de Documento y Cédula -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="regTipo">Tipo de Documento:</label>
@@ -106,7 +102,6 @@
                     </div>
                 </div>
 
-                <!-- Fila 3: Teléfono y Correo -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="regTelefono">Teléfono Celular:</label>
@@ -118,13 +113,11 @@
                     </div>
                 </div>
 
-                <!-- Fila 4: Dirección de Residencia -->
                 <div class="form-group">
                     <label for="regDireccion">Dirección de Instalación:</label>
                     <input type="text" id="regDireccion" placeholder="Calle / Carrera # No. - Barrio" required>
                 </div>
 
-                <!-- Fila 5: Contraseña y Confirmar Contraseña -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="regContrasena">Contraseña (Mínimo 6 caracteres):</label>
@@ -136,7 +129,6 @@
                     </div>
                 </div>
 
-                <!-- Botón de Envío -->
                 <button type="submit" class="btn btn-primary" style="margin-top: 15px;">
                     Registrar Cuenta
                 </button>
@@ -150,8 +142,8 @@
         </div>
     </div>
 
-    <script src="js/config.js?v=48"></script>
+    <script src="js/config.js?v=49"></script>
     <script src="js/errores.js?v=1"></script>
-    <script src="js/app.js?v=68"></script>
+    <script src="js/app.js?v=69"></script>
 </body>
 </html>

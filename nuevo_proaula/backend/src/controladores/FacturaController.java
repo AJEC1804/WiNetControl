@@ -11,11 +11,6 @@ import utils.Respuesta;
 import utils.ValidadorTexto;
 import java.util.List;
 
-/**
- * Controlador para operaciones de Facturación y comprobantes.
- * Conecta las solicitudes de la vista con la Pila de Facturas (LIFO)
- * y el generador de reportes PDF.
- */
 public class FacturaController {
 
     private final FacturaModel facturaModel;
@@ -34,9 +29,6 @@ public class FacturaController {
         this.planModel = (planModel != null) ? planModel : UsuarioController.getSharedPlanModel();
     }
 
-    /**
-     * Generar y apilar una factura para el cliente indicado.
-     */
     public Respuesta<Factura> generarFactura(String identificacionCliente, String nombreOCodigoPlan) {
         if (!ValidadorTexto.esNoVacio(identificacionCliente)) {
             return Respuesta.error("Identificación del cliente requerida.");
@@ -73,10 +65,6 @@ public class FacturaController {
         return facturaModel.emitirFactura(cliente, plan);
     }
 
-    /**
-     * Generar y apilar una factura usando exclusivamente el plan contratado del cliente
-     * para el mes y año indicados.
-     */
     public Respuesta<Factura> generarFactura(String identificacionCliente, int mes, int ano) {
         if (!ValidadorTexto.esNoVacio(identificacionCliente)) {
             return Respuesta.error("Identificación del cliente requerida.");
@@ -101,52 +89,35 @@ public class FacturaController {
         return facturaModel.emitirFactura(cliente, respPlan.getDatos(), mes, ano);
     }
 
-    /**
-     * Obtener el historial de facturas de un usuario.
-     */
     public Respuesta<List<Factura>> obtenerFacturasUsuario(String criterioUsuarioOId) {
         return facturaModel.consultarFacturasUsuario(criterioUsuarioOId);
     }
 
-    /**
-     * Buscar factura por mes y año.
-     */
     public Respuesta<Factura> buscarFacturaPorPeriodo(String usuario, int mes, int ano) {
         return facturaModel.buscarFacturaPorPeriodo(usuario, mes, ano);
     }
 
-    /**
-     * Desapilar la última factura emitida (tope de la pila LIFO).
-     */
     public Respuesta<Factura> desapilarUltimaFactura() {
         return facturaModel.desapilarUltimaFactura();
     }
 
-    /**
-     * Consultar la cima de la pila sin desapilar.
-     */
     public Respuesta<Factura> consultarCima() {
         return facturaModel.consultarCima();
     }
 
-    /**
-     * Listar todas las facturas del sistema.
-     */
     public Respuesta<List<Factura>> listarTodasFacturas() {
         return facturaModel.listarTodas();
     }
 
-    /**
-     * Registrar el pago de una factura por su ID.
-     */
     public Respuesta<Factura> pagarFactura(int idFactura) {
         return facturaModel.pagarFactura(idFactura);
     }
 
-    /**
-     * Anular una factura por su ID.
-     */
     public Respuesta<Factura> anularFactura(int idFactura) {
         return facturaModel.anularFactura(idFactura);
+    }
+
+    public Respuesta<Factura> cambiarEstadoFactura(int idFactura, String nuevoEstado) {
+        return facturaModel.cambiarEstadoFactura(idFactura, nuevoEstado);
     }
 }

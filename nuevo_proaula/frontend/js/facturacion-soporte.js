@@ -1,9 +1,3 @@
-/* ==========================================================================
-   LÓGICA JAVASCRIPT - FACTURACIÓN (LIFO) Y SOPORTE TÉCNICO (FIFO)
-   Autor: Juan Esteban Navia (Issue #10)
-   Conectado a ApiServer (FacturaController / PilaFacturas y SoporteController / ColaSoporte)
-   ========================================================================== */
-
 const API_FACTURAS = API_BASE + "/api/facturas";
 const API_SOPORTE = API_BASE + "/api/soporte";
 const API_CLIENTES_FACT = API_BASE + "/api/clientes";
@@ -12,6 +6,7 @@ const API_PLANES_FACT = API_BASE + "/api/planes?estado=activos";
 let facturasEnMemoria = [];
 let cimaFacturaEnMemoria = null;
 let ticketsPendientesEnMemoria = [];
+let ticketsEnProcesoEnMemoria = [];
 let ticketsAtendidosEnMemoria = [];
 let frenteTicketEnMemoria = null;
 let clientesParaSelector = [];
@@ -32,11 +27,6 @@ function escaparHtml(texto) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
 }
-
-
-// ==========================================================================
-// 1. MÓDULO DE FACTURACIÓN: ESTRUCTURA PILA (LIFO)
-// ==========================================================================
 
 async function cargarModuloFacturas() {
     const contenedor = document.getElementById("seccion-facturas");
@@ -75,7 +65,7 @@ async function cargarModuloFacturas() {
 
     let html = `
         <div class="facturacion">
-            
+
             <!-- Encabezado del Módulo (Diseño original de Juanes) -->
             <div class="facturacion__header">
                 <div class="facturacion__header-titulo">
@@ -101,6 +91,7 @@ async function cargarModuloFacturas() {
     if (cima) {
         const montoCima = Number(cima.monto || 0);
         const pagadaCima = cima.estado === "PAGADA";
+        const anuladaCima = cima.estado === "ANULADA";
         html += `
                 <div class="facturacion__cima-grid">
                     <div class="facturacion__dato">
@@ -125,8 +116,8 @@ async function cargarModuloFacturas() {
                     </div>
                     <div class="facturacion__dato">
                         <span class="facturacion__dato-etiqueta">Estado</span>
-                        <span class="facturacion__dato-valor" style="color: ${pagadaCima ? '#16a34a' : '#2563eb'};">
-                            ${pagadaCima ? 'Al Día ✅' : 'Emitida ⏳'}
+                        <span class="facturacion__dato-valor" style="color: ${pagadaCima ? '#16a34a' : (anuladaCima ? '#dc2626' : '#d97706')};">
+                            ${pagadaCima ? 'Pagada ✅' : (anuladaCima ? 'Anulada ⛔' : 'Pendiente ⏳')}
                         </span>
                     </div>
                 </div>
@@ -135,9 +126,14 @@ async function cargarModuloFacturas() {
                     <button class="facturacion__btn facturacion__btn--primario" onclick="verComprobanteFactura(${cima.idFactura})">
                         <span>👁️</span> Ver Comprobante Oficial (PDF)
                     </button>
-                    ${!pagadaCima ? `
+                    ${!pagadaCima && !anuladaCima ? `
                         <button class="facturacion__btn facturacion__btn--secundario" onclick="registrarPagoFactura(${cima.idFactura})">
                             <span>💳</span> ${esPersonal ? 'Registrar Pago' : 'Pagar Factura'}
+                        </button>
+                    ` : ''}
+                    ${pagadaCima && esPersonal ? `
+                        <button class="facturacion__btn facturacion__btn--secundario" onclick="editarEstadoFactura(${cima.idFactura}, 'PENDIENTE')">
+                            <span>↩️</span> Volver a Pendiente
                         </button>
                     ` : ''}
                     ${esAdmin ? `
@@ -159,7 +155,6 @@ async function cargarModuloFacturas() {
             </div>
     `;
 
-    // Barra de herramientas para Administradores y Empleados
     if (esPersonal) {
         html += `
             <div class="facturacion__toolbar">
@@ -175,7 +170,6 @@ async function cargarModuloFacturas() {
         `;
     }
 
-    // Tabla de Historial de Facturas + Buscador por Cliente
     html += `
             <div class="facturacion__tabla-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -193,8 +187,9 @@ async function cargarModuloFacturas() {
 
                     <select id="filtroEstadoFactura" onchange="filtrarTablaFacturas()">
                         <option value="TODOS">Todos los estados</option>
-                        <option value="EMITIDA">Solo emitidas</option>
+                        <option value="PENDIENTE">Pendientes de pago</option>
                         <option value="PAGADA">Solo pagadas</option>
+                        <option value="ANULADA">Solo anuladas</option>
                     </select>
 
                     <button type="button" class="btn btn-secondary btn-auto" onclick="limpiarFiltroFacturas()">
@@ -314,7 +309,9 @@ function renderizarFilasFacturas(lista, esPersonal) {
         const pos = facturasEnMemoria.findIndex(f => Number(f.idFactura) === Number(fact.idFactura)) + 1;
         const monto = Number(fact.monto || 0);
         const pagada = fact.estado === "PAGADA";
+        const anulada = fact.estado === "ANULADA";
         const estadoFila = String(fact.estado || "EMITIDA").toUpperCase();
+        const badgeClase = pagada ? "badge-activo" : (anulada ? "badge-inactivo" : "badge-alerta");
 
         return `
             <tr class="fila-${estadoFila.toLowerCase()}" style="${esTope ? 'background-color: #eff6ff; font-weight: 600;' : ''}">
@@ -328,7 +325,7 @@ function renderizarFilasFacturas(lista, esPersonal) {
                 <td>${escaparHtml(fact.fecha)}</td>
                 <td style="color: #16a34a; font-weight: 700;">$${monto.toLocaleString('es-CO')}</td>
                 <td>
-                    <span class="badge ${pagada ? 'badge-activo' : 'badge-admin'}">
+                    <span class="badge ${badgeClase}">
                         ${escaparHtml(fact.estado)}
                     </span>
                 </td>
@@ -336,9 +333,14 @@ function renderizarFilasFacturas(lista, esPersonal) {
                     <button class="facturacion__btn facturacion__btn--secundario" style="padding: 4px 10px; font-size: 12px;" onclick="verComprobanteFactura(${fact.idFactura})">
                         <span>📄</span> Ver PDF
                     </button>
-                    ${!pagada ? `
+                    ${!pagada && !anulada ? `
                         <button class="facturacion__btn facturacion__btn--primario" style="padding: 4px 10px; font-size: 12px;" onclick="registrarPagoFactura(${fact.idFactura})">
                             <span>💳</span> ${esPersonal ? 'Marcar pagada' : 'Pagar'}
+                        </button>
+                    ` : ''}
+                    ${pagada && esPersonal ? `
+                        <button class="facturacion__btn facturacion__btn--secundario" style="padding: 4px 10px; font-size: 12px;" onclick="editarEstadoFactura(${fact.idFactura}, 'PENDIENTE')" title="Cambiar estado a pendiente de pago">
+                            <span>↩️</span> Volver a pendiente
                         </button>
                     ` : ''}
                 </td>
@@ -359,8 +361,10 @@ function filtrarTablaFacturas() {
             || (f.nombreCliente && f.nombreCliente.toLowerCase().includes(texto))
             || String(f.idFactura).includes(texto);
 
+        const est = f.estado ? f.estado.toUpperCase() : "";
         const coincideEstado = estado === "TODOS"
-            || (f.estado && f.estado.toUpperCase() === estado);
+            || (estado === "PENDIENTE" && (est === "PENDIENTE" || est === "EMITIDA"))
+            || (est === estado);
 
         return coincideCliente && coincideEstado;
     });
@@ -370,6 +374,35 @@ function filtrarTablaFacturas() {
 
 function limpiarFiltroFacturas() {
     cargarModuloFacturas();
+}
+
+async function editarEstadoFactura(idFactura, nuevoEstado) {
+    let confirmado = true;
+    if (typeof confirmarAccion === "function") {
+        confirmado = await confirmarAccion(
+            "Editar estado de factura",
+            "¿Deseas cambiar la factura #00" + idFactura + " al estado " + nuevoEstado + "?",
+            "Sí, cambiar estado"
+        );
+    }
+    if (!confirmado) return;
+
+    try {
+        const respuesta = await fetch(API_FACTURAS + "/estado", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idFactura: String(idFactura), estado: nuevoEstado })
+        });
+        const json = await respuesta.json();
+        if (!json.exito) {
+            avisarToast(json.mensaje || "No se pudo actualizar el estado de la factura.", "error");
+            return;
+        }
+        avisarToast(json.mensaje || "Factura #00" + idFactura + " actualizada a " + nuevoEstado + ".", "exito");
+        cargarModuloFacturas();
+    } catch (error) {
+        avisarToast("No se pudo conectar con el servidor Java.", "error");
+    }
 }
 
 async function registrarPagoFactura(idFactura) {
@@ -498,10 +531,10 @@ function alCambiarClienteFactura() {
     }
 
     if (infoPlan) {
-        const activas = facturasEnMemoria.filter(f =>
-            f.identificacionCliente === cliente.identificacion &&
-            String(f.estado || "").toUpperCase() === "EMITIDA"
-        ).length;
+        const activas = facturasEnMemoria.filter(f => {
+            const est = String(f.estado || "").toUpperCase();
+            return f.identificacionCliente === cliente.identificacion && (est === "EMITIDA" || est === "PENDIENTE");
+        }).length;
         const fechaInicio = cliente.fechaInicioPlan || cliente.fechaRegistro || "Sin fecha";
         infoPlan.textContent = "Adquirido el: " + fechaInicio + " · Facturas activas (pendientes): " + activas;
     }
@@ -554,23 +587,21 @@ async function guardarNuevaFactura() {
     }
 }
 
-
-// ==========================================================================
-// 2. MÓDULO DE MESA DE AYUDA: ESTRUCTURA COLA (FIFO)
-// ==========================================================================
-
 async function cargarModuloSoporte() {
     const contenedor = document.getElementById("seccion-soporte");
     if (!contenedor) return;
 
     const sesion = JSON.parse(localStorage.getItem("sesionActiva")) || {};
     const rol = (sesion.rol || "CLIENTE").toUpperCase();
+    const esEmpPlataforma = (rol === "EMPLEADO" && sesion.empresaId === "PLATAFORMA");
     const puedeAtender = (rol === "ADMIN" || rol === "SUPERADMIN" || rol === "EMPLEADO");
+    const esModoPlataformaAtencion = (rol === "SUPERADMIN" || esEmpPlataforma);
 
     try {
         const respuesta = await fetch(API_SOPORTE);
         const json = await respuesta.json();
         ticketsPendientesEnMemoria = (json && Array.isArray(json.pendientes)) ? json.pendientes : [];
+        ticketsEnProcesoEnMemoria = (json && Array.isArray(json.enProceso)) ? json.enProceso : [];
         ticketsAtendidosEnMemoria = (json && Array.isArray(json.atendidos)) ? json.atendidos : [];
         frenteTicketEnMemoria = (json && json.frente) ? json.frente : (ticketsPendientesEnMemoria[0] || null);
     } catch (error) {
@@ -586,26 +617,86 @@ async function cargarModuloSoporte() {
 
     const nombreSesion = ((sesion.nombre || "Usuario") + " " + (sesion.apellido || "")).trim();
 
-    // Si es SUPERADMIN, ADMIN o EMPLEADO: ve la Cola FIFO en vivo (sin formulario de enviar soporte) + Historial de atendidos
     if (puedeAtender) {
         const cola = ticketsPendientesEnMemoria;
+        const enProceso = ticketsEnProcesoEnMemoria;
         const atendidos = ticketsAtendidosEnMemoria;
         const frente = frenteTicketEnMemoria;
 
+        const tituloModulo = esModoPlataformaAtencion
+            ? "Tickets de Administradores — Soporte Plataforma (Cola FIFO)"
+            : "Mesa de Ayuda y Soporte Técnico (Cola FIFO)";
+        const subtituloModulo = esModoPlataformaAtencion
+            ? "Inicia el siguiente ticket reportado por un administrador, revisa el problema y escribe la solución para notificarle por correo y web al cerrarlo."
+            : "Inicia el siguiente ticket en orden de llegada (FIFO), revisa el problema y registra la observación/solución antes de cerrarlo.";
+
         let html = `
             <div class="soporte">
-                
                 <div class="soporte__header">
                     <div class="soporte__header-titulo">
                         <span>🎧</span>
-                        <span>Mesa de Ayuda y Soporte Técnico (Cola FIFO)</span>
+                        <span>${tituloModulo}</span>
                     </div>
-                    <div class="soporte__header-subtitulo">
-                        Atención de requerimientos técnicos en orden de llegada (First-In, First-Out). El primer ticket que entra es el primero que se atiende.
-                    </div>
+                    <div class="soporte__header-subtitulo">${subtituloModulo}</div>
                 </div>
 
-                <!-- Cola FIFO en Tiempo Real (Diseño original de Juanes) -->
+                <!-- PANEL DE TICKETS INICIADOS (EN PROCESO) PARA DAR SOLUCIÓN Y CERRAR -->
+                <div class="soporte__columna">
+                    <div class="soporte__seccion-titulo">
+                        <span>🛠️ Tickets Iniciados (Esperando Observación / Solución)</span>
+                        <span class="badge ${enProceso.length > 0 ? 'badge-alerta' : 'badge-activo'}" style="font-size: 12px;">
+                            ${enProceso.length} en proceso
+                        </span>
+                    </div>
+        `;
+
+        if (enProceso.length === 0) {
+            html += `
+                <div class="facturacion__tabla-vacia" style="padding: 20px;">
+                    No hay tickets iniciados ahora mismo. Presiona <strong>"▶️ Iniciar Siguiente Ticket (FIFO)"</strong> en la cola de abajo para ver el problema y responderlo.
+                </div>
+            `;
+        } else {
+            html += `<div style="display:flex; flex-direction:column; gap:14px;">`;
+            enProceso.forEach(t => {
+                html += `
+                    <div class="soporte__en-proceso-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <div style="font-weight:800; font-size:15px; color:#1e293b;">
+                                🎫 Ticket #${Number(t.idTicket)} — ${escaparHtml(t.asunto)}
+                            </div>
+                            <span class="badge badge-alerta">EN PROCESO</span>
+                        </div>
+                        <div style="font-size:12.5px; color:#64748b; margin-top:6px;">
+                            👤 <strong>Solicitante:</strong> ${escaparHtml(t.usuario)} (${escaparHtml(t.correo || 'Sin correo')}) ·
+                            🏢 <strong>Empresa:</strong> ${escaparHtml(t.empresaNombre || t.empresaId)} ·
+                            📅 <strong>Iniciado:</strong> ${escaparHtml(t.fechaInicio || t.fecha)}
+                        </div>
+                        <div class="soporte__detalle-problema">
+                            <h5>📌 Problema Reportado por el Usuario:</h5>
+                            <p>${escaparHtml(t.mensaje)}</p>
+                        </div>
+                        <div class="soporte__observacion-box">
+                            <label for="obsTicket_${t.idTicket}" style="font-size:13px; font-weight:700; color:#1e293b;">
+                                ✍️ Observación / Solución para el usuario <span class="obligatorio">*</span>
+                            </label>
+                            <textarea id="obsTicket_${t.idTicket}" rows="3" placeholder="Describe detalladamente la solución aplicada o respuesta para el usuario..."></textarea>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+                            <button type="button" class="btn btn-primary btn-auto" onclick="cerrarTicketConObservacion(${t.idTicket}, false)">
+                                ✅ Cerrar Ticket y Notificar (Correo + Web)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        html += `
+                </div>
+
+                <!-- Cola FIFO en Tiempo Real -->
                 <div class="soporte__columna">
                     <div class="soporte__seccion-titulo">
                         <span>👥 Cola de Espera en Vivo (FIFO)</span>
@@ -616,7 +707,7 @@ async function cargarModuloSoporte() {
 
                     <div class="soporte__cola-info">
                         <span><strong>Orden de atención:</strong> Desde el frente hacia atrás</span>
-                        <span><strong>Próximo a atender:</strong> ${frente ? '#' + Number(frente.idTicket) + ' (' + escaparHtml(frente.usuario) + ')' : 'Ninguno'}</span>
+                        <span><strong>Próximo a iniciar:</strong> ${frente ? '#' + Number(frente.idTicket) + ' (' + escaparHtml(frente.usuario) + ')' : 'Ninguno'}</span>
                     </div>
 
                     <div class="soporte__cola-lista">
@@ -624,7 +715,7 @@ async function cargarModuloSoporte() {
 
         if (cola.length === 0) {
             html += `
-                <div class="facturacion__tabla-vacia" style="padding: 40px 15px;">
+                <div class="facturacion__tabla-vacia" style="padding: 34px 15px;">
                     🎉 No hay solicitudes pendientes en la cola. ¡Todo el soporte está al día!
                 </div>
             `;
@@ -635,7 +726,7 @@ async function cargarModuloSoporte() {
                     <div class="soporte__nodo ${esFrente ? 'soporte__nodo--frente' : 'soporte__nodo--espera'}">
                         <div class="soporte__nodo-header">
                             <span class="soporte__nodo-id">
-                                ${esFrente ? '🥇 FRENTE (1° en ser atendido)' : `Posición #${index + 1} en cola`}
+                                ${esFrente ? '🥇 FRENTE (1° en iniciar)' : `Posición #${index + 1} en cola`}
                             </span>
                             <span class="${esFrente ? 'soporte__badge--frente' : 'soporte__badge--espera'}">
                                 Ticket #${ticket.idTicket}
@@ -655,15 +746,15 @@ async function cargarModuloSoporte() {
         html += `
                     </div>
 
-                    <button class="soporte__btn-atender" onclick="atenderSiguienteTicketEnCola()" ${cola.length === 0 ? 'disabled' : ''}>
-                        <span>⚡</span> Atender Siguiente Ticket (Desencolar FIFO)
+                    <button class="soporte__btn-atender" onclick="iniciarSiguienteTicketEnCola()" ${cola.length === 0 ? 'disabled' : ''}>
+                        <span>▶️</span> Iniciar Siguiente Ticket (Desencolar FIFO para Responder)
                     </button>
                 </div>
 
-                <!-- Historial de Tickets Atendidos -->
+                <!-- Historial de Tickets Cerrados -->
                 <div class="facturacion__tabla-card" style="margin-top: 10px;">
                     <h4 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">
-                        <span>✅</span> Historial de Tickets Atendidos (${atendidos.length})
+                        <span>✅</span> Historial de Tickets Cerrados (${atendidos.length})
                     </h4>
 
                     <div class="facturacion__tabla-contenedor">
@@ -673,9 +764,11 @@ async function cargarModuloSoporte() {
                                     <th>N° Ticket</th>
                                     <th>Solicitante</th>
                                     <th>Asunto</th>
-                                    <th>Correo</th>
-                                    <th>Fecha</th>
+                                    <th>Observación / Solución</th>
+                                    <th>Atendido por</th>
+                                    <th>Fecha Cierre</th>
                                     <th>Estado</th>
+                                    <th>Detalle</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -684,7 +777,7 @@ async function cargarModuloSoporte() {
         if (atendidos.length === 0) {
             html += `
                 <tr>
-                    <td colspan="6" class="facturacion__tabla-vacia">Aún no hay tickets atendidos en esta sesión.</td>
+                    <td colspan="8" class="facturacion__tabla-vacia">Aún no hay tickets cerrados.</td>
                 </tr>
             `;
         } else {
@@ -694,9 +787,15 @@ async function cargarModuloSoporte() {
                         <td>#${Number(t.idTicket)}</td>
                         <td>${escaparHtml(t.usuario)}</td>
                         <td>${escaparHtml(t.asunto)}</td>
-                        <td>${escaparHtml(t.correo || '-')}</td>
-                        <td>${escaparHtml(t.fecha || 'Hoy')}</td>
-                        <td><span class="badge badge-activo">RESUELTO ✅</span></td>
+                        <td style="max-width:260px;">${escaparHtml(t.observacion || 'Sin observación')}</td>
+                        <td>${escaparHtml(t.atendidoPor || '-')}</td>
+                        <td>${escaparHtml(t.fechaCierre || t.fecha || 'Hoy')}</td>
+                        <td><span class="badge badge-activo">${escaparHtml(t.estado || 'CERRADO')} ✅</span></td>
+                        <td>
+                            <button type="button" class="facturacion__btn facturacion__btn--secundario" style="padding:4px 10px; font-size:12px;" onclick="verDetalleTicket(${Number(t.idTicket)})">
+                                👁️ Ver
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
@@ -707,7 +806,6 @@ async function cargarModuloSoporte() {
                         </table>
                     </div>
                 </div>
-
             </div>
         `;
 
@@ -715,112 +813,178 @@ async function cargarModuloSoporte() {
         return;
     }
 
-    // Si es CLIENTE: ve el layout de 2 columnas de Juanes (Formulario a la izquierda + Cola a la derecha)
-    const cola = ticketsPendientesEnMemoria.filter(function (t) {
-        return (t.usuario && t.usuario.toLowerCase() === nombreSesion.toLowerCase())
-            || (t.correo && sesion.correo && t.correo.toLowerCase() === sesion.correo.toLowerCase());
+    renderizarVistaRemitenteTickets(contenedor, {
+        titulo: "Mesa de Ayuda y Soporte Técnico (Cola FIFO)",
+        subtitulo: "Radica tu requerimiento. Al iniciar y cerrar tu ticket, recibirás la solución por correo y notificaciones web.",
+        formId: "formRadicarTicket",
+        onSubmitFn: "procesarRadicacionTicket(event)",
+        nombreSesion: nombreSesion,
+        correoSesion: sesion.correo || "",
+        esPlataforma: false,
+        pendientes: ticketsPendientesEnMemoria,
+        enProceso: ticketsEnProcesoEnMemoria,
+        atendidos: ticketsAtendidosEnMemoria
     });
-    const atendidos = ticketsAtendidosEnMemoria.filter(function (t) {
-        return (t.usuario && t.usuario.toLowerCase() === nombreSesion.toLowerCase())
-            || (t.correo && sesion.correo && t.correo.toLowerCase() === sesion.correo.toLowerCase());
-    });
+}
+
+async function cargarModuloSoportePlataforma() {
+    const contenedor = document.getElementById("seccion-soporte-plataforma");
+    if (!contenedor) return;
+
+    const sesion = JSON.parse(localStorage.getItem("sesionActiva")) || {};
+    const nombreSesion = ((sesion.nombre || "Administrador") + " " + (sesion.apellido || "")).trim();
+
+    try {
+        const respuesta = await fetch(API_SOPORTE + "?ambito=plataforma");
+        const json = await respuesta.json();
+        const pendientes = (json && Array.isArray(json.pendientes)) ? json.pendientes : [];
+        const enProceso = (json && Array.isArray(json.enProceso)) ? json.enProceso : [];
+        const atendidos = (json && Array.isArray(json.atendidos)) ? json.atendidos : [];
+
+        ticketsAtendidosEnMemoria = atendidos;
+        ticketsEnProcesoEnMemoria = enProceso;
+        ticketsPendientesEnMemoria = pendientes;
+
+        renderizarVistaRemitenteTickets(contenedor, {
+            titulo: "Reportar Problema con la Plataforma (Al Superusuario)",
+            subtitulo: "Envía reportes de fallos, solicitudes o dudas al Superusuario y su equipo de soporte de plataforma.",
+            formId: "formRadicarTicketPlataforma",
+            onSubmitFn: "procesarRadicacionTicketPlataforma(event)",
+            nombreSesion: nombreSesion,
+            correoSesion: sesion.correo || "",
+            esPlataforma: true,
+            pendientes: pendientes,
+            enProceso: enProceso,
+            atendidos: atendidos
+        });
+    } catch (error) {
+        contenedor.innerHTML = `
+            <div class="soporte">
+                <div class="facturacion__tabla-card" style="text-align:center; padding:32px; color:#b91c1c;">
+                    ⚠️ No se pudo conectar con ApiServer para cargar tus reportes de plataforma.
+                </div>
+            </div>
+        `;
+    }
+}
+
+function renderizarVistaRemitenteTickets(contenedor, cfg) {
+    const cola = cfg.pendientes || [];
+    const enProceso = cfg.enProceso || [];
+    const atendidos = cfg.atendidos || [];
     const frente = cola[0] || null;
+    const sufijo = cfg.esPlataforma ? "Plat" : "";
+
+    const opcionesCategoria = cfg.esPlataforma
+        ? `
+            <option value="Error del Sistema / Bug">🔴 Error del Sistema / Bug</option>
+            <option value="Facturación o Pago SaaS">💳 Facturación o Pago SaaS</option>
+            <option value="Permisos o Cuentas">🔐 Permisos o Cuentas</option>
+            <option value="Solicitud de Mejora">✨ Solicitud de Mejora</option>
+            <option value="Otro Inconveniente">🟣 Otro Inconveniente</option>
+          `
+        : `
+            <option value="Falla de Conexión / Sin Señal">🔴 Falla de Conexión / Sin Señal</option>
+            <option value="Lentitud o Intermitencia">🟡 Lentitud o Intermitencia</option>
+            <option value="Configuración de Router / WiFi">🔵 Configuración de Router / WiFi</option>
+            <option value="Consulta de Facturación">🟢 Consulta de Facturación</option>
+            <option value="Traslado de Servicio">🟣 Traslado de Servicio</option>
+          `;
 
     let html = `
         <div class="soporte">
-            
             <div class="soporte__header">
                 <div class="soporte__header-titulo">
-                    <span>🎧</span>
-                    <span>Mesa de Ayuda y Soporte Técnico (Cola FIFO)</span>
+                    <span>${cfg.esPlataforma ? '🛠️' : '🎧'}</span>
+                    <span>${cfg.titulo}</span>
                 </div>
-                <div class="soporte__header-subtitulo">
-                    Atención de requerimientos técnicos en orden de llegada (First-In, First-Out). El primer ticket que entra es el primero que se atiende.
-                </div>
+                <div class="soporte__header-subtitulo">${cfg.subtitulo}</div>
             </div>
 
             <div class="soporte__layout">
-                
-                <!-- Columna Izquierda: Formulario de Radicación -->
                 <div class="soporte__columna">
                     <div class="soporte__seccion-titulo">
-                        <span>📝 Radicar Solicitud de Soporte</span>
-                        <span class="badge badge-admin" style="font-size: 11px;">ENCOLAR (Enqueue)</span>
+                        <span>📝 ${cfg.esPlataforma ? 'Reportar Problema al Superusuario' : 'Radicar Solicitud de Soporte'}</span>
+                        <span class="badge badge-admin" style="font-size: 11px;">ENCOLAR (FIFO)</span>
                     </div>
 
-                    <form id="formRadicarTicket" onsubmit="procesarRadicacionTicket(event)">
+                    <form id="${cfg.formId}" onsubmit="${cfg.onSubmitFn}">
                         <div class="form-group">
-                            <label for="soporteUsuario">Nombre del Solicitante:</label>
-                            <input type="text" id="soporteUsuario" value="${escaparHtml(nombreSesion)}" readonly style="background-color: #f8fafc;">
+                            <label for="soporteUsuario${sufijo}">Solicitante:</label>
+                            <input type="text" id="soporteUsuario${sufijo}" value="${escaparHtml(cfg.nombreSesion)}" readonly style="background-color: #f8fafc;">
                         </div>
 
                         <div class="form-group">
-                            <label for="soporteCorreo">Correo Electrónico de Contacto:</label>
-                            <input type="email" id="soporteCorreo" value="${escaparHtml(sesion.correo || 'soporte@cliente.com')}" required>
+                            <label for="soporteCorreo${sufijo}">Correo donde recibirás la respuesta:</label>
+                            <input type="email" id="soporteCorreo${sufijo}" value="${escaparHtml(cfg.correoSesion)}" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="soporteCategoria">Categoría del Incidente:</label>
-                            <select id="soporteCategoria" required>
-                                <option value="Falla de Conexión / Sin Señal">🔴 Falla de Conexión / Sin Señal</option>
-                                <option value="Lentitud o Intermitencia">🟡 Lentitud o Intermitencia</option>
-                                <option value="Configuración de Router / WiFi">🔵 Configuración de Router / WiFi</option>
-                                <option value="Consulta de Facturación">🟢 Consulta de Facturación</option>
-                                <option value="Traslado de Servicio">🟣 Traslado de Servicio</option>
-                            </select>
+                            <label for="soporteCategoria${sufijo}">Categoría:</label>
+                            <select id="soporteCategoria${sufijo}" required>${opcionesCategoria}</select>
                         </div>
 
                         <div class="form-group">
-                            <label for="soporteAsunto">Asunto Breve:</label>
-                            <input type="text" id="soporteAsunto" placeholder="Ej. Pérdida de señal intermitente en la tarde" required>
+                            <label for="soporteAsunto${sufijo}">Asunto Breve:</label>
+                            <input type="text" id="soporteAsunto${sufijo}" placeholder="Describe brevemente el problema..." required>
                         </div>
 
                         <div class="form-group">
-                            <label for="soporteMensaje">Descripción Detallada del Problema:</label>
-                            <textarea id="soporteMensaje" rows="3" placeholder="Explique con detalle qué sucede..." required></textarea>
+                            <label for="soporteMensaje${sufijo}">Descripción Detallada del Problema:</label>
+                            <textarea id="soporteMensaje${sufijo}" rows="3" placeholder="Explica paso a paso lo que sucede..." required></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary" style="margin-top: 5px;">
-                            <span>📩</span> Radicar Ticket (Encolar al Final)
+                            <span>📩</span> Enviar Reporte / Ticket
                         </button>
                     </form>
                 </div>
 
-                <!-- Columna Derecha: Mis Solicitudes en Cola -->
                 <div class="soporte__columna">
                     <div class="soporte__seccion-titulo">
-                        <span>👥 Mis Solicitudes en Espera (FIFO)</span>
-                        <span class="badge ${cola.length > 0 ? 'badge-alerta' : 'badge-activo'}" style="font-size: 12px;">
-                            ${cola.length} en espera
+                        <span>👥 Mis Tickets Activos (${cola.length + enProceso.length})</span>
+                        <span class="badge ${(cola.length + enProceso.length) > 0 ? 'badge-alerta' : 'badge-activo'}" style="font-size: 12px;">
+                            ${enProceso.length} en atención · ${cola.length} en cola
                         </span>
                     </div>
 
                     <div class="soporte__cola-info">
-                        <span><strong>Orden de atención:</strong> Desde el frente hacia atrás</span>
-                        <span><strong>Mi ticket actual:</strong> ${frente ? '#' + frente.idTicket : 'Ninguno'}</span>
+                        <span><strong>Orden:</strong> FIFO (por llegada)</span>
+                        <span><strong>En cola:</strong> ${frente ? '#' + frente.idTicket : 'Ninguno'}</span>
                     </div>
 
                     <div class="soporte__cola-lista">
     `;
 
-    if (cola.length === 0) {
+    if (enProceso.length === 0 && cola.length === 0) {
         html += `
-            <div class="facturacion__tabla-vacia" style="padding: 40px 15px;">
-                🎉 No tienes solicitudes pendientes en la cola.
+            <div class="facturacion__tabla-vacia" style="padding: 36px 15px;">
+                🎉 No tienes tickets pendientes o en atención actualmente.
             </div>
         `;
     } else {
+        enProceso.forEach(ticket => {
+            html += `
+                <div class="soporte__nodo soporte__nodo--frente" style="border-left-color:#d97706; background:#fffbeb;">
+                    <div class="soporte__nodo-header">
+                        <span class="soporte__nodo-id">🛠️ EN PROCESO (siendo atendido por ${escaparHtml(ticket.atendidoPor || 'Soporte')})</span>
+                        <span class="soporte__badge--frente">Ticket #${ticket.idTicket}</span>
+                    </div>
+                    <div class="soporte__nodo-asunto">${escaparHtml(ticket.asunto)}</div>
+                    <div class="soporte__nodo-mensaje">${escaparHtml(ticket.mensaje)}</div>
+                    <div class="soporte__nodo-footer">
+                        <span>📅 Iniciado: ${escaparHtml(ticket.fechaInicio || ticket.fecha)}</span>
+                    </div>
+                </div>
+            `;
+        });
         cola.forEach((ticket, index) => {
             const esFrente = index === 0;
             html += `
                 <div class="soporte__nodo ${esFrente ? 'soporte__nodo--frente' : ''}">
                     <div class="soporte__nodo-header">
-                        <span class="soporte__nodo-id">
-                            ${esFrente ? '🥇 FRENTE (1° en ser atendido)' : `Posición #${index + 1} en cola`}
-                        </span>
-                        <span class="${esFrente ? 'soporte__badge--frente' : 'soporte__badge--espera'}">
-                            Ticket #${ticket.idTicket}
-                        </span>
+                        <span class="soporte__nodo-id">${esFrente ? '🥇 FRENTE (1° en cola)' : `Posición #${index + 1} en cola`}</span>
+                        <span class="${esFrente ? 'soporte__badge--frente' : 'soporte__badge--espera'}">Ticket #${ticket.idTicket}</span>
                     </div>
                     <div class="soporte__nodo-asunto">${escaparHtml(ticket.asunto)}</div>
                     <div class="soporte__nodo-mensaje">${escaparHtml(ticket.mensaje)}</div>
@@ -835,18 +999,12 @@ async function cargarModuloSoporte() {
 
     html += `
                     </div>
-
-                    <div style="margin-top: 15px; font-size: 12px; color: #64748b; text-align: center; background: #f8fafc; padding: 10px; border-radius: 6px;">
-                        ℹ️ Los asesores atienden los requerimientos estrictamente en el orden que ingresan a la cola.
-                    </div>
                 </div>
-
             </div>
 
-            <!-- Historial de Tickets Atendidos -->
             <div class="facturacion__tabla-card" style="margin-top: 10px;">
                 <h4 style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">
-                    <span>✅</span> Mis Tickets Atendidos (${atendidos.length})
+                    <span>✅</span> Mis Tickets Resueltos / Cerrados (${atendidos.length})
                 </h4>
 
                 <div class="facturacion__tabla-contenedor">
@@ -854,32 +1012,34 @@ async function cargarModuloSoporte() {
                         <thead>
                             <tr>
                                 <th>N° Ticket</th>
-                                <th>Solicitante</th>
                                 <th>Asunto</th>
-                                <th>Correo</th>
-                                <th>Fecha</th>
+                                <th>Observación / Solución</th>
+                                <th>Atendido por</th>
+                                <th>Fecha Cierre</th>
                                 <th>Estado</th>
+                                <th>Detalle</th>
                             </tr>
                         </thead>
                         <tbody>
     `;
 
     if (atendidos.length === 0) {
-        html += `
-            <tr>
-                <td colspan="6" class="facturacion__tabla-vacia">Aún no hay tickets atendidos en esta sesión.</td>
-            </tr>
-        `;
+        html += '<tr><td colspan="7" class="facturacion__tabla-vacia">Aún no tienes tickets cerrados.</td></tr>';
     } else {
         atendidos.forEach(t => {
             html += `
-                <tr>
+                <tr class="fila-atendido">
                     <td>#${Number(t.idTicket)}</td>
-                    <td>${escaparHtml(t.usuario)}</td>
                     <td>${escaparHtml(t.asunto)}</td>
-                    <td>${escaparHtml(t.correo || '-')}</td>
-                    <td>${escaparHtml(t.fecha || 'Hoy')}</td>
-                    <td><span class="badge badge-activo">RESUELTO ✅</span></td>
+                    <td style="max-width:280px;">${escaparHtml(t.observacion || 'Sin observación')}</td>
+                    <td>${escaparHtml(t.atendidoPor || '-')}</td>
+                    <td>${escaparHtml(t.fechaCierre || t.fecha || 'Hoy')}</td>
+                    <td><span class="badge badge-activo">${escaparHtml(t.estado || 'CERRADO')} ✅</span></td>
+                    <td>
+                        <button type="button" class="facturacion__btn facturacion__btn--secundario" style="padding:4px 10px; font-size:12px;" onclick="verDetalleTicket(${Number(t.idTicket)})">
+                            👁️ Ver
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -890,7 +1050,6 @@ async function cargarModuloSoporte() {
                     </table>
                 </div>
             </div>
-
         </div>
     `;
 
@@ -899,12 +1058,20 @@ async function cargarModuloSoporte() {
 
 async function procesarRadicacionTicket(evento) {
     evento.preventDefault();
+    await enviarTicketAlServidor("", "CLIENTE", cargarModuloSoporte);
+}
 
-    const usuario = document.getElementById("soporteUsuario").value.trim();
-    const asunto = document.getElementById("soporteAsunto").value.trim();
-    const categoria = document.getElementById("soporteCategoria").value;
-    const mensaje = document.getElementById("soporteMensaje").value.trim();
-    const correo = document.getElementById("soporteCorreo").value.trim();
+async function procesarRadicacionTicketPlataforma(evento) {
+    evento.preventDefault();
+    await enviarTicketAlServidor("Plat", "PLATAFORMA", cargarModuloSoportePlataforma);
+}
+
+async function enviarTicketAlServidor(sufijo, tipoTicket, recargarFn) {
+    const usuario = document.getElementById("soporteUsuario" + sufijo).value.trim();
+    const asunto = document.getElementById("soporteAsunto" + sufijo).value.trim();
+    const categoria = document.getElementById("soporteCategoria" + sufijo).value;
+    const mensaje = document.getElementById("soporteMensaje" + sufijo).value.trim();
+    const correo = document.getElementById("soporteCorreo" + sufijo).value.trim();
 
     if (!asunto || !mensaje) {
         avisarToast("Completa el asunto y la descripción del problema.", "error");
@@ -920,7 +1087,8 @@ async function procesarRadicacionTicket(evento) {
                 correo: correo,
                 categoria: categoria,
                 asunto: asunto,
-                mensaje: mensaje
+                mensaje: mensaje,
+                tipoTicket: tipoTicket
             })
         });
         const json = await respuesta.json();
@@ -930,50 +1098,105 @@ async function procesarRadicacionTicket(evento) {
         }
         const idNuevo = json.datos ? "#" + json.datos.idTicket : "";
         avisarToast("Ticket " + idNuevo + " radicado y encolado exitosamente.", "exito");
-        cargarModuloSoporte();
+        recargarFn();
     } catch (error) {
         avisarToast("No se pudo conectar con el servidor Java.", "error");
     }
 }
 
-async function atenderSiguienteTicketEnCola() {
+async function iniciarSiguienteTicketEnCola() {
     const frente = frenteTicketEnMemoria;
     if (!frente) {
         avisarToast("No hay tickets pendientes en la cola.", "error");
         return;
     }
 
-    let confirmado = false;
-    if (typeof confirmarAccion === "function") {
-        confirmado = await confirmarAccion(
-            "Atender siguiente ticket",
-            'Se atenderá el Ticket #' + frente.idTicket + ' de "' + frente.usuario + '" (' + frente.asunto + ').',
-            "Sí, atender"
-        );
-    } else {
-        confirmado = confirm(`¿Deseas atender el ticket #${frente.idTicket} del frente de la cola?`);
-    }
-
-    if (!confirmado) return;
-
     try {
-        const respuesta = await fetch(API_SOPORTE + "/atender", { method: "POST" });
+        const respuesta = await fetch(API_SOPORTE + "/iniciar", { method: "POST" });
         const json = await respuesta.json();
         if (!json.exito) {
-            avisarToast(json.mensaje || "No se pudo atender el ticket.", "error");
+            avisarToast(json.mensaje || "No se pudo iniciar el ticket.", "error");
             return;
         }
-        avisarToast("Ticket #" + frente.idTicket + " de " + frente.usuario + " atendido con éxito.", "exito");
+        avisarToast("Ticket #" + frente.idTicket + " iniciado. Revisa el problema y registra la solución.", "info");
         cargarModuloSoporte();
     } catch (error) {
         avisarToast("No se pudo conectar con el servidor Java.", "error");
     }
 }
 
+async function cerrarTicketConObservacion(idTicket) {
+    const campo = document.getElementById("obsTicket_" + idTicket);
+    const observacion = campo ? campo.value.trim() : "";
 
-// ==========================================================================
-// 3. COMPROBANTE OFICIAL DE FACTURA (MODAL / IMPRESIÓN PDF)
-// ==========================================================================
+    if (!observacion) {
+        avisarToast("Debes escribir una observación o solución antes de cerrar el ticket.", "error");
+        if (campo) campo.focus();
+        return;
+    }
+
+    try {
+        const respuesta = await fetch(API_SOPORTE + "/cerrar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idTicket: String(idTicket), observacion: observacion })
+        });
+        const json = await respuesta.json();
+        if (!json.exito) {
+            avisarToast(json.mensaje || "No se pudo cerrar el ticket.", "error");
+            return;
+        }
+        avisarToast("Ticket #" + idTicket + " cerrado y notificado al usuario por correo y web.", "exito");
+        cargarModuloSoporte();
+        if (typeof cargarNotificacionesWeb === "function") cargarNotificacionesWeb();
+    } catch (error) {
+        avisarToast("No se pudo conectar con el servidor Java.", "error");
+    }
+}
+
+function verDetalleTicket(idTicket) {
+    const t = ticketsAtendidosEnMemoria.find(x => Number(x.idTicket) === Number(idTicket))
+        || ticketsEnProcesoEnMemoria.find(x => Number(x.idTicket) === Number(idTicket))
+        || ticketsPendientesEnMemoria.find(x => Number(x.idTicket) === Number(idTicket));
+    if (!t) return;
+
+    let modal = document.getElementById("comprobanteModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "comprobanteModal";
+        modal.className = "comprobante-modal";
+        document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+        <div class="comprobante-modal__caja" style="max-width: 620px;">
+            <div class="comprobante-modal__header">
+                <span class="comprobante-modal__titulo">🎫 Detalle del Ticket #${Number(t.idTicket)}</span>
+                <button class="comprobante-modal__cerrar" onclick="cerrarModalComprobante()">✕</button>
+            </div>
+            <div class="comprobante-modal__cuerpo" style="padding: 22px;">
+                <p style="margin:0 0 8px;"><strong>Asunto:</strong> ${escaparHtml(t.asunto)}</p>
+                <p style="margin:0 0 8px;"><strong>Solicitante:</strong> ${escaparHtml(t.usuario)} (${escaparHtml(t.correo || '-')})</p>
+                <p style="margin:0 0 12px;"><strong>Estado:</strong> <span class="badge badge-activo">${escaparHtml(t.estado)}</span></p>
+                <div class="soporte__detalle-problema">
+                    <h5>📌 Problema Reportado:</h5>
+                    <p>${escaparHtml(t.mensaje)}</p>
+                </div>
+                <div class="soporte__detalle-problema" style="border-color:#bbf7d0; background:#f0fdf4;">
+                    <h5>✅ Observación / Solución:</h5>
+                    <p>${escaparHtml(t.observacion || 'Sin observación registrada.')}</p>
+                    <small style="display:block; margin-top:8px; color:#64748b;">
+                        Atendido por: ${escaparHtml(t.atendidoPor || '-')} · Fecha cierre: ${escaparHtml(t.fechaCierre || t.fecha || '-')}
+                    </small>
+                </div>
+            </div>
+            <div class="comprobante-modal__footer">
+                <button class="facturacion__btn facturacion__btn--primario" onclick="cerrarModalComprobante()">Cerrar</button>
+            </div>
+        </div>
+    `;
+    modal.style.display = "flex";
+}
 
 function verComprobanteFactura(idFactura) {
     const factura = facturasEnMemoria.find(f => Number(f.idFactura) === Number(idFactura))

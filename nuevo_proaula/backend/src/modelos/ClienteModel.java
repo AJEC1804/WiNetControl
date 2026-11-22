@@ -11,11 +11,6 @@ import utils.ValidadorTexto;
 import utils.Respuesta;
 import java.util.List;
 
-/**
- * Modelo de Negocio para Clientes.
- * Aplica reglas de negocio, validaciones de integridad,
- * encriptación de credenciales y asignación de planes.
- */
 public class ClienteModel {
 
     private ListaClientes listaClientes;
@@ -35,15 +30,11 @@ public class ClienteModel {
         return listaClientes;
     }
 
-    /**
-     * Registra un nuevo cliente validando las reglas de negocio.
-     */
     public Respuesta<Cliente> registrarCliente(Cliente cliente, String confContrasena, String planPorDefecto) {
         if (cliente == null) {
             return Respuesta.error("Los datos del cliente no pueden ser nulos.");
         }
 
-        // 1. Campos obligatorios
         if (!ValidadorTexto.esNoVacio(cliente.getNombre()) ||
             !ValidadorTexto.esNoVacio(cliente.getApellido()) ||
             !ValidadorTexto.esNoVacio(cliente.getIdentificacion()) ||
@@ -54,7 +45,6 @@ public class ClienteModel {
             return Respuesta.error("Todos los campos obligatorios deben ser diligenciados.");
         }
 
-        // 2. Validaciones de formato
         if (!ValidadorTexto.validarIdentificacion(cliente.getIdentificacion())) {
             return Respuesta.error("La identificación debe ser numérica y contener entre 8 y 10 dígitos.");
         }
@@ -75,7 +65,6 @@ public class ClienteModel {
             return Respuesta.error("Las contraseñas no coinciden.");
         }
 
-        // 3. Unicidad
         if (listaClientes.existeIdentificacion(cliente.getIdentificacion())) {
             return Respuesta.error("Ya existe un cliente registrado con esta identificación.");
         }
@@ -84,7 +73,6 @@ public class ClienteModel {
             return Respuesta.error("Ya existe un cliente registrado con este correo electrónico.");
         }
 
-        // 4. Asignación de plan inicial y encriptación
         if (!ValidadorTexto.esNoVacio(cliente.getPlanActual()) || cliente.getPlanActual().equalsIgnoreCase("Sin plan")) {
             cliente.setPlanActual(ValidadorTexto.esNoVacio(planPorDefecto) ? planPorDefecto : "");
         }
@@ -95,10 +83,11 @@ public class ClienteModel {
         return Respuesta.exito("Cliente registrado exitosamente.", cliente);
     }
 
-    /**
-     * Actualiza los datos de un cliente existente respetando la integridad.
-     */
     public Respuesta<Cliente> actualizarCliente(String identificacionActual, Cliente datosNuevos) {
+        return actualizarCliente(identificacionActual, datosNuevos, true);
+    }
+
+    public Respuesta<Cliente> actualizarCliente(String identificacionActual, Cliente datosNuevos, boolean actualizarPlan) {
         if (!ValidadorTexto.esNoVacio(identificacionActual)) {
             return Respuesta.error("Identificación actual requerida.");
         }
@@ -108,7 +97,6 @@ public class ClienteModel {
             return Respuesta.error("No se encontró ningún cliente con la identificación suministrada.", 404);
         }
 
-        // Validación de nueva identificación si cambió
         if (ValidadorTexto.esNoVacio(datosNuevos.getIdentificacion()) &&
             !datosNuevos.getIdentificacion().equalsIgnoreCase(actual.getIdentificacion())) {
             if (!ValidadorTexto.validarIdentificacion(datosNuevos.getIdentificacion())) {
@@ -120,7 +108,6 @@ public class ClienteModel {
             actual.setIdentificacion(datosNuevos.getIdentificacion());
         }
 
-        // Validación de nuevo correo si cambió
         if (ValidadorTexto.esNoVacio(datosNuevos.getCorreo()) &&
             !datosNuevos.getCorreo().equalsIgnoreCase(actual.getCorreo())) {
             if (!ValidadorTexto.validarCorreo(datosNuevos.getCorreo())) {
@@ -132,7 +119,6 @@ public class ClienteModel {
             actual.setCorreo(datosNuevos.getCorreo());
         }
 
-        // Validación de teléfono si cambió
         if (ValidadorTexto.esNoVacio(datosNuevos.getTelefono())) {
             if (!ValidadorTexto.validarTelefono(datosNuevos.getTelefono())) {
                 return Respuesta.error("El nuevo teléfono debe tener 10 dígitos numéricos.");
@@ -144,7 +130,7 @@ public class ClienteModel {
         if (ValidadorTexto.esNoVacio(datosNuevos.getApellido())) actual.setApellido(datosNuevos.getApellido());
         if (ValidadorTexto.esNoVacio(datosNuevos.getTipo())) actual.setTipo(datosNuevos.getTipo());
         if (ValidadorTexto.esNoVacio(datosNuevos.getDireccion())) actual.setDireccion(datosNuevos.getDireccion());
-        if (datosNuevos.getPlanActual() != null) {
+        if (actualizarPlan && datosNuevos.getPlanActual() != null) {
             String nuevoPlan = datosNuevos.getPlanActual().trim();
             if (nuevoPlan.equalsIgnoreCase("Sin plan")) {
                 nuevoPlan = "";
@@ -162,9 +148,6 @@ public class ClienteModel {
         return Respuesta.exito("Cliente actualizado correctamente.", actual);
     }
 
-    /**
-     * Asigna o cambia el plan de un cliente existente y actualiza la fecha de activación.
-     */
     public Respuesta<Cliente> asignarPlan(String identificacionCliente, String nombrePlan,
                                          PlanModel planModel, FacturaModel facturaModel) {
         if (!ValidadorTexto.esNoVacio(identificacionCliente)) {
@@ -202,7 +185,6 @@ public class ClienteModel {
         cliente.setPlanActual(plan.getNombrePlan());
         plan.setFechaActivacion(FormateadorFecha.fechaActualTexto());
 
-        // Emitir factura automática de la suscripción
         if (facturaModel != null) {
             facturaModel.emitirFactura(cliente, plan);
         }
@@ -210,9 +192,6 @@ public class ClienteModel {
         return Respuesta.exito("Plan '" + plan.getNombrePlan() + "' asignado exitosamente al cliente.", cliente);
     }
 
-    /**
-     * Elimina un cliente por su identificación.
-     */
     public Respuesta<Boolean> eliminarCliente(String identificacion) {
         if (!ValidadorTexto.esNoVacio(identificacion)) {
             return Respuesta.error("Ingrese una identificación válida para eliminar.");
@@ -226,9 +205,6 @@ public class ClienteModel {
         }
     }
 
-    /**
-     * Consulta detallada de un cliente.
-     */
     public Respuesta<Cliente> consultarCliente(String identificacion) {
         if (!ValidadorTexto.esNoVacio(identificacion)) {
             return Respuesta.error("Ingrese la identificación a consultar.");
@@ -242,31 +218,19 @@ public class ClienteModel {
         }
     }
 
-    /**
-     * Lista todos los clientes registrados.
-     */
     public Respuesta<List<Cliente>> listarClientes() {
         List<Cliente> clientes = listaClientes.listarATodos();
         return Respuesta.exito("Listado de clientes obtenido (" + clientes.size() + ").", clientes);
     }
 
-    /**
-     * Activa un cliente en el sistema.
-     */
     public Respuesta<Cliente> activarCliente(String identificacion) {
         return cambiarEstadoCliente(identificacion, true);
     }
 
-    /**
-     * Desactiva un cliente en el sistema.
-     */
     public Respuesta<Cliente> desactivarCliente(String identificacion) {
         return cambiarEstadoCliente(identificacion, false);
     }
 
-    /**
-     * Cambia el estado activo/inactivo de un cliente.
-     */
     public Respuesta<Cliente> cambiarEstadoCliente(String identificacion, boolean nuevoEstado) {
         if (!ValidadorTexto.esNoVacio(identificacion)) {
             return Respuesta.error("Identificación del cliente requerida.");
@@ -280,18 +244,12 @@ public class ClienteModel {
         return Respuesta.exito("Cliente " + estadoTxt + " correctamente.", cliente);
     }
 
-    /**
-     * Lista clientes filtrados por su estado (activos o inactivos).
-     */
     public Respuesta<List<Cliente>> listarClientesPorEstado(boolean activo) {
         List<Cliente> filtrados = listaClientes.listarPorEstado(activo);
         String estadoTxt = activo ? "activos" : "inactivos";
         return Respuesta.exito("Clientes " + estadoTxt + ": " + filtrados.size(), filtrados);
     }
 
-    /**
-     * Autenticación de cliente por identificación y contraseña.
-     */
     public Respuesta<Cliente> autenticar(String identificacion, String contrasenaPlana) {
         if (!ValidadorTexto.esNoVacio(identificacion) || !ValidadorTexto.esNoVacio(contrasenaPlana)) {
             return Respuesta.error("Credenciales incompletas.");
@@ -313,13 +271,10 @@ public class ClienteModel {
         }
     }
 
-    // ================= PERSISTENCIA =================
-    /** Vuelca la lista de clientes al archivo datos/clientes.dat. */
     public void guardarEstado() {
         PersistenciaUtil.guardar(listaClientes, ARCHIVO);
     }
 
-    /** Recupera la lista desde disco, si existe; si no, se queda la vacía. */
     private void cargarEstado() {
         ListaClientes cargada = PersistenciaUtil.cargar(ARCHIVO, ListaClientes.class);
         if (cargada != null) {

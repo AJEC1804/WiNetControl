@@ -6,14 +6,9 @@ import entidades.Soporte;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Cola (FIFO) especializada para Tickets de Soporte Técnico.
- * Estructura de datos autosuficiente mediante nodos enlazados desde el frente al final.
- */
 public class ColaSoporte implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Nodo doblemente enlazado para Cola de Soporte
     public static class NodoSoporte implements Serializable {
         private static final long serialVersionUID = 1L;
         private Soporte dato;
@@ -44,7 +39,6 @@ public class ColaSoporte implements Serializable {
         this.tamano = 0;
     }
 
-    // Encolar (Enqueue)
     public void encolar(Soporte nuevoMensaje) {
         if (nuevoMensaje == null) return;
         NodoSoporte nuevo = new NodoSoporte(nuevoMensaje);
@@ -59,7 +53,6 @@ public class ColaSoporte implements Serializable {
         tamano++;
     }
 
-    // Desencolar (Dequeue)
     public Soporte desencolar() {
         if (frente == null) {
             final_ = null;
@@ -102,6 +95,41 @@ public class ColaSoporte implements Serializable {
             sapo = sapo.getSiguiente();
         }
         return lista;
+    }
+
+    public Soporte getFrentePorEmpresa(String empresaId) {
+        if (empresaId == null || empresaId.trim().isEmpty()) {
+            return getFrente();
+        }
+        NodoSoporte sapo = frente;
+        while (sapo != null) {
+            Soporte s = sapo.getDato();
+            if (s != null && empresaId.equalsIgnoreCase(s.getEmpresaId())) {
+                return s;
+            }
+            sapo = sapo.getSiguiente();
+        }
+        return null;
+    }
+
+    public Soporte desencolarPorEmpresa(String empresaId) {
+        if (empresaId == null || empresaId.trim().isEmpty()) {
+            return desencolar();
+        }
+        ColaSoporte aux = new ColaSoporte();
+        Soporte encontrado = null;
+        while (!estaVacia()) {
+            Soporte actual = desencolar();
+            if (actual != null && encontrado == null && empresaId.equalsIgnoreCase(actual.getEmpresaId())) {
+                encontrado = actual;
+            } else if (actual != null) {
+                aux.encolar(actual);
+            }
+        }
+        while (!aux.estaVacia()) {
+            encolar(aux.desencolar());
+        }
+        return encontrado;
     }
 
     public boolean estaVacia() {

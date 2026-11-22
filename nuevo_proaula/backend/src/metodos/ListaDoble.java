@@ -2,12 +2,6 @@ package metodos;
 
 import java.io.Serializable;
 
-/**
- * Implementación de Lista Doblemente Enlazada.
- * Estructura bidireccional con punteros 'primero' y 'ultimo',
- * implementando fielmente la metodología vista en clase
- * y completando todos los métodos requeridos para el CRUD completo.
- */
 public class ListaDoble implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -19,7 +13,6 @@ public class ListaDoble implements Serializable {
         this.ultimo = null;
     }
 
-    // 1. Insertar al inicio de la lista doble
     public void insertar_inicio(Nodo nuevo) {
         if (nuevo == null) return;
         if (primero == null && ultimo == null) {
@@ -32,7 +25,6 @@ public class ListaDoble implements Serializable {
         }
     }
 
-    // 2. Insertar al final de la lista doble
     public void insertar_final_lista_doble(Nodo nuevo) {
         if (nuevo == null) return;
         if (this.primero == null && this.ultimo == null) {
@@ -45,7 +37,6 @@ public class ListaDoble implements Serializable {
         }
     }
 
-    // 3. Insertar antes de un nodo referente
     public boolean insertar_antes_nodo_ref_doble(Nodo nuevo, String ref) {
         if (nuevo == null || ref == null) return false;
         if (primero == null) {
@@ -53,7 +44,6 @@ public class ListaDoble implements Serializable {
             return false;
         }
 
-        // Si el referente es el primero
         if (primero.getDato().equalsIgnoreCase(ref)) {
             insertar_inicio(nuevo);
             return true;
@@ -76,7 +66,6 @@ public class ListaDoble implements Serializable {
         }
     }
 
-    // 4. [COMPLETADO] Insertar después de un nodo referente
     public boolean insertar_despues_nodo_ref_doble(Nodo nuevo, String ref) {
         if (nuevo == null || ref == null) return false;
         if (primero == null) {
@@ -84,7 +73,6 @@ public class ListaDoble implements Serializable {
             return false;
         }
 
-        // Si el referente es el último
         if (ultimo.getDato().equalsIgnoreCase(ref)) {
             insertar_final_lista_doble(nuevo);
             return true;
@@ -111,7 +99,6 @@ public class ListaDoble implements Serializable {
         }
     }
 
-    // 5. Eliminar al inicio de la lista doble
     public Nodo eliminar_inicio_lista_doble() {
         if (this.primero == null && this.ultimo == null) {
             System.out.println("Lista vacía");
@@ -130,7 +117,6 @@ public class ListaDoble implements Serializable {
         return sapo;
     }
 
-    // 6. [COMPLETADO] Eliminar al final de la lista doble
     public Nodo eliminar_final_lista_doble() {
         if (this.primero == null && this.ultimo == null) {
             System.out.println("Lista vacía");
@@ -149,7 +135,6 @@ public class ListaDoble implements Serializable {
         return sapo;
     }
 
-    // 7. Eliminar el nodo referente en lista doble
     public boolean eliminar_nodo_referente_doble(String ref) {
         if (primero == null || ref == null) {
             System.out.println("Lista vacía");
@@ -166,7 +151,6 @@ public class ListaDoble implements Serializable {
             return false;
         }
 
-        // Si es el único elemento
         if (sapo == primero && sapo == ultimo) {
             primero = null;
             ultimo = null;
@@ -183,7 +167,6 @@ public class ListaDoble implements Serializable {
         return true;
     }
 
-    // 8. Eliminar antes de un nodo referente
     public boolean eliminar_antes_nodo_ref_doble(String ref) {
         if (primero == null || ref == null) {
             System.out.println("Lista vacía");
@@ -217,7 +200,6 @@ public class ListaDoble implements Serializable {
         return true;
     }
 
-    // 9. [COMPLETADO] Eliminar después de un nodo referente
     public boolean eliminar_despues_nodo_ref_doble(String ref) {
         if (primero == null || ref == null) {
             System.out.println("Lista vacía");
@@ -251,7 +233,6 @@ public class ListaDoble implements Serializable {
         return true;
     }
 
-    // 10. [COMPLETADO - BUSCAR CRUD]
     public Nodo buscar_nodo_doble(String ref) {
         if (primero == null || ref == null) return null;
         Nodo sapo = primero;
@@ -264,7 +245,6 @@ public class ListaDoble implements Serializable {
         return null;
     }
 
-    // 11. [COMPLETADO - ACTUALIZAR CRUD]
     public boolean actualizar_nodo_doble(String ref, String nuevoDato) {
         Nodo encontrado = buscar_nodo_doble(ref);
         if (encontrado != null) {
@@ -274,7 +254,6 @@ public class ListaDoble implements Serializable {
         return false;
     }
 
-    // 12. Recorrer hacia adelante (de primero a ultimo)
     public void recorrer() {
         if (this.primero == null) {
             System.out.println("Lista vacía");
@@ -293,7 +272,6 @@ public class ListaDoble implements Serializable {
         }
     }
 
-    // 13. [COMPLETADO - RECORRERBACK] Recorrer hacia atrás (de ultimo a primero)
     public void recorrerback() {
         if (this.ultimo == null) {
             System.out.println("Lista vacía");

@@ -11,15 +11,6 @@ import utils.ValidadorTexto;
 
 import java.util.List;
 
-/**
- * Modelo de negocio del módulo de Empleados.
- * Aplica las mismas reglas que ClienteModel:
- * - Cédula entre 8 y 10 dígitos, única.
- * - Correo con formato válido y único.
- * - Teléfono de 10 dígitos.
- * - Contraseña de mínimo 6 caracteres, guardada con SHA-256.
- * - No se eliminan empleados: solo se activan o desactivan (historial).
- */
 public class EmpleadoModel {
 
     private ListaEmpleados listaEmpleados;
@@ -35,9 +26,6 @@ public class EmpleadoModel {
         return listaEmpleados;
     }
 
-    // ------------------------------------------------------------------
-    // REGISTRAR
-    // ------------------------------------------------------------------
     public Respuesta<Empleado> registrarEmpleado(Empleado empleado) {
         if (empleado == null) {
             return Respuesta.error("Los datos del empleado no pueden ser nulos.");
@@ -56,7 +44,6 @@ public class EmpleadoModel {
             return Respuesta.error("Ya existe un empleado con el correo: " + empleado.getCorreo(), 400);
         }
 
-        // Contraseña por defecto y hash
         String clave = ValidadorTexto.esNoVacio(empleado.getContrasena())
                 ? empleado.getContrasena()
                 : "Clave123";
@@ -77,9 +64,6 @@ public class EmpleadoModel {
         return Respuesta.exito("Empleado registrado exitosamente.", empleado);
     }
 
-    // ------------------------------------------------------------------
-    // CONSULTAR
-    // ------------------------------------------------------------------
     public Respuesta<List<Empleado>> listarEmpleados() {
         List<Empleado> lista = listaEmpleados.listarATodos();
         return Respuesta.exito("Empleados registrados: " + lista.size(), lista);
@@ -94,6 +78,16 @@ public class EmpleadoModel {
     public Respuesta<List<Empleado>> listarEmpleadosPorSucursal(String sucursal) {
         return Respuesta.exito("Empleados de la sucursal " + sucursal,
                 listaEmpleados.listarPorSucursal(sucursal));
+    }
+
+    public Respuesta<List<Empleado>> listarEmpleadosPorEmpresa(String empresaId) {
+        List<Empleado> lista = listaEmpleados.listarPorEmpresa(empresaId);
+        return Respuesta.exito("Empleados registrados: " + lista.size(), lista);
+    }
+
+    public Respuesta<List<Empleado>> listarEmpleadosPorEmpresaYEstado(String empresaId, boolean activo) {
+        List<Empleado> lista = listaEmpleados.listarPorEmpresaYEstado(empresaId, activo);
+        return Respuesta.exito("Empleados encontrados: " + lista.size(), lista);
     }
 
     public Respuesta<ListaEmpleados> buscarParcial(String fragmento) {
@@ -113,9 +107,6 @@ public class EmpleadoModel {
         return Respuesta.exito("Empleado encontrado.", empleado);
     }
 
-    // ------------------------------------------------------------------
-    // ACTUALIZAR
-    // ------------------------------------------------------------------
     public Respuesta<Empleado> actualizarEmpleado(String identificacionActual, Empleado datosNuevos) {
         if (!ValidadorTexto.esNoVacio(identificacionActual)) {
             return Respuesta.error("La identificación del empleado es obligatoria.", 400);
@@ -129,7 +120,6 @@ public class EmpleadoModel {
             return Respuesta.error("No se encontró un empleado con la identificación: " + identificacionActual, 404);
         }
 
-        // La cédula no se modifica: se valida la del empleado que ya existe
         datosNuevos.setIdentificacion(existente.getIdentificacion());
 
         Respuesta<Boolean> validacion = validarDatosBasicos(datosNuevos, false);
@@ -137,7 +127,6 @@ public class EmpleadoModel {
             return Respuesta.error(validacion.getMensaje(), validacion.getCodigo());
         }
 
-        // Correo repetido en OTRO empleado
         Empleado conEseCorreo = listaEmpleados.buscarPorCorreo(datosNuevos.getCorreo());
         if (conEseCorreo != null && !conEseCorreo.getIdentificacion().equals(existente.getIdentificacion())) {
             return Respuesta.error("El correo " + datosNuevos.getCorreo() + " ya lo usa otro empleado.", 400);
@@ -148,9 +137,6 @@ public class EmpleadoModel {
         return Respuesta.exito("Empleado actualizado correctamente.", existente);
     }
 
-    // ------------------------------------------------------------------
-    // ESTADO (no se elimina: se desactiva)
-    // ------------------------------------------------------------------
     public Respuesta<Empleado> cambiarEstadoEmpleado(String identificacion, boolean activo) {
         if (!ValidadorTexto.esNoVacio(identificacion)) {
             return Respuesta.error("La identificación es obligatoria.", 400);
@@ -185,10 +171,6 @@ public class EmpleadoModel {
         return Respuesta.exito("Rol del empleado actualizado a " + rolFinal + ".", empleado);
     }
 
-
-    // ------------------------------------------------------------------
-    // AUTENTICAR (login del empleado)
-    // ------------------------------------------------------------------
     public Respuesta<Empleado> autenticar(String identificacion, String contrasenaPlana) {
         if (!ValidadorTexto.esNoVacio(identificacion) || !ValidadorTexto.esNoVacio(contrasenaPlana)) {
             return Respuesta.error("Credenciales incompletas.", 400);
@@ -211,10 +193,6 @@ public class EmpleadoModel {
         return Respuesta.error("Usuario o contraseña incorrectos.", 401);
     }
 
-
-    // ------------------------------------------------------------------
-    // ELIMINAR (solo SUPERADMIN). El resto de roles solo desactiva.
-    // ------------------------------------------------------------------
     public Respuesta<Boolean> eliminarEmpleado(String identificacion) {
         if (!ValidadorTexto.esNoVacio(identificacion)) {
             return Respuesta.error("La identificación es obligatoria.", 400);
@@ -231,9 +209,6 @@ public class EmpleadoModel {
         return Respuesta.exito("Empleado eliminado correctamente del sistema.", Boolean.TRUE);
     }
 
-    // ------------------------------------------------------------------
-    // VALIDACIONES COMPARTIDAS
-    // ------------------------------------------------------------------
     private Respuesta<Boolean> validarDatosBasicos(Empleado empleado, boolean esNuevo) {
         if (!ValidadorTexto.validarIdentificacion(empleado.getIdentificacion())) {
             return Respuesta.error("La identificación debe ser numérica y contener entre 8 y 10 dígitos.", 400);
@@ -257,13 +232,10 @@ public class EmpleadoModel {
         return Respuesta.exito("Datos válidos.", Boolean.TRUE);
     }
 
-    // ================= PERSISTENCIA =================
-    /** Vuelca la lista de empleados al archivo datos/empleados.dat. */
     public void guardarEstado() {
         PersistenciaUtil.guardar(listaEmpleados, ARCHIVO);
     }
 
-    /** Recupera la lista de empleados desde disco, si existe. */
     private void cargarEstado() {
         ListaEmpleados cargada = PersistenciaUtil.cargar(ARCHIVO, ListaEmpleados.class);
         if (cargada != null) {

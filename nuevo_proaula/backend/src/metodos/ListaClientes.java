@@ -6,14 +6,9 @@ import entidades.Cliente;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lista Doblemente Enlazada para la gestión CRUD de Clientes.
- * Estructura de datos autosuficiente mediante nodos con punteros hacia adelante y hacia atrás.
- */
 public class ListaClientes implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Nodo doblemente enlazado para Clientes
     public static class NodoCliente implements Serializable {
         private static final long serialVersionUID = 1L;
         private Cliente dato;
@@ -43,8 +38,6 @@ public class ListaClientes implements Serializable {
         this.ultimo = null;
         this.tamano = 0;
     }
-
-    // --- CREATE (Insertar) ---
 
     public void insertarInicio(Cliente nuevo) {
         if (nuevo == null) return;
@@ -136,8 +129,6 @@ public class ListaClientes implements Serializable {
         return true;
     }
 
-    // --- READ (Buscar y Listar) ---
-
     public NodoCliente buscarNodoPorIdentificacion(String identificacion) {
         if (identificacion == null || primero == null) return null;
         String idBuscada = identificacion.trim();
@@ -181,8 +172,6 @@ public class ListaClientes implements Serializable {
         return lista;
     }
 
-    // --- UPDATE (Actualizar) ---
-
     public boolean actualizarCliente(String identificacion, Cliente cActualizado) {
         if (identificacion == null || cActualizado == null) return false;
         NodoCliente nodo = buscarNodoPorIdentificacion(identificacion);
@@ -222,8 +211,6 @@ public class ListaClientes implements Serializable {
         return filtrados;
     }
 
-    // --- DELETE (Eliminar) ---
-
     public boolean eliminarPorIdentificacion(String identificacion) {
         if (identificacion == null || primero == null) return false;
         NodoCliente nodoEliminar = buscarNodoPorIdentificacion(identificacion);
@@ -249,8 +236,6 @@ public class ListaClientes implements Serializable {
         tamano--;
         return true;
     }
-
-    // --- VALIDACIONES DE DUPLICADOS Y AUTENTICACIÓN ---
 
     public boolean existeIdentificacion(String identificacion) {
         return buscarPorIdentificacion(identificacion) != null;
@@ -293,8 +278,6 @@ public class ListaClientes implements Serializable {
         }
         return null;
     }
-
-    // --- RECORRIDOS ---
 
     public void recorrer() {
         if (primero == null) {

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Suspendido - WiNet Control</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .susp-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: radial-gradient(circle at top right, #fee2e2 0%, #f1f5f9 45%, #dbeafe 100%);
+        }
+        .susp-card {
+            max-width: 640px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #fecaca;
+            box-shadow: 0 20px 45px -15px rgba(185, 28, 28, 0.22);
+            padding: 34px;
+        }
+        .susp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .susp-titulo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 8px;
+        }
+        .susp-subtitulo {
+            color: #475569;
+            font-size: 14.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .susp-caja-pago {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 4px solid #d97706;
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+        }
+        .susp-caja-pago h4 {
+            margin: 0 0 6px;
+            color: #92400e;
+            font-size: 15px;
+        }
+        .susp-caja-pago p {
+            margin: 0;
+            color: #78350f;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+        .susp-caja-contacto {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+        .susp-caja-contacto h4 {
+            margin: 0 0 8px;
+            color: #1e293b;
+            font-size: 15px;
+        }
+        .susp-datos-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin: 12px 0 16px;
+            font-size: 13px;
+            color: #334155;
+        }
+        .susp-dato-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .susp-dato-item strong {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+        .susp-acciones {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+</style>
+</head>
+<body>
+    <div class="susp-wrapper">
+        <div class="susp-card">
+            <span class="susp-badge">⛔ Servicio Suspendido</span>
+            <h1 class="susp-titulo">Acceso bloqueado para <span id="suspEmpresaNombre">tu empresa</span></h1>
+            <p class="susp-subtitulo" id="suspMensajePrincipal">
+                El servicio de plataforma de tu empresa se encuentra temporalmente desactivado.
+            </p>
+
+            <div class="susp-caja-pago">
+                <h4>💳 Realice su pago del sistema</h4>
+                <p id="suspMotivo">
+                    Para restablecer el acceso del administrador y el personal de tu empresa, por favor realiza el pago pendiente de tu suscripción de WiNet Control.
+                </p>
+            </div>
+
+            <div class="susp-caja-contacto">
+                <h4>🛠️ ¿Cree que es un error del sistema?</h4>
+                <p style="font-size: 13.5px; color: #475569; margin-bottom: 10px;">
+                    Colóquese en contacto con el <strong>Administrador de la Plataforma</strong> indicando el nombre de su empresa y comprobante de pago o detalle del inconveniente:
+                </p>
+
+                <div class="susp-datos-admin">
+                    <div class="susp-dato-item">
+                        <strong>Administrador Plataforma</strong>
+                        <span id="suspAdminNombre">Super Administrador Global</span>
+                    </div>
+                    <div class="susp-dato-item">
+                        <strong>Correo de Contacto</strong>
+                        <span id="suspAdminCorreo">superadmin@winetcontrol.com</span>
+                    </div>
+                    <div class="susp-dato-item">
+                        <strong>Teléfono / WhatsApp</strong>
+                        <span id="suspAdminTelefono">3009999999</span>
+                    </div>
+                </div>
+
+                <div id="suspAlert" class="alert" style="margin-bottom: 12px;"></div>
+
+                <form id="formContactoSuspension" onsubmit="enviarMensajeSuspension(event)">
+                    <div class="form-group">
+                        <label for="suspContactoCorreo">Tu correo de contacto:</label>
+                        <input type="email" id="suspContactoCorreo" placeholder="admin@tuempresa.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="suspContactoMensaje">Mensaje para el Administrador de la Plataforma:</label>
+                        <textarea id="suspContactoMensaje" rows="3" placeholder="Ej: Ya realizamos el pago del mes o creemos que se trata de un error del sistema..." required></textarea>
+                    </div>
+                    <div class="susp-acciones">
+                        <button type="submit" class="btn btn-primary btn-auto">📩 Enviar aviso al Administrador</button>
+                        <a id="suspMailtoBtn" href="mailto:superadmin@winetcontrol.com" class="btn btn-secondary btn-auto" style="text-decoration:none;">✉️ Abrir en mi correo</a>
+                        <a href="login.html" class="btn btn-secondary btn-auto" style="text-decoration:none;">← Volver al inicio de sesión</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js?v=49"></script>
+    <script>
+        let infoSuspension = {};
+        try {
+            infoSuspension = JSON.parse(sessionStorage.getItem("empresaSuspendidaInfo") || "{}");
+        } catch (e) {
+            infoSuspension = {};
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const nombreEmp = infoSuspension.empresaNombre || "tu empresa";
+            const motivo = infoSuspension.motivo || "Pago de suscripción del sistema pendiente.";
+            const adminNombre = infoSuspension.adminPlataformaNombre || "Super Administrador Global";
+            const adminCorreo = infoSuspension.adminPlataformaCorreo || "superadmin@winetcontrol.com";
+            const adminTelefono = infoSuspension.adminPlataformaTelefono || "3009999999";
+
+            document.getElementById("suspEmpresaNombre").textContent = nombreEmp;
+            document.getElementById("suspMotivo").textContent = "Motivo: " + motivo + " Por favor realiza el pago del sistema para reactivar tu cuenta.";
+            document.getElementById("suspAdminNombre").textContent = adminNombre;
+            document.getElementById("suspAdminCorreo").textContent = adminCorreo;
+            document.getElementById("suspAdminTelefono").textContent = adminTelefono;
+            document.getElementById("suspMailtoBtn").href = "mailto:" + adminCorreo + "?subject=" + encodeURIComponent("Revisión de suspensión - " + nombreEmp);
+        });
+
+        async function enviarMensajeSuspension(evento) {
+            evento.preventDefault();
+            const alertBox = document.getElementById("suspAlert");
+            const correo = document.getElementById("suspContactoCorreo").value.trim();
+            const mensaje = document.getElementById("suspContactoMensaje").value.trim();
+            if (!correo || !mensaje) return;
+
+            try {
+                const resp = await fetch(API_BASE + "/api/empresas/contacto-suspension", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        empresaId: infoSuspension.empresaId || "EMP-SUSPENDIDA",
+                        empresaNombre: infoSuspension.empresaNombre || "Empresa Suspendida",
+                        nombre: "Administrador (" + (infoSuspension.empresaNombre || "Empresa") + ")",
+                        correo: correo,
+                        mensaje: mensaje
+                    })
+                });
+                const json = await resp.json();
+                alertBox.style.display = "block";
+                if (json.exito) {
+                    alertBox.className = "alert alert-success";
+                    alertBox.textContent = "✅ Mensaje enviado al Administrador de la Plataforma. Pronto revisarán tu caso.";
+                    document.getElementById("suspContactoMensaje").value = "";
+                } else {
+                    alertBox.className = "alert alert-error";
+                    alertBox.textContent = json.mensaje || "No se pudo enviar el mensaje.";
+                }
+            } catch (e) {
+                alertBox.style.display = "block";
+                alertBox.className = "alert alert-error";
+                alertBox.textContent = "No se pudo conectar con el servidor. Escribe directamente al correo del administrador.";
+            }
+        }
+</script>
+</body>
+</html>
